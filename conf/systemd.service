@@ -1,13 +1,15 @@
 [Unit]
-Description=Small description of the service
-After=network.target
+Description=Garage Data Store
+After=network-online.target
+Wants=network-online.target
 
 [Service]
-Type=simple
-User=__APP__
-Group=__APP__
-WorkingDirectory=__FINALPATH__/
-ExecStart=__FINALPATH__/script
+Environment='RUST_LOG=garage=info' 'RUST_BACKTRACE=1'
+ExecStart=__FINALPATH__/garage server
+StateDirectory=garage
+DynamicUser=true
+ProtectHome=true
+NoNewPrivileges=true
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
 
@@ -15,7 +17,6 @@ StandardError=inherit
 # Depending on specificities of your service/app, you may need to tweak these
 # .. but this should be a good baseline
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
-NoNewPrivileges=yes
 PrivateTmp=yes
 PrivateDevices=yes
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6

@@ -1,73 +1,34 @@
 {
-    "name": "Example app",
-    "id": "example",
+    "name": "garage_ynh",
+    "id": "garage",
     "packaging_format": 1,
     "description": {
-        "en": "Explain in *a few (10~15) words* the purpose of the app or what it actually does (it is meant to give a rough idea to users browsing a catalog of 100+ apps)",
-        "fr": "Expliquez en *quelques* (10~15) mots l'utilité de l'app ou ce qu'elle fait (l'objectif est de donner une idée grossière pour des utilisateurs qui naviguent dans un catalogue de 100+ apps)"
+        "en": "S3 storage",
+        "fr": "stockage S3"
     },
     "version": "1.0~ynh1",
-    "url": "https://example.com",
+    "url": "https://garagehq.deuxfleurs.fr/",
     "upstream": {
         "license": "free",
-        "website": "https://example.com",
-        "demo": "https://demo.example.com",
-        "admindoc": "https://yunohost.org/packaging_apps",
-        "userdoc": "https://yunohost.org/apps",
-        "code": "https://some.forge.com/example/example"
+        "website": "https://garagehq.deuxfleurs.fr/",
+        "admindoc": "https://garagehq.deuxfleurs.fr/documentation/quick-start/",
+        "userdoc": "https://garagehq.deuxfleurs.fr/documentation/quick-start/",
+        "code": "https://git.deuxfleurs.fr/Deuxfleurs/garage"
     },
-    "license": "free",
+    "license": "AGPLv3",
     "maintainer": {
-        "name": "John doe",
-        "email": "john.doe@example.com"
+        "name": "oiseauroch",
+        "email": "tobias.ollive@oiseauroch.fr."
     },
     "requirements": {
         "yunohost": ">= 4.3.0"
     },
-    "multi_instance": true,
-    "services": [
-        "nginx",
-        "php7.3-fpm",
-        "mysql"
-    ],
+    "multi_instance": false,
     "arguments": {
         "install": [
             {
                 "name": "domain",
                 "type": "domain"
-            },
-            {
-                "name": "path",
-                "type": "path",
-                "example": "/example",
-                "default": "/example"
-            },
-            {
-                "name": "is_public",
-                "type": "boolean",
-                "default": true
-            },
-            {
-                "name": "language",
-                "type": "string",
-                "ask": {
-                    "en": "Choose the application language",
-                    "fr": "Choisissez la langue de l'application"
-                },
-                "choices": ["fr", "en"],
-                "default": "fr"
-            },
-            {
-                "name": "admin",
-                "type": "user"
-            },
-            {
-                "name": "password",
-                "type": "password",
-                "help": {
-                    "en": "Use the help field to add an information for the admin about this question.",
-                    "fr": "Utilisez le champ aide pour ajouter une information à l'intention de l'administrateur à propos de cette question."
-                }
             }
         ]
     }
