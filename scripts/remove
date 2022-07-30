@@ -18,10 +18,11 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 port=$(ynh_app_setting_get --app=$app --key=port)
-db_name=$(ynh_app_setting_get --app=$app --key=db_name)
-db_user=$db_name
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+rpc_secret=$(ynh_app_setting_get --app=$app --key=rpc_secret)
+port_api=$(ynh_app_setting_get --app=$app --key=port_api)
+port_web=$(ynh_app_setting_get --app=$app --key=port_web)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
+bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
 
 #=================================================
 # STANDARD REMOVE
@@ -52,13 +53,6 @@ ynh_script_progression --message="Removing logrotate configuration..." --time --
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
 
-#=================================================
-# REMOVE THE MYSQL DATABASE
-#=================================================
-ynh_script_progression --message="Removing the MySQL database..." --time --weight=1
-
-# Remove a database if it exists, along with the associated user
-ynh_mysql_remove_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
 # REMOVE APP MAIN DIR
@@ -87,13 +81,9 @@ ynh_script_progression --message="Removing NGINX web server configuration..." --
 # Remove the dedicated NGINX config
 ynh_remove_nginx_config
 
-#=================================================
-# REMOVE PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing PHP-FPM configuration..." --time --weight=1
-
-# Remove the dedicated PHP-FPM config
-ynh_remove_fpm_config
+#add wildcard subdomain
+ynh_replace_string --replace_string="server_name $domain" --match_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
 
 #=================================================
 # REMOVE DEPENDENCIES
@@ -113,13 +103,6 @@ then
 	ynh_exec_warn_less yunohost firewall disallow TCP $port
 fi
 
-#=================================================
-# REMOVE FAIL2BAN CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing Fail2Ban configuration..." --time --weight=1
-
-# Remove the dedicated Fail2Ban config
-ynh_remove_fail2ban_config
 
 #=================================================
 # SPECIFIC REMOVE
@@ -127,12 +110,6 @@ ynh_remove_fail2ban_config
 # REMOVE VARIOUS FILES
 #=================================================
 ynh_script_progression --message="Removing various files..." --time --weight=1
-
-# Remove a cron file
-ynh_secure_remove --file="/etc/cron.d/$app"
-
-# Remove a directory securely
-ynh_secure_remove --file="/etc/$app"
 
 # Remove the log files
 ynh_secure_remove --file="/var/log/$app"

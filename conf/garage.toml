@@ -1,0 +1,37 @@
+metadata_dir = "/opt/yunohost/__APP_NAME__/metadata"
+data_dir = "__DATA_DIR__" 
+
+block_size = 1048576
+block_manager_background_tranquility = 2
+
+replication_mode = "3"
+
+compression_level = 1
+
+# openssl rand -hex 32
+rpc_secret = "__RPC_SECRET__"
+# LE PORT DOIT ÊTRE LE MÊME SUR TOUS LES NOEUDS (port interne)
+rpc_bind_addr = "[::]:__PORT__"
+# Le port peut être différent (eg NAT) mais doit rediriger sur le
+# port de rpc_bind_addr
+rpc_public_addr = "__IP__:__PORT__"
+
+bootstrap_peers = [
+    __SERVER_AMI__",
+]
+
+[s3_api]
+# Ne supporte pas TLS → reverse proxy obligatoire
+# pour avoir de la sécurité
+api_bind_addr = "[::]:__PORT_API__"
+s3_region = "garage"
+
+[s3_web]
+bind_addr = "[::]:__PORT_WEB"
+root_domain = ".web.garage.localhost"
+index = "index.html"
+
+[admin]
+api_bind_addr = "127.0.0.1:__PORT_ADMIN__"
+metrics_token = "cacce0b2de4bc2d9f5b5fdff551e01ac1496055aed248202d415398987e35f81"
+admin_token = "ae8cb40ea7368bbdbb6430af11cca7da833d3458a5f52086f4e805a570fb5c2a"

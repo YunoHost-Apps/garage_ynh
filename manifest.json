@@ -6,7 +6,7 @@
         "en": "S3 storage",
         "fr": "stockage S3"
     },
-    "version": "1.0~ynh1",
+    "version": "0.7.2.1~ynh1",
     "url": "https://garagehq.deuxfleurs.fr/",
     "upstream": {
         "license": "free",
@@ -15,7 +15,8 @@
         "userdoc": "https://garagehq.deuxfleurs.fr/documentation/quick-start/",
         "code": "https://git.deuxfleurs.fr/Deuxfleurs/garage"
     },
-    "license": "AGPLv3",
+    "services": [],
+    "license": "AGPL-3.0-only",
     "maintainer": {
         "name": "oiseauroch",
         "email": "tobias.ollive@oiseauroch.fr."
@@ -29,6 +30,44 @@
             {
                 "name": "domain",
                 "type": "domain"
+            },
+            { 
+                "name":"rpc-secret",
+                "type":"string",
+                "ask": {
+                    "en": "UUID of the network (rpc-secret) ",
+                    "fr": "UUID de l'ilot (rpc-secret)"
+                  },
+                  "optional": true,
+                  "example": "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec"
+            },
+            {
+                "name": "bootstrap-peers",
+                "type": "string",
+                "example": "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@127.0.0.1:3901",
+                "optional": true,
+                "ask": {
+                    "en": "friend server id",
+                    "fr": "serveur ami"
+                    }
+            },
+            { 
+                "name": "weight",
+                "type": "integer",
+                "ask": {
+                    "en": "number of G to allow",
+                    "fr": "nombre de G à allouer"
+                }
+            },
+            {
+                "name": "datadir",
+                "type": "string",
+                "default": "/home/yunohost.app/__APP_NAME__/data",
+                "exemple": "/opt/yunohost/garage/data",
+                "ask" : {
+                    "en" : "data location",
+                    "fr": "dossier de stockage des données"
+                    }
             }
         ]
     }
