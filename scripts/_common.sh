@@ -42,6 +42,28 @@ install_garage () {
   fi
 }
 
+init_garage() {
+garage_command="$1"
+node_id="$2"
+weight="$3"
+zone="$4"
+
+$garage_command layout assign $node_id -z $zone -c $weight -t $zone
+
+apply_layout "$garage_command"
+}
+
+apply_layout() {
+	$garage_command=$1
+	$garage_command -c garage.toml layout show 2>/dev/null | grep "--version"
+	if [ $? -eq 0 ] 
+	then
+		layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+		$garage_command layout apply --version $layout_version
+	else
+		return 1
+	fi
+}
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================

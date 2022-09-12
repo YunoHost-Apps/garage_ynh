@@ -368,15 +368,12 @@ ynh_systemd_action --service_name=nginx --action=reload
 #=================================================
 ynh_script_progression --message="Configuring garage..." --time --weight=1
 
-garage_command="$final_path/garage -c $final_path/garage.toml"
+node_id=$($garage_command node id -q | cut -d '@' -f1)
+ynh_app_setting_set --app=$app --key=node_id --value=node_id
 
-garage_id=$($garage_command node id -q | cut -d '@' -f1)
+garage_command="$garage_path/garage -c $garage_path/garage.toml"
 
-$garage_command layout assign $garage_id -z $domain -c $weight -t $domain
-
-layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
-
-$garage_command layout apply --version $layout_version
+init_garage "$garage_command" "$node_id" "$weight" "$domain" 
 
 #=================================================
 # Send email to admin

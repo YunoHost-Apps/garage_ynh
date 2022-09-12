@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 
 #=================================================
 # GENERIC START
@@ -24,6 +24,21 @@ port_web=$(ynh_app_setting_get --app=$app --key=port_web)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
 nbd_index=$(ynh_app_setting_get --app=$app --key=nbd_index)
+node_id=$(ynh_app_setting_get --app=$app --key=node_id)
+
+
+#=================================================
+# REMOVE NODE CONFIGURATION
+#=================================================
+$final_path/garage -c $final_path/garage.toml layout remove "$node_id"
+
+apply_layout "$final_path/garage -c $final_path/garage.toml "
+if [ $? -ne 0 ]
+then
+	ynh_die --message="unable to remove the node. Maybe the number of node staying alive is not enough"
+fi
+
+
 #=================================================
 # STANDARD REMOVE
 #=================================================

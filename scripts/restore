@@ -32,6 +32,7 @@ domain=$(ynh_app_setting_get --app=$app --key=domain)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 
+
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
 #=================================================
@@ -138,6 +139,16 @@ yunohost service add --needs_exposed_ports $app --description="s3 storage" --log
 ynh_script_progression --message="Starting a systemd service..." --time --weight=1
 
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# RECREATE CONFIGURATION
+#=================================================
+node_id=$(ynh_app_setting_get --app=$app --key=node_id)
+weight=$(ynh_app_setting_get --app=$app --key=weight)
+
+garage_command="$garage_path/garage -c $garage_path/garage.toml"
+
+init_garage "$garage_command" "$node_id" "$weight" "$domain" 
 
 #=================================================
 # GENERIC FINALIZATION
