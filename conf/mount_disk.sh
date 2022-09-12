@@ -1,4 +1,4 @@
-#!bash
+#!/bin/bash
 datadir=$1
 format=$2
 i=0

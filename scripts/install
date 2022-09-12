@@ -25,7 +25,6 @@ ynh_abort_if_errors
 #=================================================
 
 #port mandatory for garage 
-port=3901
 ip=$(get_ip)
 
 
@@ -64,7 +63,7 @@ ynh_script_progression --message="Validating installation parameters..." --time 
 ### If the app provides an internal web server (or uses another application server such as uWSGI), the final path should be "/opt/yunohost/$app"
 final_path=/opt/yunohost/$app
 test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
-ynh_port_available --port=3900|| ynh_die --message="Port 3900 is needs to be available for this app"
+
 if [[ -n "$rpc_secret" ]]
 then
 	echo "$rpc_secret" | grep -E ^[0-9a-f]{64}$ || ynh_die --message="rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
@@ -109,10 +108,12 @@ ynh_script_progression --message="Finding available ports..." --time --weight=1
 
 # Find an available port
 
+port=$(ynh_find_port --port=3901)
 port_api=$(ynh_find_port --port=3900)
 port_web=$(ynh_find_port --port=3902)
 port_admin=$(ynh_find_port --port=3903)
 
+ynh_app_setting_set --app=$app --key=port --value=$port
 ynh_app_setting_set --app=$app --key=port_api --value=$port_api
 ynh_app_setting_set --app=$app --key=port_web --value=$port_web
 ynh_app_setting_set --app=$app --key=port_admin --value=$port_admin
@@ -122,7 +123,7 @@ ynh_app_setting_set --app=$app --key=port_admin --value=$port_admin
 
 # Open the port
  ynh_script_progression --message="Configuring firewall..." --time --weight=1
- ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $port
+ ynh_exec_warn_less yunohost firewall allow TCP $port
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -214,6 +215,7 @@ mkdir -p $datadir/data
 # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
 nbd_index=$($final_path/mount_disk.sh "$datadir" true)
+ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
 
 # FIXME: this should be managed by the core in the future
 # Here, as a packager, you may have to tweak the ownerhsip/permissions
@@ -225,8 +227,7 @@ chmod 750 "$datadir"
 chmod -R o-rwx "$datadir"
 chown -R $app:$app "$datadir"
 
-umount /dev/nbd$nbd_index
-qemu-img --disconnect /dev/nbd$nbd_index
+$final_path/umount_disk.sh $nbd_index
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
@@ -369,15 +370,22 @@ ynh_script_progression --message="Configuring garage..." --time --weight=1
 
 garage_command="$final_path/garage -c $final_path/garage.toml"
 
-gagare_id=$($garage_command node id -q | cut -d '@' -f1)
+garage_id=$($garage_command node id -q | cut -d '@' -f1)
 
-$garage_command assign $garage_id -z $domain -c 
+$garage_command layout assign $garage_id -z $domain -c $weight -t $domain
 
+layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+
+$garage_command layout apply --version $layout_version
 
 #=================================================
 # Send email to admin
 #=================================================
-ynh_send_readme_to_admin --app_message=app_message
+app_message="your garage node have been installed. You can now connect to other nodes with the following identifiers : \
+	rpc_secret: $rpc_secret
+	bootstrap_peers: $bootstrap_peers"
+
+ynh_send_readme_to_admin --app_message=$app_message
 
 #=================================================
 # END OF SCRIPT

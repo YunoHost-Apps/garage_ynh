@@ -23,6 +23,7 @@ ynh_abort_if_errors
 #=================================================
 
 final_path=$(ynh_app_setting_get $app final_path)
+datadir=$(ynh_app_setting_get $app datadir)
 
 #=================================================
 # SPECIFIC GETTERS FOR TOML SHORT KEY
