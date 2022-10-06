@@ -34,6 +34,7 @@ bootstrap_peers=$YNH_APP_ARG_BOOTSTRAP_PEERS
 datadir=$YNH_APP_ARG_DATADIR
 weight=$YNH_APP_ARG_WEIGHT
 
+
 ### If it's a multi-instance app, meaning it can be installed several times independently
 ### The id of the app as stated in the manifest is available as $YNH_APP_ID
 ### The instance number is available as $YNH_APP_INSTANCE_NUMBER (equals "1", "2"...)
@@ -73,6 +74,9 @@ fi
 if [ -n "$bootstrap_peers" ] 
 then
 	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}:3901' || ynh_die --message="friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:3901"
+	bootstrap_peers_var="\"$bootstrap_peers\","
+else
+	bootstrap_peers_var=""
 fi
 
 if [ "$datadir" = "/home/yunohost.app/__APP_NAME__/data" ]
@@ -82,6 +86,19 @@ fi
 
 # Register (book) web path
 ynh_webpath_register --app=$app --domain=$domain --path_url="/"
+
+#=================================================
+# LOOKING FOR VIRTUALISATION
+#=================================================
+ynh_script_progression --message="Checking virtualisation availability…" --time --weight=1
+
+if [  "$(which modprobe)" = ""  ] 
+then
+	virtualisation=false
+else
+	virtualisation=true
+fi
+ynh_app_setting_set --app=$app --key=virtualisation --value=true
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
@@ -108,15 +125,18 @@ ynh_script_progression --message="Finding available ports..." --time --weight=1
 
 # Find an available port
 
-port=$(ynh_find_port --port=3901)
-port_api=$(ynh_find_port --port=3900)
-port_web=$(ynh_find_port --port=3902)
-port_admin=$(ynh_find_port --port=3903)
-
+port=$(ynh_find_port --port=4000)
 ynh_app_setting_set --app=$app --key=port --value=$port
+port_api=$(ynh_find_port --port=5000)
 ynh_app_setting_set --app=$app --key=port_api --value=$port_api
+port_web=$(ynh_find_port --port=6000)
 ynh_app_setting_set --app=$app --key=port_web --value=$port_web
+port_admin=$(ynh_find_port --port=7000)
 ynh_app_setting_set --app=$app --key=port_admin --value=$port_admin
+
+ynh_print_warn --message="port : $port port_api : $port_api port_web : $port_web port_admin : $port_admin"
+
+
 # Optional: Expose this port publicly
 # (N.B.: you only need to do this if the app actually needs to expose the port publicly.
 # If you do this and the app doesn't actually need you are CREATING SECURITY HOLES IN THE SERVER !)
@@ -137,8 +157,10 @@ ynh_script_progression --message="Installing dependencies..." --time --weight=1
 ###		- Remove the variable "pkg_dependencies" in _common.sh
 ###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
- ynh_install_app_dependencies $pkg_dependencies
- 
+if [ "$virtualisation" = "true" ]
+then
+	ynh_install_app_dependencies $pkg_dependencies_virtualisation
+fi 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
@@ -156,7 +178,9 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 ### downloaded from an upstream source, like a git repository.
 ### `ynh_setup_source` use the file conf/app.src
 
+mkdir -p $final_path
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+
 # Download, check integrity, uncompress and patch the source from app.src
 pushd $final_path
 	install_garage
@@ -212,10 +236,14 @@ mkdir -p $datadir/data
 #=================================================
 # create data partition
 #=================================================
-# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
-qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
-nbd_index=$($final_path/mount_disk.sh "$datadir" true)
-ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
+nbd_index=127
+if [ "$virtualisation" = "true" ]
+then
+	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
+	qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
+	nbd_index=$($final_path/mount_disk.sh true)
+	ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
+fi
 
 # FIXME: this should be managed by the core in the future
 # Here, as a packager, you may have to tweak the ownerhsip/permissions
@@ -227,7 +255,10 @@ chmod 750 "$datadir"
 chmod -R o-rwx "$datadir"
 chown -R $app:$app "$datadir"
 
-$final_path/umount_disk.sh $nbd_index
+if [ "$virtualisation" = "true" ]
+then
+	$final_path/umount_disk.sh $nbd_index
+fi
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
@@ -245,13 +276,16 @@ ynh_script_progression --message="Adding a configuration file..." --time --weigh
 ###
 ### Check the documentation of `ynh_add_config` for more info.
 
-ynh_add_config --template="garage.toml" --destination="$final_path/garage.toml"
+	ynh_add_config --template="mount_disk.sh" --destination="$final_path/mount_disk.sh"
+	ynh_add_config --template="umount_disk.sh" --destination="$final_path/umount_disk.sh"
+	ynh_add_config --template="garage.toml" --destination="$final_path/garage.toml"
+	chmod +x "$final_path/mount_disk.sh" "$final_path/umount_disk.sh"
 
 # FIXME: this should be handled by the core in the future
 # You may need to use chmod 600 instead of 400,
 # for example if the app is expected to be able to modify its own config
-chmod 400 "$final_path/garage.toml"
-chown $app:$app "$final_path/garag.toml"
+chmod 600 "$final_path/garage.toml"
+chown $app:$app "$final_path/garage.toml"
 
 ### For more complex cases where you want to replace stuff using regexes,
 ### you shoud rely on ynh_replace_string (which is basically a wrapper for sed)
@@ -311,7 +345,7 @@ ynh_script_progression --message="Integrating service in YunoHost..." --time --w
 ###		- As well as the section "INTEGRATE SERVICE IN YUNOHOST" in the restore script
 ###		- And the section "INTEGRATE SERVICE IN YUNOHOST" in the upgrade script
 
-yunohost service add --needs_exposed_ports $app --description="s3 storage" --log="/var/log/$app/$app.log"
+yunohost service add --needs_exposed_ports $port --description="s3 storage" --log="/var/log/$app/$app.log" $app
 
 ### Additional options starting with 3.8:
 ###
@@ -346,6 +380,7 @@ ynh_script_progression --message="Starting a systemd service..." --time --weight
 # Start a systemd service
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
+
 #=================================================
 # SETUP SSOWAT
 #=================================================
@@ -368,10 +403,11 @@ ynh_systemd_action --service_name=nginx --action=reload
 #=================================================
 ynh_script_progression --message="Configuring garage..." --time --weight=1
 
+garage_command="$final_path/garage -c $final_path/garage.toml"
+
 node_id=$($garage_command node id -q | cut -d '@' -f1)
 ynh_app_setting_set --app=$app --key=node_id --value=node_id
 
-garage_command="$garage_path/garage -c $garage_path/garage.toml"
 
 init_garage "$garage_command" "$node_id" "$weight" "$domain" 
 

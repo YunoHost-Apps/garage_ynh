@@ -31,6 +31,8 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
+weight=$(ynh_app_setting_get --app=$app --key=weight)
+virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 
 
 #=================================================
@@ -73,9 +75,18 @@ chown -R $app:$app "$final_path"
 #=================================================
 ynh_script_progression --message="Restoring the data directory..." --time --weight=1
 
-ynh_restore_file --origin_path="$datadir" --not_mandatory
+mkdir -p "$datadir/data"
 
-mkdir -p $datadir
+if [ "$virtualisation" = "true" ]
+then
+	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
+	qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
+	nbd_index=$($final_path/mount_disk.sh "$datadir" true)
+	ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
+fi
+
+#ynh_restore_file --origin_path="$datadir/data" --not_mandatory
+
 
 # FIXME: this should be managed by the core in the future
 # Here, as a packager, you may have to tweak the ownerhsip/permissions

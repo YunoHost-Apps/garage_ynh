@@ -23,10 +23,13 @@ port_api=$(ynh_app_setting_get --app=$app --key=port_api)
 port_web=$(ynh_app_setting_get --app=$app --key=port_web)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
-nbd_index=$(ynh_app_setting_get --app=$app --key=nbd_index)
 node_id=$(ynh_app_setting_get --app=$app --key=node_id)
-
-
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
+if [ "$virtualisation" = "true" ]
+then
+	nbd_index=$(ynh_app_setting_get --app=$app --key=nbd_index)
+fi
 #=================================================
 # REMOVE NODE CONFIGURATION
 #=================================================
@@ -35,7 +38,7 @@ $final_path/garage -c $final_path/garage.toml layout remove "$node_id"
 apply_layout "$final_path/garage -c $final_path/garage.toml "
 if [ $? -ne 0 ]
 then
-	ynh_die --message="unable to remove the node. Maybe the number of node staying alive is not enough"
+	ynh_print_warn --message="unable to remove the node. Maybe the number of node staying alive is not enough"
 fi
 
 
@@ -69,14 +72,16 @@ ynh_script_progression --message="Removing logrotate configuration..." --time --
 ynh_remove_logrotate
 
 
-#=================================================
-# REMOVE VIRTUAL DISK
-#=================================================
-ynh_script_progression --message="umount virtual disk..." --time --weight=1
+if [ "$virtualisation" = "true" ]
+then
+	#=================================================
+	# REMOVE VIRTUAL DISK
+	#=================================================
+	ynh_script_progression --message="umount virtual disk..." --time --weight=1
 
-# Remove the app directory securely
-$final_path/umount_disk.sh  $nbd_index
-
+	# Remove the app directory securely
+	$final_path/umount_disk.sh  $nbd_index
+fi
 #=================================================
 # REMOVE APP MAIN DIR
 #=================================================

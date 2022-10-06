@@ -5,12 +5,10 @@ Wants=network-online.target
 
 [Service]
 User=__APP__
-Environment='RUST_LOG=garage=info' 'RUST_BACKTRACE=1'
-ExecStartPre=+__FINALPATH__/mount_disk.sh __FINALPATH__ __NBD_INDEX__
+Environment='RUST_LOG=garage=info' 'VIRTUALISATION=__VIRTUALISATION__'   'RUST_BACKTRACE=1'
+ExecStartPre=+__FINALPATH__/mount_disk.sh 
 ExecStart=__FINALPATH__/garage -c __FINALPATH__/garage.toml server
-StateDirectory=garage
-DynamicUser=true
-ProtectHome=true
+WorkingDirectory=__FINALPATH__/
 NoNewPrivileges=true
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
@@ -21,7 +19,7 @@ StandardError=inherit
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
 PrivateTmp=yes
 PrivateDevices=yes
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+# RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictNamespaces=yes
 RestrictRealtime=yes
 DevicePolicy=closed
