@@ -31,7 +31,6 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
-weight=$(ynh_app_setting_get --app=$app --key=weight)
 virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 
 
@@ -79,6 +78,8 @@ mkdir -p "$datadir/data"
 
 if [ "$virtualisation" = "true" ]
 then
+	# Define and install dependencies
+	ynh_install_app_dependencies $pkg_dependencies_virtualisation
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
 	nbd_index=$($final_path/mount_disk.sh "$datadir" true)
@@ -105,8 +106,6 @@ chown -R $app:$app "$datadir"
 #=================================================
 ynh_script_progression --message="Reinstalling dependencies..." --time --weight=1
 
-# Define and install dependencies
-ynh_install_app_dependencies $pkg_dependencies
 
 # Open the port
  ynh_script_progression --message="Configuring firewall..." --time --weight=1
@@ -142,7 +141,7 @@ ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
 
-yunohost service add --needs_exposed_ports $app --description="s3 storage" --log="/var/log/$app/$app.log"
+yunohost service add --needs_exposed_ports $port --description="s3 storage" --log="/var/log/$app/$app.log" $app
 
 #=================================================
 # START SYSTEMD SERVICE

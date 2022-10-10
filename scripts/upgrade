@@ -185,7 +185,7 @@ ynh_use_logrotate --non-append
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
 
-yunohost service add --needs_exposed_ports $app --description="s3 storage" --log="/var/log/$app/$app.log"
+yunohost service add --needs_exposed_ports $port --description="s3 storage" --log="/var/log/$app/$app.log" $app
 
 #=================================================
 # START SYSTEMD SERVICE
