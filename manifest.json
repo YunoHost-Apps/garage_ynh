@@ -9,7 +9,7 @@
     "version": "0.7.3~ynh1",
     "url": "https://garagehq.deuxfleurs.fr/",
     "upstream": {
-        "license": "free",
+        "license": "AGPL-3.0-only",
         "website": "https://garagehq.deuxfleurs.fr/",
         "admindoc": "https://garagehq.deuxfleurs.fr/documentation/quick-start/",
         "userdoc": "https://garagehq.deuxfleurs.fr/documentation/quick-start/",
