@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+
+
+action=$1
+domain=__DOMAIN__
+
+ynh_replace_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
