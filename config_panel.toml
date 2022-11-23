@@ -1,0 +1,26 @@
+version = "1.0"
+[main]
+
+services = ["__APP__"]
+
+    [main.garage_conf]
+    name = "Garage configuration"
+
+        [main.garage_conf.rpc_secret]
+        ask.en = "Choose rpc secret"
+        type = "string"
+        bind = "rpc_secret:/opt/yunohost/__APP__/garage.toml"
+        pattern.regexp = '^[0-9a-f]{64}$'
+        pattern.error = "rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
+        
+
+        [main.garage_conf.weight]
+        ask.en = "allocated space (Gio)"
+        type = "number"
+        bind = "weight()"
+
+        [main.garage_conf.bootstrap_peers]
+        ask.en = "Friend serveur adress"
+        type = "string"
+         pattern.regexp =  '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' 
+        pattern.error = "friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"

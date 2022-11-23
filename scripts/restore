@@ -32,7 +32,7 @@ domain=$(ynh_app_setting_get --app=$app --key=domain)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
-
+bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
 
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
@@ -86,8 +86,6 @@ then
 	ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
 fi
 
-#ynh_restore_file --origin_path="$datadir/data" --not_mandatory
-
 
 # FIXME: this should be managed by the core in the future
 # Here, as a packager, you may have to tweak the ownerhsip/permissions
@@ -102,10 +100,6 @@ chown -R $app:$app "$datadir"
 #=================================================
 # SPECIFIC RESTORATION
 #=================================================
-# REINSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --time --weight=1
-
 
 # Open the port
  ynh_script_progression --message="Configuring firewall..." --time --weight=1
@@ -118,7 +112,7 @@ ynh_script_progression --message="Restoring the NGINX web server configuration..
 
 ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 #add wildcard subdomain
-ynh_replace_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
 
 
 #=================================================
@@ -157,6 +151,11 @@ node_id=$(ynh_app_setting_get --app=$app --key=node_id)
 weight=$(ynh_app_setting_get --app=$app --key=weight)
 
 garage_command="$garage_path/garage -c $garage_path/garage.toml"
+
+if [ -n "$bootstrap_peers" ] 
+then
+	$garage_command id connect "$bootstrap_peers"
+fi
 
 init_garage "$garage_command" "$node_id" "$weight" "$domain" 
 

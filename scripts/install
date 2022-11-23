@@ -73,10 +73,7 @@ else
 fi
 if [ -n "$bootstrap_peers" ] 
 then
-	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}:3901' || ynh_die --message="friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:3901"
-	bootstrap_peers_var="\"$bootstrap_peers\","
-else
-	bootstrap_peers_var=""
+	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' || ynh_die --message="friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
 fi
 
 if [ "$datadir" = "/home/yunohost.app/__APP_NAME__/data" ]
@@ -109,6 +106,7 @@ ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=rpc_secret --value=$rpc_secret
 ynh_app_setting_set --app=$app --key=datadir --value=$datadir
 ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
+ynh_app_setting_set --app=$app --key=weight --value=$weight
 
 
 #=================================================
@@ -135,6 +133,7 @@ port_admin=$(ynh_find_port --port=7000)
 ynh_app_setting_set --app=$app --key=port_admin --value=$port_admin
 
 ynh_print_warn --message="port : $port port_api : $port_api port_web : $port_web port_admin : $port_admin"
+nbd_index=127
 
 
 # Optional: Expose this port publicly
@@ -208,7 +207,7 @@ ynh_script_progression --message="Configuring NGINX web server..." --time --weig
 ynh_add_nginx_config
 
 #add wildcard subdomain
-ynh_replace_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
 ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
 #=================================================
 # SPECIFIC SETUP
@@ -272,7 +271,7 @@ mkdir -p $datadir/data
 #=================================================
 # create data partition
 #=================================================
-nbd_index=127
+
 if [ "$virtualisation" = "true" ]
 then
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
@@ -407,11 +406,19 @@ ynh_script_progression --message="Configuring garage..." --time --weight=1
 
 garage_command="$final_path/garage -c $final_path/garage.toml"
 
-node_id=$($garage_command node id -q | cut -d '@' -f1)
-ynh_app_setting_set --app=$app --key=node_id --value=node_id
+node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
+ynh_app_setting_set --app=$app --key=node_id --value=$node_id
 
 
-init_garage "$garage_command" "$node_id" "$weight" "$domain" 
+if [ -n "$bootstrap_peers" ] 
+then
+	garage_connect "$garage_command" "$bootstrap_peers"
+fi
+
+# define node
+$garage_command layout assign $node_id -z $domain -c $weight -t $domain
+# if there is enough node, apply layout
+apply_layout "$garage_command"
 
 #=================================================
 # Send email to admin

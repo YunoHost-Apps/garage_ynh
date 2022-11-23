@@ -10,7 +10,7 @@ pkg_dependencies_virtualisation="qemu-utils"
 #=================================================
 
 
-GARAGE_VERSION="0.7.3"
+GARAGE_VERSION="0.8.0"
 
 get_ip() {
   curl ip.me
@@ -41,25 +41,28 @@ install_garage () {
     chmod +x garage
 }
 
-init_garage() {
-garage_command="$1"
-node_id="$2"
-weight="$3"
-zone="$4"
-
-$garage_command layout assign $node_id -z $zone -c $weight -t $zone
-
-apply_layout "$garage_command"
+garage_connect() {
+  local command="$1"
+  local peer="$2" 
+  # connect to cluster
+  $garage_command node connect "$peer"
+  # wait until layout is updated
+  until $garage_command layout show 2>/dev/null | grep "${peer:0:15}"; do
+    sleep 1
+  done
 }
 
+
 apply_layout() {
+    
 	garage_command=$1
-	
-	if [ $($garage_command -c garage.toml layout show 2>/dev/null | grep -- --version)  ] 
+	$garage_command layout show 2>/dev/null
+	local layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+	if [ "$layout_version" != ""  ] 
 	then
-		layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
 		$garage_command layout apply --version $layout_version
 	else
+        ynh_print_warn --message="unable to apply layout. No enough nodes"
 		return 0
 	fi
 }

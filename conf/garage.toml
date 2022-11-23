@@ -13,11 +13,9 @@ rpc_secret = "__RPC_SECRET__"
 rpc_bind_addr = "[::]:__PORT__"
 # Le port peut être différent (eg NAT) mais doit rediriger sur le
 # port de rpc_bind_addr
-#rpc_public_addr = "__IP__:__PORT__"
+#rpc_public_addr = "__DOMAIN__:__PORT__"
 
-bootstrap_peers = [
-    __BOOTSTRAP_PEERS_VAR__
-]
+bootstrap_peers = []
 
 [s3_api]
 # Ne supporte pas TLS → reverse proxy obligatoire

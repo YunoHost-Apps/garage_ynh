@@ -6,7 +6,7 @@
         "en": "S3 storage",
         "fr": "stockage S3"
     },
-    "version": "0.7.3~ynh1",
+    "version": "0.8.0~ynh1",
     "url": "https://garagehq.deuxfleurs.fr/",
     "upstream": {
         "license": "AGPL-3.0-only",
@@ -24,7 +24,7 @@
     "requirements": {
         "yunohost": ">= 4.3.0"
     },
-    "multi_instance": false,
+    "multi_instance": true,
     "arguments": {
         "install": [
             {

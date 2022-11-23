@@ -89,7 +89,7 @@ services = ["__APP__"]
     
     ## (optional) By default all questions are optionals, but you can specify a
     ## default behaviour for question in the section
-    optional = false
+    ##optional = false
         
     ## (optional) It's also possible with the 'visible' property to only
     ## display the section depending on the user's answers to previous questions.
@@ -118,14 +118,14 @@ services = ["__APP__"]
         ## extend availables questions types list.
         ## See: TODO DOC LINK
         
-        [main.customization.project_name]
+        [main.customization.weight]
         
         ## (required) The ask property is equivalent to the ask property in 
         ## the manifest. However, in config panels, questions are displayed on the
         ## left side and therefore have less space to be rendered. Therefore, 
         ## it is better to use a short question, and use the "help" property to
         ## provide additional details if necessary.
-        ask.en = "Name of the project"
+        ask.en = "allocated space"
 
         ## (required) The type property indicates how the question should be 
         ## displayed, validated and managed. Some types have specific properties.
@@ -134,7 +134,7 @@ services = ["__APP__"]
         ## email, url, date, time, color, select, domain, user, tags, file.
         ##
         ## For a complete list with specific properties, see: TODO DOC LINK
-        type = "string"
+        type = "number"
         
         ########################################################################
         #### ABOUT THE BIND PROPERTY
