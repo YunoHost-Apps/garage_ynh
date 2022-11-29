@@ -8,7 +8,7 @@ User=__APP__
 Environment='RUST_LOG=garage=info' 'VIRTUALISATION=__VIRTUALISATION__'   'RUST_BACKTRACE=1'
 ExecStartPre=+__FINALPATH__/mount_disk.sh 
 ExecStart=__FINALPATH__/garage -c __FINALPATH__/garage.toml server
-ExecStopPost=+__FINALPATH__/umount_disk.sh __NBD_ID__
+ExecStopPost=+__FINALPATH__/umount_disk.sh __NBD_INDEX__
 WorkingDirectory=__FINALPATH__/
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
