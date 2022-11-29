@@ -8,7 +8,7 @@ User=__APP__
 Environment='RUST_LOG=garage=info' 'VIRTUALISATION=__VIRTUALISATION__'   'RUST_BACKTRACE=1'
 ExecStartPre=+__FINALPATH__/mount_disk.sh 
 ExecStart=__FINALPATH__/garage -c __FINALPATH__/garage.toml server
-ExecStopPost=+__FINALPATH__/umount_disk.sh
+ExecStopPost=+__FINALPATH__/umount_disk.sh __NBD_ID__
 WorkingDirectory=__FINALPATH__/
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
@@ -17,30 +17,30 @@ StandardError=inherit
 # Depending on specificities of your service/app, you may need to tweak these
 # .. but this should be a good baseline
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
-#PrivateTmp=yes
+PrivateTmp=yes
 #PrivateDevices=yes
 # RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
-#RestrictNamespaces=yes
-#RestrictRealtime=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
 #DevicePolicy=closed
-#ProtectSystem=full
-#ProtectControlGroups=yes
+ProtectSystem=full
+ProtectControlGroups=yes
 #ProtectKernelModules=yes
-#ProtectKernelTunables=yes
-#LockPersonality=yes
-#SystemCallFilter=~@clock @debug @module @mount @obsolete @reboot @setuid @swap
+ProtectKernelTunables=yes
+LockPersonality=yes
+SystemCallFilter=~@clock @debug @module @mount @obsolete @reboot @setuid @swap
 
 # Denying access to capabilities that should not be relevant for webapps
 # Doc: https://man7.org/linux/man-pages/man7/capabilities.7.html
-#CapabilityBoundingSet=~CAP_RAWIO CAP_MKNOD
-#CapabilityBoundingSet=~CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_AUDIT_WRITE
-#CapabilityBoundingSet=~CAP_SYS_BOOT CAP_SYS_TIME CAP_SYS_MODULE CAP_SYS_PACCT
-#CapabilityBoundingSet=~CAP_LEASE CAP_LINUX_IMMUTABLE CAP_IPC_LOCK
-#CapabilityBoundingSet=~CAP_BLOCK_SUSPEND CAP_WAKE_ALARM
-#CapabilityBoundingSet=~CAP_SYS_TTY_CONFIG
-#CapabilityBoundingSet=~CAP_MAC_ADMIN CAP_MAC_OVERRIDE
-#CapabilityBoundingSet=~CAP_NET_ADMIN CAP_NET_BROADCAST CAP_NET_RAW
-#CapabilityBoundingSet=~CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_SYSLOG
+CapabilityBoundingSet=~CAP_RAWIO CAP_MKNOD
+CapabilityBoundingSet=~CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_AUDIT_WRITE
+CapabilityBoundingSet=~CAP_SYS_BOOT CAP_SYS_TIME CAP_SYS_MODULE CAP_SYS_PACCT
+CapabilityBoundingSet=~CAP_LEASE CAP_LINUX_IMMUTABLE CAP_IPC_LOCK
+CapabilityBoundingSet=~CAP_BLOCK_SUSPEND CAP_WAKE_ALARM
+CapabilityBoundingSet=~CAP_SYS_TTY_CONFIG
+CapabilityBoundingSet=~CAP_MAC_ADMIN CAP_MAC_OVERRIDE
+CapabilityBoundingSet=~CAP_NET_ADMIN CAP_NET_BROADCAST CAP_NET_RAW
+CapabilityBoundingSet=~CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_SYSLOG
 
 [Install]
 WantedBy=multi-user.target
