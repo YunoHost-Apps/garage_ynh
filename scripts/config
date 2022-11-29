@@ -16,29 +16,54 @@ ynh_abort_if_errors
 
 final_path=$(ynh_app_setting_get $app final_path)
 node_id=$(ynh_app_setting_get $app node_id)
+virtualisation=$(ynh_app_setting_get $app virtualisation)
+datadir=$(ynh_app_setting_get $app datadir)
+nbd_index=$(ynh_app_setting_get $app nbd_index)
 command="$final_path/garage -c $final_path/garage.toml"
 
-get_weight() {
+get__weight() {
     ynh_app_setting_get --app=$app --key=weight
 }
 
-set_weight() {
-    $command layout assign $node_id -c $weight
+set__weight() {
+    if [ "$virtualisation" = "true" ] 
+    then
+        systemctl stop $YNH_APP_INSTANCE_NAME
+        old_weight="$ynh_app_setting_get --app=$app --key=weight"
+        if [ $old_weight -le $weight }
+        then
+            $final_path/umount_disk.sh $nbd_index
+            qemu-img resize $datadir/$datadir/garage_data.qcow2 $weightG
+            qemu-nbd --connect /dev/nbd$nbd_index $datadir/garage.qcow2
+            e2fsck -f /dev/nbd$nbd_index
+            resize2fs /dev/nbd$nbd_index
+            mount /dev/nbd$nbd_index $datadir/data/
+        else
+            umount /dev/nbd$nbd_index
+            e2fsck -f /dev/nbd$nbd_index
+            resize2fs /dev/nbd$nbd_index $weightG
+            qemu-nbd --disconnect /dev/nbd$nbd_index
+            qemu-img resize $datadir/$datadir/garage_data.qcow2 $weightG
+            $nbd_index=$(final_path/mount_disk.sh false)
+            ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
+        fi
+        systemctl start $YNH_APP_INSTANCE_NAME
+    fi
+    $command layout assign $node_id -c $weight 2>/dev/null
     apply_layout "$command"
     ynh_app_setting_set --app=$app --key=weight --value=$weight
 }
 
 
-get_peers() {
+get__bootstrap_peers() {
     ynh_app_setting_get --app=$app --key=bootstrap_peers
 }
 
-set_peers() {
-    garage_connect "$command" "$bootstrap_peers"
+set__bootstrap_peers() {
+    garage_connect "$command" "$bootstrap_peers" 2>/dev/null
     apply_layout "$command"
     ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
 }
-
 
 #=================================================
 # GENERIC FINALIZATION

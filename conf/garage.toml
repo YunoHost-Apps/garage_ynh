@@ -13,7 +13,7 @@ rpc_secret = "__RPC_SECRET__"
 rpc_bind_addr = "[::]:__PORT__"
 # Le port peut être différent (eg NAT) mais doit rediriger sur le
 # port de rpc_bind_addr
-#rpc_public_addr = "__DOMAIN__:__PORT__"
+rpc_public_addr = "__DOMAIN__:__PORT__"
 
 bootstrap_peers = []
 
@@ -23,12 +23,7 @@ bootstrap_peers = []
 api_bind_addr = "[::]:__PORT_API__"
 s3_region = "garage"
 
-[s3_web]
-bind_addr = "[::]:__PORT_WEB__"
-root_domain = ".web.garage.localhost"
-index = "index.html"
-
 [admin]
 api_bind_addr = "127.0.0.1:__PORT_ADMIN__"
-metrics_token = "cacce0b2de4bc2d9f5b5fdff551e01ac1496055aed248202d415398987e35f81"
-admin_token = "ae8cb40ea7368bbdbb6430af11cca7da833d3458a5f52086f4e805a570fb5c2a"
+metrics_token = "__METRIC_TOKEN__"
+admin_token = "__ADMIN_TOKEN__"

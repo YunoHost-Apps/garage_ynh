@@ -3,7 +3,7 @@
 #=================================================
 # COMMON VARIABLES
 #=================================================
-pkg_dependencies_virtualisation="qemu-utils"
+pkg_dependencies_virtualisation="qemu-utils e2fsprogs"
 
 #=================================================
 # PERSONAL HELPERS
@@ -45,9 +45,10 @@ garage_connect() {
   local command="$1"
   local peer="$2" 
   # connect to cluster
-  $garage_command node connect "$peer"
+  $command node connect "$peer"
+  sleep 2
   # wait until layout is updated
-  until $garage_command layout show 2>/dev/null | grep "${peer:0:15}"; do
+  until $command layout show 2>/dev/null | grep "${peer:0:15}"; do
     sleep 1
   done
 }
