@@ -1,5 +1,5 @@
 metadata_dir = "/opt/yunohost/__APP__/metadata"
-data_dir = "__DATADIR__" 
+data_dir = "__DATADIR__/data" 
 
 block_size = 1048576
 block_manager_background_tranquility = 2
