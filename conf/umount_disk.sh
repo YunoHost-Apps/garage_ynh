@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$VIRTUALISATION" = "true" ] 
 then
-    nbd=__NBD_INDEX__
+    nbd=$1
     umount  /dev/nbd$nbd
     qemu-nbd --disconnect  /dev/nbd$nbd
 fi
