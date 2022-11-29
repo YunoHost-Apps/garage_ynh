@@ -22,8 +22,3 @@ bootstrap_peers = []
 # pour avoir de la sécurité
 api_bind_addr = "[::]:__PORT_API__"
 s3_region = "garage"
-
-[admin]
-api_bind_addr = "127.0.0.1:__PORT_ADMIN__"
-metrics_token = "__METRIC_TOKEN__"
-admin_token = "__ADMIN_TOKEN__"

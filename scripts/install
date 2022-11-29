@@ -127,12 +127,7 @@ port=$(ynh_find_port --port=4000)
 ynh_app_setting_set --app=$app --key=port --value=$port
 port_api=$(ynh_find_port --port=5000)
 ynh_app_setting_set --app=$app --key=port_api --value=$port_api
-port_web=$(ynh_find_port --port=6000)
-ynh_app_setting_set --app=$app --key=port_web --value=$port_web
-port_admin=$(ynh_find_port --port=7000)
-ynh_app_setting_set --app=$app --key=port_admin --value=$port_admin
 
-ynh_print_warn --message="port : $port port_api : $port_api port_web : $port_web port_admin : $port_admin"
 nbd_index=127
 
 
