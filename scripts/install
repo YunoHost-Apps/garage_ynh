@@ -130,8 +130,6 @@ ynh_app_setting_set --app=$app --key=port --value=$port
 port_api=$(ynh_find_port --port=5000)
 ynh_app_setting_set --app=$app --key=port_api --value=$port_api
 
-nbd_index=127
-
 
 # Optional: Expose this port publicly
 # (N.B.: you only need to do this if the app actually needs to expose the port publicly.
@@ -273,8 +271,7 @@ if [ "$virtualisation" = "true" ]
 then
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
-	nbd_index=$($final_path/mount_disk.sh true)
-	ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
+	$final_path/mount_disk.sh true
 fi
 
 # FIXME: this should be managed by the core in the future
@@ -289,7 +286,7 @@ chown -R $app:$app "$datadir"
 
 if [ "$virtualisation" = "true" ]
 then
-	$final_path/umount_disk.sh $nbd_index
+	$final_path/umount_disk.sh
 fi
 
 #=================================================

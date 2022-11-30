@@ -83,12 +83,11 @@ then
 	ynh_install_app_dependencies $pkg_dependencies_virtualisation
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
-	nbd_index=$($final_path/mount_disk.sh "$datadir" true)
-	ynh_app_setting_set --app=$app --key=nbd_index --value=$nbd_index
+	$final_path/mount_disk.sh true
 fi
 
 
-# FIXME: this should be managed by the core in the future
+# # FIXME: this should be managed by the core in the future
 # Here, as a packager, you may have to tweak the ownerhsip/permissions
 # such that the appropriate users (e.g. maybe www-data) can access
 # files in some cases.

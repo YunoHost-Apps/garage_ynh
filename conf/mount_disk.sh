@@ -8,7 +8,7 @@ then
     do
         i=$(( i + 1 ))
     done
-    echo $i
+    echo $i > $datadir/nbd_index
     modprobe nbd max_part=$(( i + 1 ))
     qemu-nbd --connect /dev/nbd$i $datadir/garage_data.qcow2
     if [[ "$format" = "true" ]]

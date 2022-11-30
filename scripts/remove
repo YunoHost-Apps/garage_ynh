@@ -28,7 +28,6 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 if [ "$virtualisation" = "true" ]
 then
-	nbd_index=$(ynh_app_setting_get --app=$app --key=nbd_index)
 	export VIRTUALISTATION=true
 fi
 #=================================================
@@ -81,7 +80,7 @@ then
 	ynh_script_progression --message="umount virtual disk..."  --weight=1
 
 	# Remove the app directory securely
-	$final_path/umount_disk.sh  $nbd_index
+	$final_path/umount_disk.sh
 fi
 #=================================================
 # REMOVE APP MAIN DIR
