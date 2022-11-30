@@ -13,7 +13,8 @@ then
     qemu-nbd --connect /dev/nbd$i $datadir/garage_data.qcow2
     if [[ "$format" = "true" ]]
     then
-        mkfs.ext4 /dev/nbd$i > /dev/null
+        echo "formatting /dev/nbd$i"
+        mkfs.ext4 /dev/nbd$i
     fi
     mkdir -p $datadir/data
     mount /dev/nbd$i $datadir/data/
