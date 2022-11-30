@@ -92,7 +92,9 @@ ynh_script_progression --message="Checking virtualisation availability…" --wei
 if [  "$(which modprobe)" = ""  ] 
 then
 	virtualisation=false
+	export VIRTUALISATION=false
 else
+    export VIRTUALISATION=false
 	virtualisation=true
 fi
 ynh_app_setting_set --app=$app --key=virtualisation --value=$virtualisation

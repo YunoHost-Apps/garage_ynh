@@ -1,2 +1,5 @@
 *~
 *.sw[op]
+.apps/
+.apps_git_clone_cache
+.spdx_licenses

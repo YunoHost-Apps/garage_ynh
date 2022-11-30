@@ -29,6 +29,7 @@ virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 if [ "$virtualisation" = "true" ]
 then
 	nbd_index=$(ynh_app_setting_get --app=$app --key=nbd_index)
+	export VIRTUALISTATION=true
 fi
 #=================================================
 # REMOVE NODE CONFIGURATION

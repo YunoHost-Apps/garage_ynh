@@ -78,6 +78,7 @@ mkdir -p "$datadir/data"
 
 if [ "$virtualisation" = "true" ]
 then
+    export VIRTUALISATION=true
 	# Define and install dependencies
 	ynh_install_app_dependencies $pkg_dependencies_virtualisation
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
