@@ -93,9 +93,13 @@ if [  "$(which modprobe)" = ""  ]
 then
 	virtualisation=false
 	export VIRTUALISATION=false
+	# uncomment systemd isolation
+	virt_protection=""
 else
-    export VIRTUALISATION=false
+    export VIRTUALISATION=true
 	virtualisation=true
+	# comment systemd isolation to allow mount disk
+	virt_protection="#"
 fi
 ynh_app_setting_set --app=$app --key=virtualisation --value=$virtualisation
 

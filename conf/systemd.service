@@ -17,16 +17,16 @@ StandardError=inherit
 # Depending on specificities of your service/app, you may need to tweak these
 # .. but this should be a good baseline
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
-PrivateTmp=yes
+__VIRT_PROTECTION__PrivateTmp=yes
 #PrivateDevices=yes
 # RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictNamespaces=yes
 RestrictRealtime=yes
 #DevicePolicy=closed
-ProtectSystem=full
-ProtectControlGroups=yes
+__VIRT_PROTECTION__ProtectSystem=full
+__VIRT_PROTECTION__ProtectControlGroups=yes
 #ProtectKernelModules=yes
-ProtectKernelTunables=yes
+__VIRT_PROTECTION__ProtectKernelTunables=yes
 LockPersonality=yes
 SystemCallFilter=~@clock @debug @module @mount @obsolete @reboot @setuid @swap
 
