@@ -408,15 +408,15 @@ node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
 ynh_app_setting_set --app=$app --key=node_id --value=$node_id
 
 
-if [ -n "$bootstrap_peers" ] 
-then
-	garage_connect "$garage_command" "$bootstrap_peers"
-fi
-
 # define node
 $garage_command layout assign $node_id -z $domain -c $weight -t $domain
 # if there is enough node, apply layout
 apply_layout "$garage_command"
+
+if [ -n "$bootstrap_peers" ] 
+then
+	garage_connect "$garage_command" "$bootstrap_peers"
+fi
 
 #=================================================
 # Send email to admin
