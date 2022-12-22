@@ -271,7 +271,7 @@ if [ "$virtualisation" = "true" ]
 then
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $datadir/garage_data.qcow2 "$weight"G
-	$final_path/mount_disk.sh true
+	VIRTUALISATION=true $final_path/mount_disk.sh true
 fi
 
 # FIXME: this should be managed by the core in the future
@@ -286,7 +286,7 @@ chown -R $app:$app "$datadir"
 
 if [ "$virtualisation" = "true" ]
 then
-	$final_path/umount_disk.sh
+	VIRTUALISATION=true $final_path/umount_disk.sh
 fi
 
 #=================================================
