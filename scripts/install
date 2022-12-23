@@ -425,7 +425,7 @@ app_message="your garage node have been installed. You can now connect to other 
 	rpc_secret: $rpc_secret
 	bootstrap_peers: $bootstrap_peers"
 
-ynh_send_readme_to_admin --app_message=$app_message
+ynh_send_readme_to_admin --app_message="$app_message"
 
 #=================================================
 # END OF SCRIPT
