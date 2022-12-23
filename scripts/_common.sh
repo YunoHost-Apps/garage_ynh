@@ -48,7 +48,13 @@ garage_connect() {
   $command node connect "$peer"
   sleep 2
   # wait until layout is updated
+  local i=0
   until $command layout show 2>/dev/null | grep "${peer:0:15}"; do
+    i=$(( i + 1 ))
+    if [ $i -gt 30 ] 
+    then
+      ynh_die --message="unable to get layout from remove peer"
+    fi
     sleep 1
   done
 }
