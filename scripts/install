@@ -419,7 +419,7 @@ then
 fi
 
 self_bootstrap_peers="$($garage_command node id --quiet)"
-garage_layout="$(garage_command layout show)"
+garage_layout="$($garage_command layout show)"
 
 #=================================================
 # Send email to admin
