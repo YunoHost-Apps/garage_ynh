@@ -4,7 +4,7 @@ then
     datadir=__DATADIR__
     format=$1
     i=0
-    while $(fdisk -l /dev/nbd$i  1&>2 /dev/null)
+    while fdisk -l /dev/nbd$i  1> /dev/null 2> /dev/null
     do
         i=$(( i + 1 ))
     done
