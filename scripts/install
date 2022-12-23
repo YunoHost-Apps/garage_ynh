@@ -418,7 +418,7 @@ then
 	garage_connect "$garage_command" "$bootstrap_peers"
 fi
 
-self_bootstrap_peers="$($garage_command node id --quiet)
+self_bootstrap_peers="$($garage_command node id --quiet)"
 garage_layout="$(garage_command layout show)"
 
 #=================================================
