@@ -418,12 +418,21 @@ then
 	garage_connect "$garage_command" "$bootstrap_peers"
 fi
 
+self_bootstrap_peers="$($garage_command node id --quiet)
+garage_layout="$(garage_command layout show)"
+
 #=================================================
 # Send email to admin
 #=================================================
-app_message="your garage node have been installed. You can now connect to other nodes with the following identifiers : \
+app_message="
+your garage node have been installed. You can now connect to other nodes with the following identifiers :
+
 	rpc_secret: $rpc_secret
-	bootstrap_peers: $bootstrap_peers"
+	bootstrap_peers: $self_bootstrap_peers
+	
+Current garage layout : 
+
+$garage_layout"
 
 ynh_send_readme_to_admin --app_message="$app_message"
 
