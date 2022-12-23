@@ -53,7 +53,7 @@ garage_connect() {
     i=$(( i + 1 ))
     if [ $i -gt 30 ] 
     then
-      ynh_die --message="unable to get layout from remove peer"
+      ynh_die --message="unable to get layout from remote peer"
     fi
     sleep 1
   done
