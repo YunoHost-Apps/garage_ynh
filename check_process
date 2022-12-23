@@ -6,7 +6,10 @@
 ;; Test complet
 	; Manifest
 		domain="domain.tld"
-		path="/"
+		rpc_secret=""
+		bootstrap_peers=""
+		weight="10"
+		datadir=""
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=0
@@ -26,4 +29,4 @@ Notification=none
 ;;; Upgrade options
 	; commit=CommitHash
 		name=Name and date of the commit.
-		manifest_arg=domain=DOMAIN&path=PATH&is_public=1&language=fr&admin=USER&password=pass&port=666&
+		manifest_arg=domain=DOMAIN&rpc_secret=RPC_SECRET&bootstrap_peers=BOOTSTRAP_PEERS&weight=WEIGHT&datadir=DATADIR
