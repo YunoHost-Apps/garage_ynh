@@ -5,15 +5,15 @@ It shall NOT be edited by hand.
 
 # garage_ynh pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)  
+[![Niveau d’intégration](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
 [![Installer garage_ynh avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 
 *[Read this readme in english.](./README.md)*
 
-> *Ce package vous permet d'installer garage_ynh rapidement et simplement sur un serveur YunoHost.
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+> *Ce package vous permet d’installer garage_ynh rapidement et simplement sur un serveur YunoHost.
+Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l’installer et en profiter.*
 
-## Vue d'ensemble
+## Vue d’ensemble
 
 Garage is an S3-compatible distributed object storage service designed for self-hosting at a small-to-medium scale.
 
@@ -47,10 +47,10 @@ Garage is designed for storage clusters composed of nodes running at different p
 
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://garagehq.deuxfleurs.fr/>
+* Site officiel de l’app : <https://garagehq.deuxfleurs.fr/>
 * Documentation officielle utilisateur : <https://garagehq.deuxfleurs.fr/documentation/quick-start/>
-* Documentation officielle de l'admin : <https://garagehq.deuxfleurs.fr/documentation/quick-start/>
-* Dépôt de code officiel de l'app : <https://git.deuxfleurs.fr/Deuxfleurs/garage>
+* Documentation officielle de l’admin : <https://garagehq.deuxfleurs.fr/documentation/quick-start/>
+* Dépôt de code officiel de l’app : <https://git.deuxfleurs.fr/Deuxfleurs/garage>
 * Documentation YunoHost pour cette app : <https://yunohost.org/app_garage>
 * Signaler un bug : <https://github.com/YunoHost-Apps/garage_ynh/issues>
 
@@ -66,4 +66,4 @@ ou
 sudo yunohost app upgrade garage -u https://github.com/YunoHost-Apps/garage_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications :** <https://yunohost.org/packaging_apps>
+**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
