@@ -15,37 +15,35 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 ## Overview
 
-Some long and extensive description of what the app is and does, lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Garage is an S3-compatible distributed object storage service designed for self-hosting at a small-to-medium scale.
+
+Garage is designed for storage clusters composed of nodes running at different physical locations, in order to easily provide a storage service that replicates data at these different locations and stays available even when some servers are unreachable. Garage also focuses on being lightweight, easy to operate, and highly resilient to machine failures.
 
 ### Features
 
-- Ut enim ad minim veniam, quis nostrud exercitation ullamco ;
-- Laboris nisi ut aliquip ex ea commodo consequat ;
-- Duis aute irure dolor in reprehenderit in voluptate ;
-- Velit esse cillum dolore eu fugiat nulla pariatur ;
-- Excepteur sint occaecat cupidatat non proident, sunt in culpa."
+- S3 API
+- Standalone/self-contained
+- Flexible topology
+- No RAFT slowing you down
+- Several replication modes
+- Web server for static websites
+- Bucket names as aliases
+- Cluster administration API
+- Metrics and traces
+- Support for changing IP addresses
+- K2V API (experimental)
 
 
 **Shipped version:** 0.8.0~ynh1
-
-## Screenshots
-
-![Screenshot of garage_ynh](./doc/screenshots/example.jpg)
-
 ## Disclaimers / important information
 
-* Any known limitations, constrains or stuff not working, such as (but not limited to):
-    * requiring a full dedicated domain ?
-    * architectures not supported ?
-    * not-working single-sign on or LDAP integration ?
-    * the app requires an important amount of RAM / disk / .. to install or to work properly
-    * etc...
+* Limitations : 
+    * This application is not usable if you're not part of a cluster with minimun 3 other nodes
 
-* Other infos that people should be aware of, such as:
-    * any specific step to perform after installing (such as manually finishing the install, specific admin credentials, ...)
-    * how to configure / administrate the application if it ain't obvious
-    * upgrade process / specificities / things to be aware of ?
-    * security considerations ?
+* infos you should be aware of:
+    * This application provide a node that you can connect to a garage cluster. Few option are manageable by the config panel for the current node but IT DOESN'T offer simpler way to manage bucket and keys. You have to do it by command line or let an other node managing it.
+    * This application consider that the weight of the node is the size reserved to garage in G 
+    * This application will try to create a virtual disk to ensure garage doesn't use more than allowed. If virtualisation is not available your responsible to check space used by garage.
 
 ## Documentation and resources
 

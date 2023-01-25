@@ -36,6 +36,7 @@ port_web=$(ynh_app_setting_get --app=$app --key=port_web)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
 
+final_path=/opt/yunohost/$app
 #=================================================
 # DECLARE DATA AND CONF FILES TO BACKUP
 #=================================================

@@ -1,9 +1,17 @@
-Some long and extensive description of what the app is and does, lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Garage is an S3-compatible distributed object storage service designed for self-hosting at a small-to-medium scale.
+
+Garage is designed for storage clusters composed of nodes running at different physical locations, in order to easily provide a storage service that replicates data at these different locations and stays available even when some servers are unreachable. Garage also focuses on being lightweight, easy to operate, and highly resilient to machine failures.
 
 ### Features
 
-- Ut enim ad minim veniam, quis nostrud exercitation ullamco ;
-- Laboris nisi ut aliquip ex ea commodo consequat ;
-- Duis aute irure dolor in reprehenderit in voluptate ;
-- Velit esse cillum dolore eu fugiat nulla pariatur ;
-- Excepteur sint occaecat cupidatat non proident, sunt in culpa."
+- S3 API
+- Standalone/self-contained
+- Flexible topology
+- No RAFT slowing you down
+- Several replication modes
+- Web server for static websites
+- Bucket names as aliases
+- Cluster administration API
+- Metrics and traces
+- Support for changing IP addresses
+- K2V API (experimental)
