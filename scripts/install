@@ -379,7 +379,6 @@ ynh_script_progression --message="Starting a systemd service..."  --weight=1
 # Start a systemd service
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
-
 #=================================================
 # SETUP SSOWAT
 #=================================================
@@ -405,6 +404,12 @@ ynh_script_progression --message="Configuring garage..."  --weight=1
 garage_command="$final_path/garage -c $final_path/garage.toml"
 
 node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
+# sometimes server need some time to start
+if [ -n "$node_id" ] 
+then
+	sleep 5
+	node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
+fi
 ynh_app_setting_set --app=$app --key=node_id --value=$node_id
 
 
