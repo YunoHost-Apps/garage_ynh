@@ -148,8 +148,7 @@ ynh_script_progression --message="Starting a systemd service..."  --weight=1
 #recreate log folder
 mkdir /var/log/$app
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log" --line_match="INFO netapp::netapp: Listening on"
-
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 #=================================================
 # RECREATE CONFIGURATION
 #=================================================
