@@ -6,6 +6,7 @@ It shall NOT be edited by hand.
 # garage_ynh for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![Working status](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+
 [![Install garage_ynh with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 
 *[Lire ce readme en français.](./README_fr.md)*
