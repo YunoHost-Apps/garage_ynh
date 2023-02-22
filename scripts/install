@@ -253,8 +253,11 @@ chown $app:$app "$final_path/garage.toml"
 #=================================================
 # CREATE DATA DIRECTORY
 #=================================================
-ynh_script_progression --message="Creating a data directory..."  --weight=1
-
+ynh_script_progression --message="Creating a data directory..."  --weight=5
+if [ "$virtualisation" = "true" ]
+then
+ ynh_print_warn --message="This may take time regarding disk size…"
+fi
 ### Use these lines if you need to create a directory to store "persistent files" for the application.
 ### Usually this directory is used to store uploaded files or any file that won't be updated during 
 ### an upgrade and that won't be deleted during app removal unless "--purge" option is used.
@@ -405,11 +408,15 @@ garage_command="$final_path/garage -c $final_path/garage.toml"
 
 node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
 # sometimes server need some time to start
-if [ -n "$node_id" ] 
-then
-	sleep 5
+until [ -n "$node_id" ] ; do
+    i=$(( i + 1 ))
+    if [ $i -gt 30 ] 
+    then
+      ynh_die --message="unable to get node id"
+    fi
+    sleep 1
 	node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
-fi
+  done
 ynh_app_setting_set --app=$app --key=node_id --value=$node_id
 
 
