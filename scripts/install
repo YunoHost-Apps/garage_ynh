@@ -416,7 +416,7 @@ until [ -n "$node_id" ] ; do
     fi
     sleep 1
 	node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
-  done
+done
 ynh_app_setting_set --app=$app --key=node_id --value=$node_id
 
 
