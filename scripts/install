@@ -406,9 +406,8 @@ ynh_script_progression --message="Configuring garage..."  --weight=1
 
 garage_command="$final_path/garage -c $final_path/garage.toml"
 
-node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
 # sometimes server need some time to start
-until [ -n "$node_id" ] ; do
+until [ "" = "$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)"  ] ; do
     i=$(( i + 1 ))
     if [ $i -gt 30 ] 
     then
