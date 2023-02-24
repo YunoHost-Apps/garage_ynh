@@ -17,5 +17,8 @@ then
         mkfs.ext4 /dev/nbd$i
     fi
     mkdir -p $datadir/data
+    chown  __APP__:__APP__  $datadir/data
     mount /dev/nbd$i $datadir/data/
 fi
+
+

@@ -12,9 +12,6 @@ pkg_dependencies_virtualisation="qemu-utils e2fsprogs"
 
 GARAGE_VERSION="0.8.0"
 
-get_ip() {
-  curl ip.me
-}
 # inspired by restic helper
 install_garage () {
   architecture=$(uname -m)
