@@ -24,10 +24,6 @@ ynh_abort_if_errors
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-#port mandatory for garage 
-ip=$(get_ip)
-
-
 domain=$YNH_APP_ARG_DOMAIN
 rpc_secret=$YNH_APP_ARG_RPC_SECRET
 bootstrap_peers=$YNH_APP_ARG_BOOTSTRAP_PEERS
@@ -406,6 +402,7 @@ ynh_script_progression --message="Configuring garage..."  --weight=1
 
 garage_command="$final_path/garage -c $final_path/garage.toml"
 
+i=0
 # sometimes server need some time to start
 until [ "" = "$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)"  ] ; do
     i=$(( i + 1 ))
