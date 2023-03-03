@@ -2,9 +2,15 @@
 
 source /usr/share/yunohost/helpers
 
+garage_domains=$(yunohost app list --json | jq '.apps[] | select(.id | test("garage*")) | .domain_path')
 
-action=$1
-domain=__DOMAIN__
+for domain in $garage_domains;
+do
+    domain=${domain//\"/}
+    if [[ "$domain" =~ "/" ]]
+    then
+        domain=${domain/\//}
+        ynh_replace_special_string --match_string="server_name $domain;" --replace_string="server_name $domain *.$>
+    fi
+done
 
-ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
-ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"

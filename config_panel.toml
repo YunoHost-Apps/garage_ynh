@@ -1,5 +1,16 @@
 version = "1.0"
+
+    
 [main]
+
+    [main.infos]
+    name = "Garage cluster informations"
+
+       [main.infos.node]
+       type = "alert"
+
+       [main.infos.status]
+       type = "alert"
 
 
     [main.garage_conf]

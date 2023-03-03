@@ -18,7 +18,10 @@ final_path=$(ynh_app_setting_get $app final_path)
 node_id=$(ynh_app_setting_get $app node_id)
 virtualisation=$(ynh_app_setting_get $app virtualisation)
 datadir=$(ynh_app_setting_get $app datadir)
-nbd_index=$(cat $datadir/nbd_index)
+if [ "$virtualisation" = "true" ] 
+then
+    nbd_index=$(cat $datadir/nbd_index)
+fi
 command="$final_path/garage -c $final_path/garage.toml"
 
 get__weight() {
@@ -62,6 +65,35 @@ set__bootstrap_peers() {
     garage_connect "$command" "$bootstrap_peers" 2>/dev/null
     apply_layout "$command"
     ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
+}
+
+get__node() {
+cat << EOF
+ask:
+  en: "**Node Id** : $($command node id -q) \n
+  *This id is a sensitive information and should not be shared with anyone else than other nodes of the cluster*"
+style: "info"
+EOF
+}
+
+get__status() {
+status=$($command status 2> /dev/null | sed -E 's/([a-z0-9]{16})/\n**\1**/g') 
+cat << EOF
+ask:
+  en: "**Current garage layout**: \n
+$status"
+EOF
+
+if [[ "$(echo  \"$status\" | grep \"FAILED NODES\")" ]] || [[ "$(echo \"$status\" | grep 'garage layout show')"  ]]
+then
+    cat << EOF
+style: "danger"
+EOF
+else
+    cat << EOF
+style: "success"
+EOF
+fi
 }
 
 #=================================================

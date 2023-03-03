@@ -202,7 +202,7 @@ ynh_script_progression --message="Configuring NGINX web server..."  --weight=1
 ynh_add_nginx_config
 
 #add wildcard subdomain
-ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+ynh_replace_special_string --match_string="server_name $domain;" --replace_string="server_name $domain *.$domain;" --target_file="/etc/nginx/conf.d/$domain.conf"
 ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
 #=================================================
 # SPECIFIC SETUP

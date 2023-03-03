@@ -35,7 +35,7 @@ Garage is designed for storage clusters composed of nodes running at different p
 - K2V API (experimental)
 
 
-**Version incluse :** 0.8.0~ynh3
+**Version incluse :** 0.8.0~ynh4
 ## Avertissements / informations importantes
 
 * Limitations : 
