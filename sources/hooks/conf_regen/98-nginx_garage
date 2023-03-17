@@ -1,0 +1,12 @@
+#!/bin/bash
+
+action=$1
+pending_dir=$4
+domain=__DOMAIN__
+app=__APP__
+
+[[ "$action" == "pre" ]] || exit 0
+source /usr/share/yunohost/helpers
+
+ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"

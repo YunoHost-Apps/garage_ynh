@@ -201,14 +201,6 @@ ynh_script_progression --message="Configuring NGINX web server..."  --weight=1
 # Create a dedicated NGINX config
 ynh_add_nginx_config
 
-#add wildcard subdomain
-ynh_replace_special_string --match_string="server_name $domain;" --replace_string="server_name $domain *.$domain;" --target_file="/etc/nginx/conf.d/$domain.conf"
-ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
-#=================================================
-# SPECIFIC SETUP
-#=================================================
-# ...
-#=================================================
 
 #=================================================
 # ADD A CONFIGURATION
@@ -291,6 +283,19 @@ if [ "$virtualisation" = "true" ]
 then
 	VIRTUALISATION=true $final_path/umount_disk.sh
 fi
+
+#=================================================
+# ADD REGEN-CONF HOOK
+#=================================================
+ynh_script_progression --message="adding regen-conf hook..."  --weight=1
+
+ ynh_add_config --template="../sources/hooks/conf_regen/98-nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
+#cp -R ../sources/hooks/conf_regen/98-nginx_garage /usr/share/yunohost/hooks/conf_regen/95-nginx_$app
+
+
+ynh_systemd_action --service_name=nginx --action="reload"
+
+
 
 #=================================================
 # SETUP SYSTEMD
