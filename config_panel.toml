@@ -12,10 +12,8 @@ version = "1.0"
        [main.infos.status]
        type = "alert"
 
-
     [main.garage_conf]
     name = "Garage configuration"
-
 
         [main.garage_conf.weight]
         ask = "allocated space (Gio)"
