@@ -12,20 +12,20 @@ source /usr/share/yunohost/helpers
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading installation settings..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Loading installation settings..."  --weight=1
 
-app=$YNH_APP_INSTANCE_NAME
+#REMOVEME? app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-port=$(ynh_app_setting_get --app=$app --key=port)
-rpc_secret=$(ynh_app_setting_get --app=$app --key=rpc_secret)
-port_api=$(ynh_app_setting_get --app=$app --key=port_api)
-port_web=$(ynh_app_setting_get --app=$app --key=port_web)
-datadir=$(ynh_app_setting_get --app=$app --key=datadir)
-bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
-node_id=$(ynh_app_setting_get --app=$app --key=node_id)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
+#REMOVEME? domain=$(ynh_app_setting_get --app=$app --key=domain)
+#REMOVEME? port=$(ynh_app_setting_get --app=$app --key=port)
+#REMOVEME? rpc_secret=$(ynh_app_setting_get --app=$app --key=rpc_secret)
+#REMOVEME? port_api=$(ynh_app_setting_get --app=$app --key=port_api)
+#REMOVEME? port_web=$(ynh_app_setting_get --app=$app --key=port_web)
+#REMOVEME? data_dir=$(ynh_app_setting_get --app=$app --key=data_dir)
+#REMOVEME? bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
+#REMOVEME? node_id=$(ynh_app_setting_get --app=$app --key=node_id)
+#REMOVEME? #REMOVEME? install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
+#REMOVEME? virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 if [ "$virtualisation" = "true" ]
 then
 	export VIRTUALISTATION=true
@@ -33,9 +33,9 @@ fi
 #=================================================
 # REMOVE NODE CONFIGURATION
 #=================================================
-$final_path/garage -c $final_path/garage.toml layout remove "$node_id"
+$install_dir/garage -c $install_dir/garage.toml layout remove "$node_id"
 
-apply_layout "$final_path/garage -c $final_path/garage.toml "
+apply_layout "$install_dir/garage -c $install_dir/garage.toml "
 if [ $? -ne 0 ]
 then
 	ynh_print_warn --message="unable to remove the node. Maybe the number of node staying alive is not enough"
@@ -80,21 +80,21 @@ then
 	ynh_script_progression --message="umount virtual disk..."  --weight=1
 
 	# Remove the app directory securely
-	$final_path/umount_disk.sh
+	$install_dir/umount_disk.sh
 fi
 #=================================================
 # REMOVE APP MAIN DIR
 #=================================================
-ynh_script_progression --message="Removing app main directory..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Removing app main directory..."  --weight=1
 
 # Remove the app directory securely
-ynh_secure_remove --file="$final_path"
+#REMOVEME? ynh_secure_remove --file="$install_dir"
 
 #=================================================
 # REMOVE DATA DIR
 #=================================================
 ynh_script_progression --message="Removing app data directory..."  --weight=1
-ynh_secure_remove --file="$datadir"
+#REMOVEME? ynh_secure_remove --file="$data_dir"
 
 #=================================================
 # REMOVE NGINX HOOK
@@ -115,10 +115,10 @@ ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
 #=================================================
 # REMOVE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Removing dependencies..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Removing dependencies..."  --weight=1
 
 # Remove metapackage and its dependencies
-ynh_remove_app_dependencies
+#REMOVEME? ynh_remove_app_dependencies
 
 #=================================================
 # CLOSE A PORT
@@ -146,10 +146,10 @@ ynh_secure_remove --file="/var/log/$app"
 #=================================================
 # REMOVE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Removing the dedicated system user..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Removing the dedicated system user..."  --weight=1
 
 # Delete a system user
-ynh_system_user_delete --username=$app
+#REMOVEME? ynh_system_user_delete --username=$app
 
 ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx

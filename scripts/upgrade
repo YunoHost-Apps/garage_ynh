@@ -12,19 +12,19 @@ source /usr/share/yunohost/helpers
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading installation settings..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Loading installation settings..."  --weight=1
 
-app=$YNH_APP_INSTANCE_NAME
+#REMOVEME? app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-port=$(ynh_app_setting_get --app=$app --key=port)
-rpc_secret=$(ynh_app_setting_get --app=$app --key=rpc_secret)
-port_api=$(ynh_app_setting_get --app=$app --key=port_api)
-port_web=$(ynh_app_setting_get --app=$app --key=port_web)
-datadir=$(ynh_app_setting_get --app=$app --key=datadir)
-bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
+#REMOVEME? domain=$(ynh_app_setting_get --app=$app --key=domain)
+#REMOVEME? port=$(ynh_app_setting_get --app=$app --key=port)
+#REMOVEME? rpc_secret=$(ynh_app_setting_get --app=$app --key=rpc_secret)
+#REMOVEME? port_api=$(ynh_app_setting_get --app=$app --key=port_api)
+#REMOVEME? port_web=$(ynh_app_setting_get --app=$app --key=port_web)
+#REMOVEME? data_dir=$(ynh_app_setting_get --app=$app --key=data_dir)
+#REMOVEME? bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
+#REMOVEME? #REMOVEME? install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
+#REMOVEME? virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 
 if [ "$virtualisation" = "true" ] ;
 then
@@ -47,16 +47,16 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."  --weight=1
 
 # Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
+#REMOVEME? ynh_backup_before_upgrade
+#REMOVEME? ynh_clean_setup () {
 	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
+#REMOVEME? 	ynh_restore_upgradebackup
 }
 # Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
+#REMOVEME? ynh_abort_if_errors
 
 #=================================================
 # STANDARD UPGRADE STEPS
@@ -74,16 +74,16 @@ ynh_script_progression --message="Ensuring downward compatibility..."  --weight=
 
 
 # Create a permission if needed
-if ! ynh_permission_exists --permission="api"; then
-	ynh_permission_create --permission="api" --url="/api" --allowed="visitors" --show_tile="false" --protected="true"
+#REMOVEME? if ! ynh_permission_exists --permission="api"; then
+#REMOVEME? 	ynh_permission_create --permission="api" --url="/api" --allowed="visitors" --show_tile="false" --protected="true"
 fi
 
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing dependencies..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Installing dependencies..."  --weight=1
 
-### `ynh_install_app_dependencies` allows you to add any "apt" dependencies to the package.
+#REMOVEME? ### `ynh_install_app_dependencies` allows you to add any "apt" dependencies to the package.
 ### Those deb packages will be installed as dependencies of this package.
 ### If you're not using this helper:
 ###		- Remove the section "REMOVE DEPENDENCIES" in the remove script
@@ -92,16 +92,16 @@ ynh_script_progression --message="Installing dependencies..."  --weight=1
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 if [ "$virtualisation" = "true" ]
 then
-	ynh_install_app_dependencies $pkg_dependencies_virtualisation
+#REMOVEME? 	ynh_install_app_dependencies $pkg_dependencies_virtualisation
 fi 
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Making sure dedicated system user exists..."  --weight=1
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir="$final_path"
+#REMOVEME? ynh_system_user_create --username=$app --home_dir="$install_dir"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -112,7 +112,7 @@ then
 	ynh_script_progression --message="Upgrading source files..."  --weight=1
 
 	# Download, check integrity, uncompress and patch the source from app.src
-	pushd $final_path
+	pushd $install_dir
 		install_garage
 	popd
 fi
@@ -123,9 +123,9 @@ fi
 # files in some cases.
 # But FOR THE LOVE OF GOD, do not allow r/x for "others" on the entire folder -
 # this will be treated as a security issue.
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:$app "$final_path"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:$app "$install_dir"
 
 
 #=================================================
@@ -152,8 +152,8 @@ ynh_script_progression --message="Updating a configuration file..."  --weight=1
 ### you shoud rely on ynh_replace_string (which is basically a wrapper for sed)
 ### When doing so, you also need to manually call ynh_store_file_checksum
 ###
-### ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/some_config_file"
-### ynh_store_file_checksum --file="$final_path/some_config_file"
+### ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$install_dir/some_config_file"
+### ynh_store_file_checksum --file="$install_dir/some_config_file"
 
 #=================================================
 # SETUP SYSTEMD
@@ -190,9 +190,9 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$ap
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..."  --weight=1
+#REMOVEME? ynh_script_progression --message="Reloading NGINX web server..."  --weight=1
 
-ynh_systemd_action --service_name=nginx --action=reload
+#REMOVEME? ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
