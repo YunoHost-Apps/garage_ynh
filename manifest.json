@@ -1,12 +1,12 @@
 {
-    "name": "garage_ynh",
+    "name": "Garage",
     "id": "garage",
     "packaging_format": 1,
     "description": {
         "en": "S3 storage",
         "fr": "stockage S3"
     },
-    "version": "0.8.0~ynh3",
+    "version": "0.8.0~ynh4",
     "url": "https://garagehq.deuxfleurs.fr/",
     "upstream": {
         "license": "AGPL-3.0-only",

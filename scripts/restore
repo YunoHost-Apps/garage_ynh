@@ -115,7 +115,11 @@ ynh_script_progression --message="Restoring the NGINX web server configuration..
 
 ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 #add wildcard subdomain
-ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
+
+
+ynh_restore_file --origin_path="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
+yunohost tools regen-conf nginx
+ynh_systemd_action --service_name=nginx --action="reload"
 
 
 #=================================================
