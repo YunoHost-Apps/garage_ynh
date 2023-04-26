@@ -5,7 +5,7 @@ name = "Garage"
 description.en = "S3 storage"
 description.fr = "stockage S3"
 
-version = "0.8.0~ynh4"
+version = "0.8.2~ynh1"
 
 maintainers = ["oiseauroch"]
 
@@ -15,22 +15,19 @@ website = "https://garagehq.deuxfleurs.fr/"
 admindoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
 userdoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
 code = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
-cpe = "???" # FIXME: optional but recommended if relevant, this is meant to contain the Common Platform Enumeration, which is sort of a standard id for applications defined by the NIST. In particular, Yunohost may use this is in the future to easily track CVE (=security reports) related to apps. The CPE may be obtained by searching here: https://nvd.nist.gov/products/cpe/search. For example, for Nextcloud, the CPE is 'cpe:2.3:a:nextcloud:nextcloud' (no need to include the version number)
-fund = "???" # FIXME: optional but recommended (or remove if irrelevant / not applicable). This is meant to be an URL where people can financially support this app, especially when its development is based on volunteers and/or financed by its community. YunoHost may later advertise it in the webadmin.
 
 [integration]
-yunohost = ">= 4.3.0"
-architectures = "all" # FIXME: can be replaced by a list of supported archs using the dpkg --print-architecture nomenclature (amd64/i386/armhf/arm64), for example: ["amd64", "i386"]
+yunohost = ">= 1.1.18"
+architectures = "all"
 multi_instance = true
-ldap = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "sso" key : the "ldap" key corresponds to wether or not a user *can* login on the app using its YunoHost credentials.
-sso = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "ldap" key : the "sso" key corresponds to wether or not a user is *automatically logged-in* on the app when logged-in on the YunoHost portal.
-disk = "50M" # FIXME: replace with an **estimate** minimum disk requirement. e.g. 20M, 400M, 1G, ...
-ram.build = "50M" # FIXME: replace with an **estimate** minimum ram requirement. e.g. 50M, 400M, 1G, ...
-ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requirement. e.g. 50M, 400M, 1G, ...
+ldap = false
+sso = false
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
 
 [install]
     [install.domain]
-    # this is a generic question - ask strings are automatically handled by Yunohost's core
     type = "domain"
     full_domain = true
 
@@ -53,14 +50,26 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
     ask.fr = "nombre de G à allouer"
     type = "string"
 
-    [install.datadir]
-    ask.en = "data location"
-    ask.fr = "dossier de stockage des données"
-    type = "string"
-    default = "/home/yunohost.app/__APP_NAME__/data"
-    exemple = "/opt/yunohost/garage/data"
-
 [resources]
+
+    [resources.sources]
+
+    [resources.sources.main]
+    in_subdir = false
+    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/x86_64-unknown-linux-musl/garage"
+    amd64.sha256 = "c15aa223b0fffb856c6e16276d1e77b0e94eb783a26eaeb7de80324f7c8b23c5"
+    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/aarch64-unknown-linux-musl/garage"
+    amd64.sha256 = "9c419d47e87ac254a96cda6476e3c5c9102a9a2ea1ec1dc65d338bb46e415d78"
+    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/i686-unknown-linux-musl/garage"
+    i386.sha256 = "a733fcd9b0a0f6271960f0d65978b8a8474317fa41325595aa4825764b71f089"
+    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/armv6l-unknown-linux-musleabihf/garage"
+    armhf.sha256 = "1eb79aa8fff6c00bd1dd5da53dedd04685fe28b3402476a3b10b1b66aa10f80a"
+
+    [resources.ports]
+    main.default = 4000
+    main.exposed = "TCP"
+    api.default = 5000
+
     [resources.system_user]
 
     [resources.install_dir]
@@ -69,3 +78,6 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
 
     [resources.permissions]
     main.url = "/"
+
+    [resources.apt]
+    packages = "qemu-utils e2fsprogs"
