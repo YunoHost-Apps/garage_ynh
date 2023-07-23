@@ -10,7 +10,7 @@ pkg_dependencies_virtualisation="qemu-utils e2fsprogs"
 #=================================================
 
 
-GARAGE_VERSION="0.8.0"
+GARAGE_VERSION="0.8.2"
 
 # inspired by restic helper
 install_garage () {
