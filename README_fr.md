@@ -47,6 +47,10 @@ Garage is designed for storage clusters composed of nodes running at different p
     * This application consider that the weight of the node is the size reserved to garage in G 
     * This application will try to create a virtual disk to ensure garage doesn't use more than allowed. If virtualisation is not available your responsible to check space used by garage.
 
+# How to run commands for Garage
+1. Use `yunohost app shell garage` to use the command line in Garage own environnement (don't forget to `exit` at the end). You will be located in `/opt/yunohost/garage/` own directory.
+2. Then for each use of the `garage` command, you need to specify the config file as a parameter `garage -c garage.toml [the actions you wish to run]`.
+
 ## Documentations et ressources
 
 * Site officiel de l’app : <https://garagehq.deuxfleurs.fr/>
