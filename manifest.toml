@@ -1,0 +1,83 @@
+packaging_format = 2
+
+id = "garage"
+name = "Garage"
+description.en = "S3 storage"
+description.fr = "stockage S3"
+
+version = "0.8.2~ynh1"
+
+maintainers = ["oiseauroch"]
+
+[upstream]
+license = "AGPL-3.0-only"
+website = "https://garagehq.deuxfleurs.fr/"
+admindoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
+userdoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
+code = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
+
+[integration]
+yunohost = ">= 1.1.18"
+architectures = "all"
+multi_instance = true
+ldap = false
+sso = false
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    type = "domain"
+    full_domain = true
+
+    [install.rpc_secret]
+    ask.en = "UUID of the network (rpc-secret) "
+    ask.fr = "UUID de l'ilot (rpc-secret)"
+    type = "string"
+    optional = true
+    example = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec"
+
+    [install.bootstrap_peers]
+    ask.en = "friend server id"
+    ask.fr = "serveur ami"
+    type = "string"
+    example = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@127.0.0.1:3901"
+    optional = true
+
+    [install.weight]
+    ask.en = "number of G to allow"
+    ask.fr = "nombre de G à allouer"
+    type = "string"
+
+[resources]
+
+    [resources.sources]
+
+    [resources.sources.main]
+    in_subdir = false
+    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/x86_64-unknown-linux-musl/garage"
+    amd64.sha256 = "c15aa223b0fffb856c6e16276d1e77b0e94eb783a26eaeb7de80324f7c8b23c5"
+    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/aarch64-unknown-linux-musl/garage"
+    amd64.sha256 = "9c419d47e87ac254a96cda6476e3c5c9102a9a2ea1ec1dc65d338bb46e415d78"
+    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/i686-unknown-linux-musl/garage"
+    i386.sha256 = "a733fcd9b0a0f6271960f0d65978b8a8474317fa41325595aa4825764b71f089"
+    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v0.8.2/armv6l-unknown-linux-musleabihf/garage"
+    armhf.sha256 = "1eb79aa8fff6c00bd1dd5da53dedd04685fe28b3402476a3b10b1b66aa10f80a"
+
+    [resources.ports]
+    main.default = 4000
+    main.exposed = "TCP"
+    api.default = 5000
+
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.data_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.apt]
+    packages = "qemu-utils e2fsprogs"
