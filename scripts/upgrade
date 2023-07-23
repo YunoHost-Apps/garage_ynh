@@ -9,22 +9,6 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# LOAD SETTINGS
-#=================================================
-#REMOVEME? ynh_script_progression --message="Loading installation settings..."  --weight=1
-
-#REMOVEME? app=$YNH_APP_INSTANCE_NAME
-
-#REMOVEME? domain=$(ynh_app_setting_get --app=$app --key=domain)
-#REMOVEME? port=$(ynh_app_setting_get --app=$app --key=port)
-#REMOVEME? rpc_secret=$(ynh_app_setting_get --app=$app --key=rpc_secret)
-#REMOVEME? port_api=$(ynh_app_setting_get --app=$app --key=port_api)
-#REMOVEME? port_web=$(ynh_app_setting_get --app=$app --key=port_web)
-#REMOVEME? data_dir=$(ynh_app_setting_get --app=$app --key=data_dir)
-#REMOVEME? bootstrap_peers=$(ynh_app_setting_get --app=$app --key=bootstrap_peers)
-#REMOVEME? #REMOVEME? install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
-#REMOVEME? virtualisation=$(ynh_app_setting_get --app=$app --key=virtualisation)
 
 if [ "$virtualisation" = "true" ] ;
 then
