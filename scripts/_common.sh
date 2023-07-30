@@ -9,6 +9,20 @@ pkg_dependencies_virtualisation="qemu-utils e2fsprogs"
 # PERSONAL HELPERS
 #=================================================
 
+systemd-detect-virt  -c -q
+if [ $? ] 
+then #system is inside a container, 
+    export VIRTUALISATION=true
+    virtualisation=true
+    # comment systemd isolation to allow mount disk
+    virt_protection="#"
+else
+    virtualisation=false
+    export VIRTUALISATION=false
+    # uncomment systemd isolation
+    virt_protection=""
+fi
+    
 
 GARAGE_VERSION="0.8.2"
 

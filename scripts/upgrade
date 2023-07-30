@@ -9,7 +9,6 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-
 if [ "$virtualisation" = "true" ] ;
 then
 	virt_protection=""

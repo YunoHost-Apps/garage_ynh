@@ -25,25 +25,6 @@ then
 fi
 
 #=================================================
-# LOOKING FOR VIRTUALISATION
-#=================================================
-ynh_script_progression --message="Checking virtualisation availability…" --weight=1
-
-if [  "$(which modprobe)" = ""  ] 
-then
-	virtualisation=false
-	export VIRTUALISATION=false
-	# uncomment systemd isolation
-	virt_protection=""
-else
-    export VIRTUALISATION=true
-	virtualisation=true
-	# comment systemd isolation to allow mount disk
-	virt_protection="#"
-fi
-ynh_app_setting_set --app=$app --key=virtualisation --value=$virtualisation
-
-#=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
 ynh_script_progression --message="Storing installation settings..."  --weight=1
