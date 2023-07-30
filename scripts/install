@@ -33,25 +33,12 @@ ynh_app_setting_set --app=$app --key=rpc_secret --value=$rpc_secret
 ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
 ynh_app_setting_set --app=$app --key=weight --value=$weight
 
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."  --weight=1
-
-if [ "$virtualisation" = "true" ]
-then
-	ynh_install_app_dependencies $pkg_dependencies_virtualisation
-fi 
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..."  --weight=1
 
-ynh_setup_source --dest_dir="$install_dir"
-
-chmod -R o-rwx "$install_dir"
-chown -R $app:$app "$install_dir"
 chmod +x $install_dir/garage
 
 #=================================================

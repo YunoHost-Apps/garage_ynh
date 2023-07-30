@@ -9,13 +9,6 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-if [ "$virtualisation" = "true" ] ;
-then
-	virt_protection=""
-else
-	virt_protection="#"
-fi
-
 #=================================================
 # CHECK VERSION
 #=================================================
@@ -32,31 +25,16 @@ ynh_script_progression --message="Stopping a systemd service..."  --weight=1
 ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
 
 #=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."  --weight=1
-
-if [ "$virtualisation" = "true" ]
-then
-	ynh_install_app_dependencies $pkg_dependencies_virtualisation
-fi 
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading source files..."  --weight=1
-
-	# Download, check integrity, uncompress and patch the source from app.src
-	pushd $install_dir
-		install_garage
-	popd
+	ynh_setup_source --dest_dir="$install_dir"
 fi
 
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
+chmod +x $install_dir/garage
 chown -R $app:$app "$install_dir"
 
 #=================================================
@@ -84,6 +62,18 @@ ynh_script_progression --message="Upgrading logrotate configuration..."  --weigh
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
+
+ynh_script_progression --message="Updating a configuration file..." --weight=1
+
+#=================================================
+# UPDATE A CONFIG FILE
+#=================================================
+### Same as during install
+###
+### The file will automatically be backed-up if it's found to be manually modified (because
+### ynh_add_config keeps track of the file's checksum)
+ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
+
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
