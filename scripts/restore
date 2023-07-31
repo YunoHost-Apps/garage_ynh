@@ -17,8 +17,6 @@ ynh_script_progression --message="Restoring the app main directory..."  --weight
 
 ynh_restore_file --origin_path="$install_dir"
 
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
 chown -R $app:$app "$install_dir"
 
 #=================================================
@@ -31,8 +29,6 @@ mkdir -p "$data_dir/data"
 if [ "$virtualisation" = "true" ]
 then
     export VIRTUALISATION=true
-	# Define and install dependencies
-	ynh_install_app_dependencies $pkg_dependencies_virtualisation
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
 	$install_dir/mount_disk.sh true

@@ -25,52 +25,19 @@ then
 fi
 
 #=================================================
-# LOOKING FOR VIRTUALISATION
-#=================================================
-ynh_script_progression --message="Checking virtualisation availability…" --weight=1
-
-if [  "$(which modprobe)" = ""  ] 
-then
-	virtualisation=false
-	export VIRTUALISATION=false
-	# uncomment systemd isolation
-	virt_protection=""
-else
-    export VIRTUALISATION=true
-	virtualisation=true
-	# comment systemd isolation to allow mount disk
-	virt_protection="#"
-fi
-ynh_app_setting_set --app=$app --key=virtualisation --value=$virtualisation
-
-#=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
 ynh_script_progression --message="Storing installation settings..."  --weight=1
 
 ynh_app_setting_set --app=$app --key=rpc_secret --value=$rpc_secret
 ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
-ynh_app_setting_set --app=$app --key=weight --value=$weight
 
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."  --weight=1
-
-if [ "$virtualisation" = "true" ]
-then
-	ynh_install_app_dependencies $pkg_dependencies_virtualisation
-fi 
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..."  --weight=1
 
-ynh_setup_source --dest_dir="$install_dir"
-
-chmod -R o-rwx "$install_dir"
-chown -R $app:$app "$install_dir"
 chmod +x $install_dir/garage
 
 #=================================================

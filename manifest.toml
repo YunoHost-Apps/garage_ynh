@@ -80,4 +80,6 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "qemu-utils e2fsprogs"
+    packages_from_raw_bash = """
+    systemd-detect-virt -q -c && apt install qemu-utils e2fsprogs
+    """

@@ -16,7 +16,6 @@ ynh_abort_if_errors
 
 final_path=$(ynh_app_setting_get $app final_path)
 node_id=$(ynh_app_setting_get $app node_id)
-virtualisation=$(ynh_app_setting_get $app virtualisation)
 datadir=$(ynh_app_setting_get $app datadir)
 if [ "$virtualisation" = "true" ] 
 then
