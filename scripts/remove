@@ -114,7 +114,6 @@ ynh_secure_remove --file="/var/log/$app"
 
 ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
-ynh_systemd_action --service_name=nginx --action="reload"
 
 #=================================================
 # END OF SCRIPT

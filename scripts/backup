@@ -32,8 +32,6 @@ ynh_backup --src_path="$install_dir"
 
 ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
-
-
 #=================================================
 # SPECIFIC BACKUP
 #=================================================
@@ -53,9 +51,6 @@ ynh_backup --src_path="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 #=================================================
 
 ynh_backup --src_path="/etc/systemd/system/$app.service"
-
-
-ynh_backup --src_path="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 
 #=================================================
 # END OF SCRIPT

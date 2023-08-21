@@ -45,6 +45,9 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..."  
 # Create a dedicated NGINX config
 ynh_add_nginx_config
 
+ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
+yunohost tools regen-conf nginx
+
 #=================================================
 # SETUP SYSTEMD
 #=================================================

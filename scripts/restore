@@ -63,7 +63,6 @@ ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 ynh_restore_file --origin_path="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
-ynh_systemd_action --service_name=nginx --action="reload"
 
 #=================================================
 # RESTORE SYSTEMD

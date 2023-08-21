@@ -91,13 +91,9 @@ fi
 #=================================================
 # ADD REGEN-CONF HOOK
 #=================================================
-ynh_script_progression --message="adding regen-conf hook..."  --weight=1
+ynh_script_progression --message="Adding regen-conf hook..."  --weight=1
 
- ynh_add_config --template="../sources/hooks/conf_regen/98-nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
-#cp -R ../sources/hooks/conf_regen/98-nginx_garage /usr/share/yunohost/hooks/conf_regen/95-nginx_$app
-
-ynh_systemd_action --service_name=nginx --action="reload"
-
+ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
 #=================================================
