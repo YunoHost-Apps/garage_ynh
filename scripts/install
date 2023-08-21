@@ -27,7 +27,7 @@ fi
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..."  --weight=1
+ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=rpc_secret --value=$rpc_secret
 ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
@@ -36,14 +36,14 @@ ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..."  --weight=1
+ynh_script_progression --message="Setting up source files..."
 
 chmod +x $install_dir/garage
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring NGINX web server..."  --weight=1
+ynh_script_progression --message="Configuring NGINX web server..."
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
@@ -51,7 +51,7 @@ ynh_add_nginx_config
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding a configuration file..."  --weight=1
+ynh_script_progression --message="Adding a configuration file..."
 
 ynh_add_config --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
 ynh_add_config --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
@@ -79,7 +79,7 @@ fi
 #=================================================
 # ADD REGEN-CONF HOOK
 #=================================================
-ynh_script_progression --message="Adding regen-conf hook..."  --weight=1
+ynh_script_progression --message="Adding regen-conf hook..."
 
 ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
@@ -87,7 +87,7 @@ yunohost tools regen-conf nginx
 #=================================================
 # SETUP SYSTEMD
 #=================================================
-ynh_script_progression --message="Configuring a systemd service..."  --weight=1
+ynh_script_progression --message="Configuring a systemd service..."
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
@@ -97,7 +97,7 @@ ynh_add_systemd_config
 #=================================================
 # SETUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Configuring log rotation..."  --weight=1
+ynh_script_progression --message="Configuring log rotation..."
 
 # Use logrotate to manage application logfile(s)
 ynh_use_logrotate
@@ -105,14 +105,14 @@ ynh_use_logrotate
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."  --weight=1
+ynh_script_progression --message="Integrating service in YunoHost..."
 
 yunohost service add --needs_exposed_ports $port --description="s3 storage" --log="/var/log/$app/$app.log" $app
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..."  --weight=1
+ynh_script_progression --message="Starting a systemd service..."
 
 # Start a systemd service
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
@@ -120,7 +120,7 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$ap
 #=================================================
 # CONFIGURE GARAGE
 #=================================================
-ynh_script_progression --message="Configuring garage..."  --weight=1
+ynh_script_progression --message="Configuring garage..."
 
 garage_command="$install_dir/garage -c $install_dir/garage.toml"
 

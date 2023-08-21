@@ -20,7 +20,7 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..."  --weight=1
+ynh_script_progression --message="Stopping a systemd service..."
 
 ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
 
@@ -30,7 +30,7 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-	ynh_script_progression --message="Upgrading source files..."  --weight=1
+	ynh_script_progression --message="Upgrading source files..."
 	ynh_setup_source --dest_dir="$install_dir"
 fi
 
@@ -40,7 +40,7 @@ chown -R $app:$app "$install_dir"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..."  --weight=1
+ynh_script_progression --message="Upgrading NGINX web server configuration..."
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
@@ -51,7 +51,7 @@ yunohost tools regen-conf nginx
 #=================================================
 # SETUP SYSTEMD
 #=================================================
-ynh_script_progression --message="Upgrading systemd configuration..."  --weight=1
+ynh_script_progression --message="Upgrading systemd configuration..."
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
@@ -61,12 +61,12 @@ ynh_add_systemd_config
 #=================================================
 # SETUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Upgrading logrotate configuration..."  --weight=1
+ynh_script_progression --message="Upgrading logrotate configuration..."
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
 
-ynh_script_progression --message="Updating a configuration file..." --weight=1
+ynh_script_progression --message="Updating a configuration file..."
 
 #=================================================
 # UPDATE A CONFIG FILE
@@ -81,14 +81,14 @@ ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."  --weight=1
+ynh_script_progression --message="Integrating service in YunoHost..."
 
 yunohost service add --needs_exposed_ports $port --description="s3 storage" --log="/var/log/$app/$app.log" $app
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..."  --weight=1
+ynh_script_progression --message="Starting a systemd service..."
 
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
