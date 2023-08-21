@@ -1,5 +1,7 @@
 #!/bin/bash
-if [ "$VIRTUALISATION" = "true" ] 
+
+# If we're inside a container
+if systemd-detect-virt -c -q
 then
     data_dir=__DATA_DIR__
     format=$1

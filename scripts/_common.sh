@@ -4,26 +4,21 @@
 # COMMON VARIABLES
 #=================================================
 
+GARAGE_VERSION="0.8.2"
+
+if systemd-detect-virt  -c -q
+then
+    system_is_inside_container="true"
+    # used to comment systemd isolation to allow mount disk
+    comment_if_system_is_inside_container="#"
+else
+    system_is_inside_container="false"
+    comment_if_system_is_inside_container=""
+fi
+
 #=================================================
 # PERSONAL HELPERS
 #=================================================
-
-systemd-detect-virt  -c -q
-if [ $? ] 
-then #system is inside a container, 
-    export VIRTUALISATION=true
-    virtualisation=true
-    # comment systemd isolation to allow mount disk
-    virt_protection="#"
-else
-    virtualisation=false
-    export VIRTUALISATION=false
-    # uncomment systemd isolation
-    virt_protection=""
-fi
-    
-
-GARAGE_VERSION="0.8.2"
 
 garage_connect() {
   local command="$1"
