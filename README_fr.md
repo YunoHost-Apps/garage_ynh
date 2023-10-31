@@ -53,7 +53,7 @@ Garage is designed for storage clusters composed of nodes running at different p
 * Documentation officielle utilisateur : <https://garagehq.deuxfleurs.fr/documentation/quick-start/>
 * Documentation officielle de l’admin : <https://garagehq.deuxfleurs.fr/documentation/quick-start/>
 * Dépôt de code officiel de l’app : <https://git.deuxfleurs.fr/Deuxfleurs/garage>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_garage>
+* YunoHost Store: <https://apps.yunohost.org/app/garage>
 * Signaler un bug : <https://github.com/YunoHost-Apps/garage_ynh/issues>
 
 ## Informations pour les développeurs
