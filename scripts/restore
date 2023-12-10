@@ -59,7 +59,7 @@ ynh_script_progression --message="Starting a systemd service..."
 #recreate log folder
 mkdir /var/log/$app
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd"
 
 #=================================================
 # RECREATE CONFIGURATION
@@ -78,12 +78,13 @@ if [ -n "$bootstrap_peers" ]
 then
 	garage_connect "$garage_command" "$bootstrap_peers"
 fi
+
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
 # RELOAD NGINX AND PHP-FPM
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server and PHP-FPM..."
+ynh_script_progression --message="Reloading NGINX web server..."
 
 ynh_systemd_action --service_name=nginx --action=reload
 
