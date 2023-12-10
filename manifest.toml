@@ -32,7 +32,6 @@ ram.runtime = "50M"
 [install]
     [install.domain]
     type = "domain"
-    full_domain = true
 
     [install.rpc_secret]
     ask.en = "UUID of the network (rpc-secret) "
