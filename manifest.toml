@@ -17,7 +17,7 @@ userdoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
 code = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
 
 [integration]
-yunohost = ">= 11.1.19"
+yunohost = ">= 11.2"
 architectures = "all"
 multi_instance = true
 ldap = false
@@ -80,4 +80,4 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "qemu-utils e2fsprogs"
+    packages = "qemu-utils, e2fsprogs"

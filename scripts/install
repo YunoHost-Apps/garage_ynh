@@ -46,11 +46,10 @@ ynh_app_setting_set --app=$app --key=virtualisation --value=$virtualisation
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..."  --weight=1
+ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=rpc_secret --value=$rpc_secret
 ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
-ynh_app_setting_set --app=$app --key=weight --value=$weight
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -84,7 +83,7 @@ ynh_add_nginx_config
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding a configuration file..."  --weight=1
+ynh_script_progression --message="Adding a configuration file..."
 
 ynh_add_config --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
 ynh_add_config --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
@@ -131,6 +130,7 @@ ynh_script_progression --message="adding regen-conf hook..."  --weight=1
 
 ynh_systemd_action --service_name=nginx --action="reload"
 
+ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
 #=================================================
@@ -169,7 +169,7 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$ap
 #=================================================
 # CONFIGURE GARAGE
 #=================================================
-ynh_script_progression --message="Configuring garage..."  --weight=1
+ynh_script_progression --message="Configuring garage..."
 
 garage_command="$install_dir/garage -c $install_dir/garage.toml"
 
