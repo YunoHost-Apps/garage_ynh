@@ -31,7 +31,6 @@ then
 	$install_dir/mount_disk.sh true
 fi
 
-chmod -R o-rwx "$data_dir"
 chown -R $app:$app "$data_dir"
 
 #=================================================

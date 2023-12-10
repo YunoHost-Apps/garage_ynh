@@ -4,7 +4,7 @@
 # COMMON VARIABLES
 #=================================================
 
-GARAGE_VERSION="0.8.2"
+GARAGE_VERSION="0.9.0"
 
 if systemd-detect-virt  -c -q
 then
@@ -52,6 +52,7 @@ apply_layout() {
 		return 0
 	fi
 }
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
