@@ -79,6 +79,7 @@ ram.runtime = "50M"
     [resources.install_dir]
 
     [resources.data_dir]
+    subdirs = ["data", "metadata"]
 
     [resources.permissions]
     main.url = "/"

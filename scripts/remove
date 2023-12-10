@@ -10,12 +10,9 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-
-#=================================================
 # REMOVE NODE CONFIGURATION
 #=================================================
+
 $install_dir/garage -c $install_dir/garage.toml layout remove "$node_id"
 
 apply_layout "$install_dir/garage -c $install_dir/garage.toml "
@@ -23,7 +20,6 @@ if [ $? -ne 0 ]
 then
 	ynh_print_warn --message="unable to remove the node. Maybe the number of node staying alive is not enough"
 fi
-
 
 #=================================================
 # STANDARD REMOVE
@@ -38,42 +34,22 @@ then
 	yunohost service remove $app
 fi
 
-#=================================================
-# STOP AND REMOVE SERVICE
-#=================================================
-ynh_script_progression --message="Stopping and removing the systemd service..."
-
 # Remove the dedicated systemd config
 ynh_remove_systemd_config
 
-#=================================================
-# REMOVE LOGROTATE CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing logrotate configuration..."
-
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
-
 
 if [[ "$system_is_inside_container" == "true" ]]
 then
 	#=================================================
 	# REMOVE VIRTUAL DISK
 	#=================================================
-	ynh_script_progression --message="umount virtual disk..."
+	ynh_script_progression --message="Umount virtual disk..."
 
 	# Remove the app directory securely
 	$install_dir/umount_disk.sh
 fi
-
-#=================================================
-# REMOVE NGINX HOOK
-#=================================================
-
-#=================================================
-# REMOVE NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing NGINX web server configuration..."
 
 # Remove the dedicated NGINX config
 ynh_remove_nginx_config
@@ -82,30 +58,8 @@ ynh_remove_nginx_config
 ynh_replace_string --replace_string="server_name $domain" --match_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
 ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
 
-
-#=================================================
-# CLOSE A PORT
-#=================================================
-
-if yunohost firewall list | grep -q "\- $port$"
-then
-	ynh_script_progression --message="Closing port $port..."
-	ynh_exec_warn_less yunohost firewall disallow TCP $port
-fi
-
-#=================================================
-# SPECIFIC REMOVE
-#=================================================
-# REMOVE VARIOUS FILES
-#=================================================
-ynh_script_progression --message="Removing various files..."
-
 # Remove the log files
 ynh_secure_remove --file="/var/log/$app"
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
 
 ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx

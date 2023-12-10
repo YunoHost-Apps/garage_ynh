@@ -48,42 +48,20 @@ ynh_add_nginx_config
 ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
-#=================================================
-# SETUP SYSTEMD
-#=================================================
-ynh_script_progression --message="Upgrading systemd configuration..."
-
 # Create a dedicated systemd config
 ynh_add_systemd_config
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Upgrading logrotate configuration..."
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
 
-ynh_script_progression --message="Updating a configuration file..."
+yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port
 
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-### Same as during install
-###
-### The file will automatically be backed-up if it's found to be manually modified (because
-### ynh_add_config keeps track of the file's checksum)
+ynh_script_progression --message="Updating a configuration file..."
+
 ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
-
-
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."
-
-yunohost service add --needs_exposed_ports $port --description="s3 storage" --log="/var/log/$app/$app.log" $app
 
 #=================================================
 # START SYSTEMD SERVICE

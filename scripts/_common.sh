@@ -4,7 +4,7 @@
 # COMMON VARIABLES
 #=================================================
 
-GARAGE_VERSION="0.8.2"
+GARAGE_VERSION="0.9.0"
 
 if systemd-detect-virt  -c -q
 then
@@ -32,7 +32,7 @@ garage_connect() {
     i=$(( i + 1 ))
     if [ $i -gt 30 ] 
     then
-      ynh_die --message="unable to get layout from remote peer"
+      ynh_die --message="Unable to get layout from remote peer"
     fi
     sleep 1
   done
@@ -48,10 +48,11 @@ apply_layout() {
 	then
 		$garage_command layout apply --version $layout_version
 	else
-        ynh_print_warn --message="unable to apply layout. No enough nodes"
+        ynh_print_warn --message="Unable to apply layout. No enough nodes"
 		return 0
 	fi
 }
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
