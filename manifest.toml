@@ -33,6 +33,10 @@ ram.runtime = "50M"
     [install.domain]
     type = "domain"
 
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
     [install.rpc_secret]
     ask.en = "UUID of the network (rpc-secret) "
     ask.fr = "UUID de l'ilot (rpc-secret)"
