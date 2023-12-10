@@ -36,7 +36,6 @@ Garage is designed for storage clusters composed of nodes running at different p
 
 
 **Shipped version:** 0.9.0~ynh1
-
 ## Documentation and resources
 
 * Official app website: <https://garagehq.deuxfleurs.fr/>
