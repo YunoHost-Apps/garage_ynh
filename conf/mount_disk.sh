@@ -18,6 +18,7 @@ then
         echo "formatting /dev/nbd$i"
         mkfs.ext4 /dev/nbd$i
     fi
+    mkdir -p $data_dir/data
     chown  __APP__:__APP__  $data_dir/data
     mount /dev/nbd$i $data_dir/data/
 fi
