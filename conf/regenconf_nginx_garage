@@ -8,4 +8,4 @@ app=__APP__
 [[ "$action" == "pre" ]] || exit 0
 source /usr/share/yunohost/helpers
 
-ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="$pending_dir/etc/nginx/conf.d/$domain.conf"
+ynh_replace_special_string --match_string="server_name $domain" --replace_string="server_name $domain *.$domain" --target_file="$pending_dir/../nginx/etc/nginx/conf.d/$domain.conf"
