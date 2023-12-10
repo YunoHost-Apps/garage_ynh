@@ -22,7 +22,7 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -48,33 +48,17 @@ ynh_add_nginx_config
 ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
-#=================================================
-# SETUP SYSTEMD
-#=================================================
-ynh_script_progression --message="Upgrading systemd configuration..."
-
 # Create a dedicated systemd config
 ynh_add_systemd_config
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Upgrading logrotate configuration..."
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
 
-ynh_script_progression --message="Updating a configuration file..."
-
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-### Same as during install
-###
-### The file will automatically be backed-up if it's found to be manually modified (because
-### ynh_add_config keeps track of the file's checksum)
+ynh_script_progression --message="Updating a configuration file..."
+
 ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
 
 #=================================================
@@ -89,10 +73,10 @@ yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.l
 #=================================================
 ynh_script_progression --message="Starting a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed"  --last
+ynh_script_progression --message="Upgrade of $app completed" --last

@@ -24,8 +24,6 @@ chown -R $app:$app "$install_dir"
 #=================================================
 ynh_script_progression --message="Restoring the data directory..."
 
-mkdir -p "$data_dir/data"
-
 if [[ "$system_is_inside_container" == "true" ]]
 then
 	# to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
@@ -33,24 +31,8 @@ then
 	$install_dir/mount_disk.sh true
 fi
 
-
-# # FIXME: this should be managed by the core in the future
-# Here, as a packager, you may have to tweak the ownerhsip/permissions
-# such that the appropriate users (e.g. maybe www-data) can access
-# files in some cases.
-# But FOR THE LOVE OF GOD, do not allow r/x for "others" on the entire folder -
-# this will be treated as a security issue.
-chmod 750 "$data_dir"
 chmod -R o-rwx "$data_dir"
 chown -R $app:$app "$data_dir"
-
-#=================================================
-# SPECIFIC RESTORATION
-#=================================================
-
-# Open the port
- ynh_script_progression --message="Configuring firewall..."
- ynh_exec_warn_less yunohost firewall allow TCP $port
 
 #=================================================
 # RESTORE THE NGINX CONFIGURATION
@@ -63,25 +45,10 @@ ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_restore_file --origin_path="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
-#=================================================
-# RESTORE SYSTEMD
-#=================================================
-ynh_script_progression --message="Restoring the systemd configuration..."
-
 ynh_restore_file --origin_path="/etc/systemd/system/$app.service"
 systemctl enable $app.service --quiet
 
-#=================================================
-# RESTORE THE LOGROTATE CONFIGURATION
-#=================================================
-ynh_script_progression --message="Restoring the logrotate configuration..."
-
 ynh_restore_file --origin_path="/etc/logrotate.d/$app"
-
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."
 
 yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port
 
@@ -93,7 +60,8 @@ ynh_script_progression --message="Starting a systemd service..."
 #recreate log folder
 mkdir /var/log/$app
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd"
+
 #=================================================
 # RECREATE CONFIGURATION
 #=================================================
@@ -111,12 +79,13 @@ if [ -n "$bootstrap_peers" ]
 then
 	garage_connect "$garage_command" "$bootstrap_peers"
 fi
+
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
 # RELOAD NGINX AND PHP-FPM
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server and PHP-FPM..."
+ynh_script_progression --message="Reloading NGINX web server..."
 
 ynh_systemd_action --service_name=nginx --action=reload
 
