@@ -115,14 +115,12 @@ garage_command="$install_dir/garage -c $install_dir/garage.toml"
 
 i=0
 # sometimes server need some time to start
-until [ "" != "$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)"  ] ; do
+while [ -z "$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)" ]; do
     i=$(( i + 1 ))
-    if [ $i -gt 30 ] 
-    then
-      ynh_die --message="unable to get node id"
-    fi
+    [ $i -le 30 ] || { $garage_command node id || true; ynh_die --message="unable to get node id"; }
     sleep 1
 done
+
 node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
 ynh_app_setting_set --app=$app --key=node_id --value=$node_id
 
