@@ -41,6 +41,9 @@ ynh_setup_source --dest_dir="$install_dir"
 
 chmod 750 $install_dir
 
+# FIXME: Tmp debug
+ynh_print_info --message="$(ls -l $install_dir)"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
