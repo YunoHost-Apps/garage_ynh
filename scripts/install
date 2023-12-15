@@ -38,11 +38,11 @@ ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
 ynh_script_progression --message="Setting up source files..." --weight=1
 
 ynh_setup_source --dest_dir="$install_dir"
+mv $install_dir/main $install_dir/garage
 
 chmod 750 $install_dir
-
-# FIXME: Tmp debug
-ynh_print_info --message="$(ls -l $install_dir)"
+chmod +x $install_dir/garage
+chown -R $app:$app "$install_dir"
 
 #=================================================
 # NGINX CONFIGURATION
