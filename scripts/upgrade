@@ -34,7 +34,7 @@ then
 	ynh_setup_source --dest_dir="$install_dir"
 fi
 
-chmod +x $install_dir/garage
+chmod 750 $install_dir
 chown -R $app:$app "$install_dir"
 
 #=================================================
