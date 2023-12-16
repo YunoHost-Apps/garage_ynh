@@ -43,13 +43,14 @@ apply_layout() {
     
 	garage_command=$1
 	$garage_command layout show 2>/dev/null
-	local layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+	if [ "$(./garage -c garage.toml layout show | grep 'This new layout cannot yet be applied')" ]
 	if [ "$layout_version" != ""  ] 
 	then
-		$garage_command layout apply --version $layout_version
-	else
         ynh_print_warn --message="Unable to apply layout. No enough nodes"
 		return 0
+	else
+		local layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+		$garage_command layout apply --version $layout_version
 	fi
 }
 
