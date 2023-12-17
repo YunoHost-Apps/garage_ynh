@@ -140,7 +140,7 @@ fi
 
 self_bootstrap_peers="$($garage_command node id --quiet)"
 garage_layout="$($garage_command layout show)"
-ynh_app_setting_set --app=$app --key=garage_layout --value=$garage_layout
+ynh_app_setting_set --app=$app --key=garage_layout --value="$garage_layout"
 
 #=================================================
 # END OF SCRIPT
