@@ -50,7 +50,7 @@ chown -R $app:$app "$install_dir"
 ynh_script_progression --message="Configuring NGINX web server..." --weight=1
 
 # Create a dedicated NGINX config
-if [[ "${PACKAGE_CHECK_EXEC:-} -eq 1 ]]
+if [[ "${PACKAGE_CHECK_EXEC:-}" -eq 1 ]]
 then
     cat << EOF > ../conf/nginx.conf
 location / {
