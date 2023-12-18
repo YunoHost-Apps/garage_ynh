@@ -50,6 +50,15 @@ chown -R $app:$app "$install_dir"
 ynh_script_progression --message="Configuring NGINX web server..." --weight=1
 
 # Create a dedicated NGINX config
+if [[ "${PACKAGE_CHECK_EXEC:-} -eq 1 ]]
+then
+    cat << EOF > ../conf/nginx.conf
+location / {
+    return 200 'This is a dummy page for garage, only displayed during tests on Yunohost CI'
+}
+EOF
+fi
+
 ynh_add_nginx_config
 
 #=================================================
