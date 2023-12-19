@@ -70,7 +70,7 @@ sleep 2
 garage_command="$install_dir/garage -c $install_dir/garage.toml"
 
 # define node
-$garage_command layout assign $node_id -z $domain -c $weight -t $domain
+$garage_command layout assign $secret_node_id -z $domain -c $weight -t $domain
 # if there is enough node, apply layout
 apply_layout "$garage_command"
 

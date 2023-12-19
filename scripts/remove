@@ -13,7 +13,7 @@ source /usr/share/yunohost/helpers
 # REMOVE NODE CONFIGURATION
 #=================================================
 
-$install_dir/garage -c $install_dir/garage.toml layout remove "$node_id"
+$install_dir/garage -c $install_dir/garage.toml layout remove "$secret_node_id"
 
 apply_layout "$install_dir/garage -c $install_dir/garage.toml "
 if [ $? -ne 0 ]

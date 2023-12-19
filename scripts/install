@@ -135,12 +135,12 @@ while [ -z "$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)" ]; do
     sleep 1
 done
 
-node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
-ynh_app_setting_set --app=$app --key=node_id --value=$node_id
+secret_node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
+ynh_app_setting_set --app=$app --key=secret_node_id --value=$secret_node_id
 
 
 # define node
-$garage_command layout assign $node_id -z $domain -c $weight -t $domain
+$garage_command layout assign $secret_node_id -z $domain -c $weight -t $domain
 # if there is enough node, apply layout
 apply_layout "$garage_command"
 

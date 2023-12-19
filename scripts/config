@@ -7,6 +7,9 @@ source /usr/share/yunohost/helpers
 # RETRIEVE ARGUMENTS
 #=================================================
 
+data_dir=$(ynh_app_setting_get $app data_dir)
+secret_node_id=$(ynh_app_setting_get $app data_dir)
+
 if system_is_inside_container
 then
     nbd_index=$(cat $data_dir/nbd_index)
@@ -36,7 +39,7 @@ set__weight() {
         systemctl start $app
         sleep 3
     fi
-    $command layout assign $node_id -c $weight 2>/dev/null
+    $command layout assign $secret_node_id -c $weight 2>/dev/null
     apply_layout "$command"
     ynh_app_setting_set --app=$app --key=weight --value=$weight
 }
