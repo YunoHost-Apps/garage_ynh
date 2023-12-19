@@ -138,7 +138,7 @@ ynh_app_setting_set --app=$app --key=secret_node_id --value=$secret_node_id
 
 
 # define node
-$garage layout assign $secret_node_id -z $domain -c $weight -t $domain
+$garage layout assign $secret_node_id -z $domain -c ${weight}GB -t $domain
 # if there is enough node, apply layout
 garage_layout_apply
 
