@@ -6,13 +6,17 @@
 
 GARAGE_VERSION="0.9.0"
 
-if systemd-detect-virt  -c -q
+system_is_inside_container() {
+    systemd-detect-virt  -c -q
+}
+
+if system_is_inside_container
 then
-    system_is_inside_container="true"
     # used to comment systemd isolation to allow mount disk
+    system_is_inside_container_bool="true"
     comment_if_system_is_inside_container="#"
 else
-    system_is_inside_container="false"
+    system_is_inside_container_bool="false"
     comment_if_system_is_inside_container=""
 fi
 
@@ -22,7 +26,7 @@ fi
 
 garage_connect() {
   local command="$1"
-  local peer="$2" 
+  local peer="$2"
   # connect to cluster
   $command node connect "$peer"
   sleep 2
