@@ -35,10 +35,7 @@ garage_connect() {
   local i=0
   until $garage layout show 2>/dev/null | grep "${peer:0:15}"; do
     i=$(( i + 1 ))
-    if [ $i -gt 30 ] 
-    then
-      ynh_die --message="Unable to get layout from remote peer"
-    fi
+    [ $i -le 30 ] || ynh_die --message="Unable to get layout from remote peer"
     sleep 1
   done
 }
@@ -46,12 +43,12 @@ garage_connect() {
 
 garage_layout_apply() {
 	$garage layout show 2>/dev/null
-	if [ "$($garage layout show | grep 'This new layout cannot yet be applied')" ]
+	if $garage layout show | grep -q 'This new layout cannot yet be applied'
 	then
         ynh_print_warn --message="Unable to apply layout. No enough nodes"
 		return 0
-	else
-		local layout_version=$($garage layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
-		$garage layout apply --version $layout_version
-	fi
+    fi
+
+    local layout_version=$($garage layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+    $garage layout apply --version $layout_version
 }
