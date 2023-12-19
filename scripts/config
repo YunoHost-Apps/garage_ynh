@@ -21,8 +21,8 @@ set__weight() {
         old_weight="$(ynh_app_setting_get --app=$app --key=weight)"
         if [ $old_weight -le $weight ]
         then
-            qemu-img resize $datadir/garage_data.qcow2 "$weight"G
-            qemu-nbd --connect /dev/nbd$nbd_index $datadir/garage_data.qcow2
+            qemu-img resize $data_dir/garage_data.qcow2 "$weight"G
+            qemu-nbd --connect /dev/nbd$nbd_index $data_dir/garage_data.qcow2
             e2fsck -f -y /dev/nbd$nbd_index
             resize2fs /dev/nbd$nbd_index
             qemu-nbd --disconnect /dev/nbd$nbd_index
@@ -30,7 +30,7 @@ set__weight() {
             e2fsck -f -y /dev/nbd0
             resize2fs /dev/nbd$nbd_index $weightG
             qemu-nbd --disconnect /dev/nbd$nbd_index
-            qemu-img resize --shrink $datadir/garage_data.qcow2 "$weight"G
+            qemu-img resize --shrink $data_dir/garage_data.qcow2 "$weight"G
         fi
         $install_dir/umount_disk.sh
         systemctl start $app
@@ -65,7 +65,7 @@ ask:
 $status"
 EOF
 
-if [[ "$(echo  \"$status\" | grep \"FAILED NODES\")" ]] || [[ "$(echo \"$status\" | grep 'garage layout show')"  ]]
+if echo "$status" | grep -q "FAILED NODES\|garage layout show"
 then
     cat << EOF
 style: "danger"
