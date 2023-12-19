@@ -125,32 +125,30 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --l
 #=================================================
 ynh_script_progression --message="Configuring garage..." --weight=1
 
-garage_command="$install_dir/garage -c $install_dir/garage.toml"
-
 i=0
 # sometimes server need some time to start
-while [ -z "$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)" ]; do
+while [ -z "$($garage node id -q 2>/dev/null | cut -d '@' -f1)" ]; do
     i=$(( i + 1 ))
-    [ $i -le 30 ] || { $garage_command node id || true; ynh_die --message="unable to get node id"; }
+    [ $i -le 30 ] || { $garage node id || true; ynh_die --message="unable to get node id"; }
     sleep 1
 done
 
-secret_node_id=$($garage_command node id -q 2>/dev/null | cut -d '@' -f1)
+secret_node_id=$($garage node id -q 2>/dev/null | cut -d '@' -f1)
 ynh_app_setting_set --app=$app --key=secret_node_id --value=$secret_node_id
 
 
 # define node
-$garage_command layout assign $secret_node_id -z $domain -c $weight -t $domain
+$garage layout assign $secret_node_id -z $domain -c $weight -t $domain
 # if there is enough node, apply layout
-apply_layout "$garage_command"
+garage_layout_apply
 
 if [ -n "$bootstrap_peers" ] 
 then
-	garage_connect "$garage_command" "$bootstrap_peers"
+	garage_connect "$bootstrap_peers"
 fi
 
-self_bootstrap_peers="$($garage_command node id --quiet)"
-garage_layout="$($garage_command layout show)"
+self_bootstrap_peers="$($garage node id --quiet)"
+garage_layout="$($garage layout show)"
 ynh_app_setting_set --app=$app --key=garage_layout --value="$garage_layout"
 
 #=================================================

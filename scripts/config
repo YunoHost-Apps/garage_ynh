@@ -10,12 +10,10 @@ source /usr/share/yunohost/helpers
 data_dir=$(ynh_app_setting_get $app data_dir)
 secret_node_id=$(ynh_app_setting_get $app data_dir)
 
-if system_is_inside_container
+if ! system_is_inside_container
 then
     nbd_index=$(cat $data_dir/nbd_index)
 fi
-
-command="$install_dir/garage -c $install_dir/garage.toml"
 
 set__weight() {
     if system_is_inside_container
@@ -39,29 +37,29 @@ set__weight() {
         systemctl start $app
         sleep 3
     fi
-    $command layout assign $secret_node_id -c $weight 2>/dev/null
-    apply_layout "$command"
+    $garage layout assign $secret_node_id -c $weight 2>/dev/null
+    garage_layout_apply
     ynh_app_setting_set --app=$app --key=weight --value=$weight
 }
 
 
 set__bootstrap_peers() {
-    garage_connect "$command" "$bootstrap_peers" 2>/dev/null
-    apply_layout "$command"
+    garage_connect "$bootstrap_peers" 2>/dev/null
+    garage_layout_apply
     ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
 }
 
 get__node() {
 cat << EOF
 ask:
-  en: "**Node Id** : $($command node id -q) \n
+  en: "**Node Id** : $($garage node id -q) \n
   *This id is a sensitive information and should not be shared with anyone else than other nodes of the cluster*"
 style: "info"
 EOF
 }
 
 get__status() {
-status=$($command status 2> /dev/null | sed -E 's/([a-z0-9]{16})/\n**\1**/g') 
+status=$($garage status 2> /dev/null | sed -E 's/([a-z0-9]{16})/\n**\1**/g') 
 cat << EOF
 ask:
   en: "**Current garage layout**: \n

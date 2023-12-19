@@ -67,16 +67,14 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="systemd"
 
 sleep 2
 
-garage_command="$install_dir/garage -c $install_dir/garage.toml"
-
 # define node
-$garage_command layout assign $secret_node_id -z $domain -c $weight -t $domain
+$garage layout assign $secret_node_id -z $domain -c $weight -t $domain
 # if there is enough node, apply layout
-apply_layout "$garage_command"
+garage_layout_apply
 
 if [ -n "$bootstrap_peers" ] 
 then
-	garage_connect "$garage_command" "$bootstrap_peers"
+	garage_connect "$bootstrap_peers"
 fi
 
 #=================================================

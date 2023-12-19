@@ -13,9 +13,9 @@ source /usr/share/yunohost/helpers
 # REMOVE NODE CONFIGURATION
 #=================================================
 
-$install_dir/garage -c $install_dir/garage.toml layout remove "$secret_node_id"
+$garage layout remove "$secret_node_id"
 
-apply_layout "$install_dir/garage -c $install_dir/garage.toml "
+garage_layout_apply
 if [ $? -ne 0 ]
 then
 	ynh_print_warn --message="Unable to remove the node. Maybe the number of node staying alive is not enough"

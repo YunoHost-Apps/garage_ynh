@@ -24,15 +24,16 @@ fi
 # PERSONAL HELPERS
 #=================================================
 
+garage="$install_dir/garage -c $install_dir/garage.toml"
+
 garage_connect() {
-  local command="$1"
-  local peer="$2"
+  local peer="$1"
   # connect to cluster
-  $command node connect "$peer"
+  $garage node connect "$peer"
   sleep 2
   # wait until layout is updated
   local i=0
-  until $command layout show 2>/dev/null | grep "${peer:0:15}"; do
+  until $garage layout show 2>/dev/null | grep "${peer:0:15}"; do
     i=$(( i + 1 ))
     if [ $i -gt 30 ] 
     then
@@ -43,24 +44,14 @@ garage_connect() {
 }
 
 
-apply_layout() {
-    
-	garage_command=$1
-	$garage_command layout show 2>/dev/null
-	if [ "$($garage_command layout show | grep 'This new layout cannot yet be applied')" ]
+garage_layout_apply() {
+	$garage layout show 2>/dev/null
+	if [ "$($garage layout show | grep 'This new layout cannot yet be applied')" ]
 	then
         ynh_print_warn --message="Unable to apply layout. No enough nodes"
 		return 0
 	else
-		local layout_version=$($garage_command layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
-		$garage_command layout apply --version $layout_version
+		local layout_version=$($garage layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
+		$garage layout apply --version $layout_version
 	fi
 }
-
-#=================================================
-# EXPERIMENTAL HELPERS
-#=================================================
-
-#=================================================
-# FUTURE OFFICIAL HELPERS
-#=================================================
