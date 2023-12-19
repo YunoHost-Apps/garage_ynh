@@ -65,10 +65,21 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="systemd"
 # RECREATE CONFIGURATION
 #=================================================
 
-sleep 2
+i=0
+# sometimes server need some time to start
+while [ -z "$($garage node id -q 2>/dev/null | cut -d '@' -f1)" ]; do
+    i=$(( i + 1 ))
+    [ $i -le 30 ] || { $garage node id || true; ynh_die --message="unable to get node id"; }
+    sleep 1
+done
+
+# restoring garage can lead to change node id
+secret_node_id=$($garage node id -q 2>/dev/null | cut -d '@' -f1)
+ynh_app_setting_set --app=$app --key=secret_node_id --value=$secret_node_id
+
 
 # define node
-$garage layout assign $secret_node_id -z $domain -c $weight -t $domain
+$garage layout assign $secret_node_id -z $domain -c ${weight}GB -t $domain
 # if there is enough node, apply layout
 garage_layout_apply
 
