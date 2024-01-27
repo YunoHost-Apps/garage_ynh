@@ -1,5 +1,5 @@
 # Limitations
- * This application is not usable if you're not part of a cluster with minimun 3 other nodes
+ * Garage can be used with only one or two servers (=replica), but requires a cluster with at least 3 nodes to provide its full replication potential (loss prevention). See [replication modes](https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication-mode). It is mainly designed to be used with 3 nodes.
  * If you are behind a nat and use upnp to configure your port redirection, you may need to add peers via config panel instead of during installation and/or create a permanent redirection in your router/box
 
 # Informations you should be aware of:
