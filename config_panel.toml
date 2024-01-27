@@ -12,16 +12,14 @@ version = "1.0"
        [main.infos.status]
        type = "alert"
 
-
     [main.garage_conf]
     name = "Garage configuration"
-
 
         [main.garage_conf.weight]
         ask = "allocated space (Gio)"
         help = "This value is doubled used by yunohost. It set the weight of the garage node and if virtualisation is enabled, it create a virtual disk with the same size"
         type = "number"
-        bind = "weight()"
+        bind = "null"
 
         [main.garage_conf.bootstrap_peers]
         ask = "Friend serveur adress"
@@ -41,7 +39,7 @@ services = ["__APP__"]
         ask = "Choose/Change rpc secret"
         type = "string"
         redact = true
-        bind = "rpc_secret:/opt/yunohost/__APP__/garage.toml"
+        bind = "rpc_secret:__INSTALL_DIR__/garage.toml"
         pattern.regexp = '^[0-9a-f]{64}$'
         pattern.error = "rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
         help = "Be careful if your node is already connected to a cluster, it won't be able to connect anymore if you change the rpc_secret value"

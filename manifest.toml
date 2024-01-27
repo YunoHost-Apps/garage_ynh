@@ -1,0 +1,93 @@
+packaging_format = 2
+
+id = "garage"
+name = "Garage"
+description.en = "S3 storage"
+description.fr = "stockage S3"
+
+version = "0.9.0~ynh1"
+
+maintainers = ["oiseauroch"]
+
+[upstream]
+license = "AGPL-3.0-only"
+website = "https://garagehq.deuxfleurs.fr/"
+admindoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
+userdoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
+code = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
+
+[integration]
+yunohost = ">= 11.2"
+architectures = "all"
+multi_instance = true
+
+ldap = false
+
+sso = false
+
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    type = "domain"
+
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
+    [install.rpc_secret]
+    ask.en = "UUID of the network (rpc-secret) "
+    ask.fr = "UUID de l'ilot (rpc-secret)"
+    type = "string"
+    optional = true
+    example = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec"
+
+    [install.bootstrap_peers]
+    ask.en = "friend server id"
+    ask.fr = "serveur ami"
+    type = "string"
+    example = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@127.0.0.1:3901"
+    optional = true
+
+    [install.weight]
+    ask.en = "Number of GB to allow for storage"
+    ask.fr = "Nombre de GB à allouer pour le stockage"
+    type = "number"
+
+[resources]
+
+    [resources.sources]
+
+    [resources.sources.main]
+    in_subdir = false
+    extract = false
+    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v0.9.0/x86_64-unknown-linux-musl/garage"
+    amd64.sha256 = "3ae4ecb2a75610ab7bfe77bfac7a5c7a8834a0544158ac8ee37723e6d8fd1859"
+    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v0.9.0/aarch64-unknown-linux-musl/garage"
+    arm64.sha256 = "b4db67a618ed493e1803d8bae83e8ea091703763b182d4c62fa1896179b17b9b"
+    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v0.9.0/i686-unknown-linux-musl/garage"
+    i386.sha256 = "fcec4c6918ac5ae04829ed9c4f20c7eef0966194eabfe961e6d7f8aee14b0108"
+    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v0.9.0/armv6l-unknown-linux-musleabihf/garage"
+    armhf.sha256 = "8f04a38fcafc2ccda652738f2e80b0d2b6443150db0d7165db2de6c75035b4e3"
+
+    [resources.ports]
+    main.default = 4000
+    main.exposed = "TCP"
+    api.default = 5000
+
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.data_dir]
+    subdirs = ["data", "metadata"]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.apt]
+    packages_from_raw_bash = """
+    systemd-detect-virt -q -c && echo "qemu-utils e2fsprogs" || true
+    """

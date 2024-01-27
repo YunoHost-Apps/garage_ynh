@@ -1,42 +1,29 @@
 #!/bin/bash
-#=================================================
-# GENERIC STARTING
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
 
 source _common.sh
 source /usr/share/yunohost/helpers
-
-ynh_abort_if_errors
 
 #=================================================
 # RETRIEVE ARGUMENTS
 #=================================================
 
-final_path=$(ynh_app_setting_get $app final_path)
-node_id=$(ynh_app_setting_get $app node_id)
-virtualisation=$(ynh_app_setting_get $app virtualisation)
-datadir=$(ynh_app_setting_get $app datadir)
-if [ "$virtualisation" = "true" ] 
-then
-    nbd_index=$(cat $datadir/nbd_index)
-fi
-command="$final_path/garage -c $final_path/garage.toml"
+data_dir=$(ynh_app_setting_get $app data_dir)
+secret_node_id=$(ynh_app_setting_get $app data_dir)
 
-get__weight() {
-    ynh_app_setting_get --app=$app --key=weight
-}
+if ! system_is_inside_container
+then
+    nbd_index=$(cat $data_dir/nbd_index)
+fi
 
 set__weight() {
-    if [ "$virtualisation" = "true" ] 
+    if system_is_inside_container
     then
         systemctl stop $app
         old_weight="$(ynh_app_setting_get --app=$app --key=weight)"
         if [ $old_weight -le $weight ]
         then
-            qemu-img resize $datadir/garage_data.qcow2 "$weight"G
-            qemu-nbd --connect /dev/nbd$nbd_index $datadir/garage_data.qcow2
+            qemu-img resize $data_dir/garage_data.qcow2 "$weight"G
+            qemu-nbd --connect /dev/nbd$nbd_index $data_dir/garage_data.qcow2
             e2fsck -f -y /dev/nbd$nbd_index
             resize2fs /dev/nbd$nbd_index
             qemu-nbd --disconnect /dev/nbd$nbd_index
@@ -44,47 +31,42 @@ set__weight() {
             e2fsck -f -y /dev/nbd0
             resize2fs /dev/nbd$nbd_index $weightG
             qemu-nbd --disconnect /dev/nbd$nbd_index
-            qemu-img resize --shrink $datadir/garage_data.qcow2 "$weight"G
+            qemu-img resize --shrink $data_dir/garage_data.qcow2 "$weight"G
         fi
-        $final_path/umount_disk.sh
+        $install_dir/umount_disk.sh
         systemctl start $app
         sleep 3
     fi
-    $command layout assign $node_id -c $weight 2>/dev/null
-    apply_layout "$command"
+    $garage layout assign $secret_node_id -c $weight 2>/dev/null
+    garage_layout_apply
     ynh_app_setting_set --app=$app --key=weight --value=$weight
 }
 
 
-
-get__bootstrap_peers() {
-    ynh_app_setting_get --app=$app --key=bootstrap_peers
-}
-
 set__bootstrap_peers() {
-    garage_connect "$command" "$bootstrap_peers" 2>/dev/null
-    apply_layout "$command"
+    garage_connect "$bootstrap_peers" 2>/dev/null
+    garage_layout_apply
     ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
 }
 
 get__node() {
 cat << EOF
 ask:
-  en: "**Node Id** : $($command node id -q) \n
+  en: "**Node Id** : $($garage node id -q) \n
   *This id is a sensitive information and should not be shared with anyone else than other nodes of the cluster*"
 style: "info"
 EOF
 }
 
 get__status() {
-status=$($command status 2> /dev/null | sed -E 's/([a-z0-9]{16})/\n**\1**/g') 
+status=$($garage status 2> /dev/null | sed -E 's/([a-z0-9]{16})/\n**\1**/g') 
 cat << EOF
 ask:
   en: "**Current garage layout**: \n
 $status"
 EOF
 
-if [[ "$(echo  \"$status\" | grep \"FAILED NODES\")" ]] || [[ "$(echo \"$status\" | grep 'garage layout show')"  ]]
+if echo "$status" | grep -q "FAILED NODES\|garage layout show"
 then
     cat << EOF
 style: "danger"
