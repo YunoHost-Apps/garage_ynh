@@ -6,6 +6,7 @@
  * This application provide a node that you can connect to a garage cluster. Few option are manageable by the config panel for the current node but IT DOESN'T offer simpler way to manage bucket and keys. You have to do it by command line or let an other node managing it.
   * This application consider that the weight of the node is the size reserved to garage in G (Gigabytes)
  * This application will try to create a virtual disk to ensure garage doesn't use more than allowed. If virtualisation is not available your responsible to check space used by garage.
+ * to connect from another node, you might need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
 
 ## How to use the S3 API from other softwares
 
@@ -14,6 +15,9 @@ This will connect via the S3 API. In Yunohost setup, this is proxied through Ngi
 
 NB: From local command line (such as awscli https://garagehq.deuxfleurs.fr/documentation/connect/cli/) you can use `localhost:S3API_PORT`.
 
+## How to use
+
+The web endpoint (for HTTP public access, for a static website or social media files) is the one defined in `s3_web` in your `garage.toml`, and if you want to use you should setup website access for the bucket, and a `redirect_ynh` app pointing to `127.0.0.1:WEB_PORT`, using the domain `bucketname.DOMAIN`.
 
 ## How to run commands for Garage
 1. Use `yunohost app shell garage` to use the command line in Garage own environnement (don't forget to `exit` at the end). You will be located in `/opt/yunohost/garage/` own directory.
