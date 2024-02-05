@@ -20,5 +20,5 @@ NB: From local command line (such as awscli https://garagehq.deuxfleurs.fr/docum
 The web endpoint (for HTTP public access, for a static website or social media files) is the one defined in `s3_web` in your `garage.toml`, and if you want to use you should setup website access for the bucket, and a `redirect_ynh` app pointing to `127.0.0.1:WEB_PORT`, using the domain `bucketname.DOMAIN`.
 
 ## How to run commands for Garage
-1. Use `yunohost app shell garage` to use the command line in Garage own environnement (don't forget to `exit` at the end). You will be located in `/opt/yunohost/garage/` own directory.
+1. Use `yunohost app shell garage` to use the command line in Garage own environnement (don't forget to `exit` at the end). You will be located in `/var/www/garage/` own directory.
 2. Then for each use of the `garage` command, you need to specify the config file as a parameter `garage -c garage.toml [the actions you wish to run]`.
