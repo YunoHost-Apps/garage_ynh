@@ -22,3 +22,9 @@ bootstrap_peers = []
 # pour avoir de la sécurité
 api_bind_addr = "[::]:__PORT_API__"
 s3_region = "garage"
+
+[s3_web]
+# Ne supporte pas TLS → reverse proxy obligatoire
+# pour avoir de la sécurité
+# utilisé pour l'accès public aux buckets (site web, médias d'instance du fediverse…)
+bind_addr = "[::]:__PORT_WEB__"
