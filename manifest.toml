@@ -76,6 +76,7 @@ ram.runtime = "50M"
     main.default = 4000
     main.exposed = "TCP"
     api.default = 5000
+    web.default = 6000
 
     [resources.system_user]
 
