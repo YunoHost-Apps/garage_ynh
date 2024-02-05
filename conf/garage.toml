@@ -22,9 +22,12 @@ bootstrap_peers = []
 # pour avoir de la sécurité
 api_bind_addr = "[::]:__PORT_API__"
 s3_region = "garage"
+root_domain = ".__DOMAIN__" # might be used for vhost (instead of path_style) requests (using "bucketname.__DOMAIN__") according to https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#s3_root_domain
 
 [s3_web]
 # Ne supporte pas TLS → reverse proxy obligatoire
 # pour avoir de la sécurité
 # utilisé pour l'accès public aux buckets (site web, médias d'instance du fediverse…)
 bind_addr = "[::]:__PORT_WEB__"
+root_domain = ".__DOMAIN__" # might be used for vhost (instead of path_style) requests (using "bucketname.__DOMAIN__") according to https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#web_root_domain
+
