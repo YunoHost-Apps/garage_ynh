@@ -5,7 +5,7 @@ name = "Garage"
 description.en = "S3 storage"
 description.fr = "stockage S3"
 
-version = "0.9.1~ynh2"
+version = "0.9.1~ynh3"
 
 maintainers = ["oiseauroch"]
 
@@ -76,6 +76,7 @@ ram.runtime = "50M"
     main.default = 4000
     main.exposed = "TCP"
     api.default = 5000
+    web.default = 6000
 
     [resources.system_user]
 
