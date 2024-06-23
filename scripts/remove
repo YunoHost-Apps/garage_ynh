@@ -56,7 +56,6 @@ ynh_replace_string --replace_string="server_name $domain" --match_string="server
 ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
 
 # Remove the log files
-ynh_secure_remove --file="/var/log/$app"
 
 ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
