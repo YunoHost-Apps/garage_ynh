@@ -5,7 +5,7 @@ NON debe editarse manualmente.
 
 # Garage para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
 
 [![Instalar Garage con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 
@@ -35,7 +35,7 @@ Garage is designed for storage clusters composed of nodes running at different p
 - K2V API (experimental)
 
 
-**Versión proporcionada:** 0.9.2~ynh1
+**Versión proporcionada:** 0.9.4~ynh1
 ## Documentación e recursos
 
 - Web oficial da app: <https://garagehq.deuxfleurs.fr/>
