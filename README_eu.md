@@ -5,7 +5,7 @@ EZ editatu eskuz.
 
 # Garage YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Integrazio maila](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
 
 [![Instalatu Garage YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 

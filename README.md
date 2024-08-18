@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # Garage for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![Working status](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Integration level](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Working status](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
 
 [![Install Garage with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 

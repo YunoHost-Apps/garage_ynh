@@ -5,7 +5,7 @@
 
 # YunoHost 上的 Garage
 
-[![集成程度](https://dash.yunohost.org/integration/garage.svg)](https://dash.yunohost.org/appci/app/garage) ![工作状态](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![集成程度](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
 
 [![使用 YunoHost 安装 Garage](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 
