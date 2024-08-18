@@ -35,7 +35,7 @@ Garage is designed for storage clusters composed of nodes running at different p
 - K2V API (experimental)
 
 
-**分发版本：** 0.9.4~ynh1
+**分发版本：** 1.0.0~ynh1
 ## 文档与资源
 
 - 官方应用网站： <https://garagehq.deuxfleurs.fr/>
