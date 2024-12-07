@@ -5,7 +5,9 @@ Ini TIDAK boleh diedit dengan tangan.
 
 # Garage untuk YunoHost
 
-[![Tingkat integrasi](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Status kerja](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Status pemeliharaan](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Tingkat integrasi](https://apps.yunohost.org/badge/integration/garage)](https://ci-apps.yunohost.org/ci/apps/garage/)
+![Status kerja](https://apps.yunohost.org/badge/state/garage)
+![Status pemeliharaan](https://apps.yunohost.org/badge/maintained/garage)
 
 [![Pasang Garage dengan YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 

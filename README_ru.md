@@ -5,7 +5,9 @@
 
 # Garage для YunoHost
 
-[![Уровень интеграции](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Состояние работы](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Состояние сопровождения](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Уровень интеграции](https://apps.yunohost.org/badge/integration/garage)](https://ci-apps.yunohost.org/ci/apps/garage/)
+![Состояние работы](https://apps.yunohost.org/badge/state/garage)
+![Состояние сопровождения](https://apps.yunohost.org/badge/maintained/garage)
 
 [![Установите Garage с YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 

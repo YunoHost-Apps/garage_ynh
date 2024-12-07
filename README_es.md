@@ -5,7 +5,9 @@ No se debe editar a mano.
 
 # Garage para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/garage)](https://ci-apps.yunohost.org/ci/apps/garage/)
+![Estado funcional](https://apps.yunohost.org/badge/state/garage)
+![Estado En Mantención](https://apps.yunohost.org/badge/maintained/garage)
 
 [![Instalar Garage con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 
@@ -47,7 +49,7 @@ Garage is designed for storage clusters composed of nodes running at different p
 
 ## Información para desarrolladores
 
-Por favor enviar sus correcciones a la [`branch testing`](https://github.com/YunoHost-Apps/garage_ynh/tree/testing
+Por favor enviar sus correcciones a la [rama `testing`](https://github.com/YunoHost-Apps/garage_ynh/tree/testing).
 
 Para probar la rama `testing`, sigue asÍ:
 

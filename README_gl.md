@@ -5,7 +5,9 @@ NON debe editarse manualmente.
 
 # Garage para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/garage.svg)](https://ci-apps.yunohost.org/ci/apps/garage/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/garage.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/garage.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/garage)](https://ci-apps.yunohost.org/ci/apps/garage/)
+![Estado de funcionamento](https://apps.yunohost.org/badge/state/garage)
+![Estado de mantemento](https://apps.yunohost.org/badge/maintained/garage)
 
 [![Instalar Garage con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=garage)
 
