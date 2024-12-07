@@ -17,6 +17,11 @@ ynh_script_progression --message="Restoring the app main directory..."
 
 ynh_restore_file --origin_path="$install_dir"
 
+# For some reason those files are not present when restoring ? ...
+ynh_add_config --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
+ynh_add_config --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
+chmod +x "$install_dir/mount_disk.sh" "$install_dir/umount_disk.sh"
+
 chown -R $app:$app "$install_dir"
 
 #=================================================
