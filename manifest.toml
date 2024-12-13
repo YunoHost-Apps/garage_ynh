@@ -17,13 +17,12 @@ userdoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
 code = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
 
 [integration]
-yunohost = ">= 11.2.18"
+yunohost = ">= 11.2.30"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
 
 ldap = false
-
 sso = false
 
 disk = "50M"
@@ -67,11 +66,11 @@ ram.runtime = "50M"
     amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v1.0.1/x86_64-unknown-linux-musl/garage"
     amd64.sha256 = "3444d69063a91a1b4fb771a47f056db53c44f51d51e4eb58fb357fe62fe26f26"
     arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v1.0.1/aarch64-unknown-linux-musl/garage"
-    arm64.sha256 = ""
+    arm64.sha256 = "768e3adb246e408c7bd8b9c092f2e3563c28c6c9c63acfb4c7b638eae25bea7a"
     i386.url = "https://garagehq.deuxfleurs.fr/_releases/v1.0.1/i686-unknown-linux-musl/garage"
-    i386.sha256 = ""
+    i386.sha256 = "59f4821a7291b9556f03158dea3cfccbff57f011e654cdf3f164be38ada2a2ce"
     armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v1.0.1/armv6l-unknown-linux-musleabihf/garage"
-    armhf.sha256 = ""
+    armhf.sha256 = "13ce750073b887d24ae0eeb4011420c6f78455595622fb7af0e448582a391864"
 
     [resources.ports]
     main.default = 4000
