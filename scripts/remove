@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -18,7 +12,7 @@ $garage layout remove "$secret_node_id"
 garage_layout_apply
 if [ $? -ne 0 ]
 then
-	ynh_print_warn --message="Unable to remove the node. Maybe the number of node staying alive is not enough"
+	ynh_print_warn "Unable to remove the node. Maybe the number of node staying alive is not enough"
 fi
 
 #=================================================
@@ -28,38 +22,38 @@ fi
 #=================================================
 
 # Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
-if ynh_exec_warn_less yunohost service status $app >/dev/null
+if ynh_hide_warnings yunohost service status $app >/dev/null
 then
-	ynh_script_progression --message="Removing $app service integration..."
+	ynh_script_progression "Removing $app service integration..."
 	yunohost service remove $app
 fi
 
 # Remove the dedicated systemd config
-ynh_remove_systemd_config
+ynh_config_remove_systemd
 
 # Remove the app-specific logrotate config
-ynh_remove_logrotate
+ynh_config_remove_logrotate
 
 if system_is_inside_container
 then
-	ynh_script_progression --message="Umount virtual disk..."
+	ynh_script_progression "Umount virtual disk..."
 
 	# Remove the app directory securely
 	$install_dir/umount_disk.sh
 fi
 
 # Remove the dedicated NGINX config
-ynh_remove_nginx_config
+ynh_config_remove_nginx
 
 #add wildcard subdomain
-ynh_replace_string --replace_string="server_name $domain" --match_string="server_name $domain *.$domain" --target_file="/etc/nginx/conf.d/$domain.conf"
-ynh_store_file_checksum --file="/etc/nginx/conf.d/$domain.conf"
+ynh_replace --replace="server_name $domain" --match="server_name $domain *.$domain" --file="/etc/nginx/conf.d/$domain.conf"
+ynh_store_file_checksum "/etc/nginx/conf.d/$domain.conf"
 
-ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
+ynh_safe_rm "/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Removal of $app completed" --last
+ynh_script_progression "Removal of $app completed"
