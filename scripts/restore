@@ -11,7 +11,6 @@ ynh_script_progression "Restoring the app main directory..."
 
 ynh_restore "$install_dir"
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:$app "$install_dir"
 #=================================================
 # RESTORE THE DATA DIRECTORY
 #=================================================
@@ -32,8 +31,8 @@ chown -R $app:$app "$data_dir"
 ynh_script_progression "Restoring the NGINX web server configuration..."
 
 ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
-#add wildcard subdomain
 
+#add wildcard subdomain
 ynh_restore "/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
@@ -42,7 +41,7 @@ systemctl enable $app.service --quiet
 
 mkdir -p "/var/log/$app/"
 touch "/var/log/$app/$app.log"
-#REMOVEME? Assuming ynh_config_add_logrotate is called, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:$app /var/log/$app/
+chown -R $app:$app /var/log/$app/
 ynh_restore "/etc/logrotate.d/$app"
 
 yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port

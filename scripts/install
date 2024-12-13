@@ -33,11 +33,11 @@ ynh_app_setting_set --key=bootstrap_peers --value=$bootstrap_peers
 ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
+
 mv $install_dir/main $install_dir/garage
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 750 $install_dir
 chmod +x $install_dir/garage
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:$app "$install_dir"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -99,10 +99,8 @@ ynh_script_progression "Configuring $app's systemd service..."
 mkdir -p "/var/log/$app/"
 touch "/var/log/$app/$app.log"
 
-# Create a dedicated systemd config
 ynh_config_add_systemd
 
-# Use logrotate to manage application logfile(s)
 ynh_config_add_logrotate
 
 yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port
@@ -112,7 +110,6 @@ yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.l
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
 ynh_systemctl --service=$app --action="start" --log_path="systemd" --wait_until="Started Garage: Data Store."
 
 #=================================================

@@ -13,24 +13,19 @@ ynh_systemctl --service=$app --action="stop" --log_path="systemd"
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_script_progression "Upgrading source files..."
 
-# FIXME: this is still supported but the recommendation is now to *always* re-setup the app sources wether or not the upstream sources changed
-if ynh_app_upstream_version_changed
-then
-	ynh_script_progression "Upgrading source files..."
-	ynh_setup_source --dest_dir="$install_dir"
-    mv $install_dir/main $install_dir/garage
-fi
+ynh_setup_source --dest_dir="$install_dir" --keep="garage.toml"
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 750 $install_dir
+ mv $install_dir/main $install_dir/garage
+
 chmod +x $install_dir/garage
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:$app "$install_dir"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
 ynh_script_progression "Upgrading NGINX web server configuration..."
 
-# Create a dedicated NGINX config
 if ynh_in_ci_tests
 then
     cat << EOF > ../conf/nginx.conf
@@ -44,10 +39,8 @@ ynh_config_add_nginx
 ynh_config_add --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
-# Create a dedicated systemd config
 ynh_config_add_systemd
 
-# Use logrotate to manage app-specific logfile(s)
 ynh_config_add_logrotate
 
 yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port
@@ -55,9 +48,9 @@ yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.l
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression "Updating configuration..."
+#ynh_script_progression "Updating configuration..."
 
-ynh_config_add --template="garage.toml" --destination="$install_dir/garage.toml"
+#ynh_config_add --template="garage.toml" --destination="$install_dir/garage.toml"
 
 #=================================================
 # START SYSTEMD SERVICE

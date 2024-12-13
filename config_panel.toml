@@ -17,7 +17,7 @@ version = "1.0"
 
         [main.garage_conf.weight]
         ask = "allocated space (Gio)"
-        help = "This value is doubled used by yunohost. It set the weight of the garage node and if virtualisation is enabled, it create a virtual disk with the same size"
+        help = "This value is doubled used by yunoHost. It set the weight of the garage node and if virtualisation is enabled, it create a virtual disk with the same size"
         type = "number"
         bind = "null"
 
