@@ -17,17 +17,17 @@ version = "1.0"
 
         [main.garage_conf.weight]
         ask = "allocated space (Gio)"
-        help = "This value is doubled used by yunohost. It set the weight of the garage node and if virtualisation is enabled, it create a virtual disk with the same size"
+        help = "This value is doubled by YunoHost. It sets the weight of the Garage node and, if virtualisation is enabled, creates a virtual disc of the same size."
         type = "number"
         bind = "null"
 
         [main.garage_conf.bootstrap_peers]
         ask = "Friend serveur adress"
-        help = "add bootstrap_peers address to connect to existing cluster"
+        help = "Add bootstrap_peers address to connect to existing cluster"
         type = "string"
         bind = "null"
-        pattern.regexp =  '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' 
-        pattern.error = "friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
+        pattern.regexp =  '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}'
+        pattern.error = "Friend server id must have id with the following form: 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
 
 [danger]
 services = ["__APP__"]
