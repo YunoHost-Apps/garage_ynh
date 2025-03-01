@@ -42,5 +42,4 @@ services = ["__APP__"]
         bind = "rpc_secret:__INSTALL_DIR__/garage.toml"
         pattern.regexp = '^[0-9a-f]{64}$'
         pattern.error = "rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
-        help = "Be careful if your node is already connected to a cluster, it won't be able to connect anymore if you change the rpc_secret value"
-
+        help = "Be careful if your node is already connected to a cluster, it won't be able to connect again if you change the rpc_secret value."
