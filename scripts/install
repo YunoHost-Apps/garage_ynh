@@ -79,7 +79,8 @@ chown $app:$app "$install_dir/garage.toml"
 #=================================================
 ynh_script_progression --message="Creating a data directory..." --weight=5
 
-if system_is_inside_container
+# If we're NOT inside a container
+if ! system_is_inside_container
 then
     ynh_print_warn --message="This may take time regarding disk size..."
 	
@@ -102,6 +103,9 @@ yunohost tools regen-conf nginx
 #=================================================
 ynh_script_progression --message="Configuring a systemd service..." --weight=1
 
+mkdir -p "/var/log/$app/"
+touch "/var/log/$app/$app.log"
+
 # Create a dedicated systemd config
 ynh_add_systemd_config
 
@@ -117,8 +121,6 @@ ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 # Start a systemd service
 ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Garage: Data Store."
-
-
 
 #=================================================
 # CONFIGURE GARAGE
