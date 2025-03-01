@@ -37,7 +37,7 @@ Garage est conçu pour les clusters de stockage composés de nœuds fonctionnant
 - API K2V (expérimentale)
 
 
-**Version incluse :** 0.9.4~ynh1
+**Version incluse :** 1.0.1~ynh1
 ## Documentations et ressources
 
 - Site officiel de l’app : <https://garagehq.deuxfleurs.fr/>
