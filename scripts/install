@@ -73,7 +73,8 @@ chown $app:$app "$install_dir/garage.toml"
 #=================================================
 ynh_script_progression "Creating a data directory..."
 
-if system_is_inside_container
+# If we're NOT inside a container
+if ! system_is_inside_container
 then
     ynh_print_warn "This may take time regarding disk size..."
 
