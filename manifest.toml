@@ -54,7 +54,7 @@ ram.runtime = "50M"
     [install.weight]
     ask.en = "Number of GB to allow for storage"
     ask.fr = "Nombre de GB à allouer pour le stockage"
-    type = "number"
+    type = "string"
 
 [resources]
 
