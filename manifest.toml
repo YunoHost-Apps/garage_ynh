@@ -54,7 +54,7 @@ ram.runtime = "50M"
     [install.weight]
     ask.en = "Number of GB to allow for storage"
     ask.fr = "Nombre de GB à allouer pour le stockage"
-    type = "number"
+    type = "string"
 
 [resources]
 
@@ -90,5 +90,5 @@ ram.runtime = "50M"
 
     [resources.apt]
     packages_from_raw_bash = """
-    systemd-detect-virt -q -c && echo "qemu-utils e2fsprogs" || true
+    systemd-detect-virt -q -c && true || echo "qemu-utils e2fsprogs"
     """
