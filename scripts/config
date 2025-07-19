@@ -7,8 +7,7 @@ source /usr/share/yunohost/helpers
 # RETRIEVE ARGUMENTS
 #=================================================
 
-data_dir=$(ynh_app_setting_get $app data_dir)
-secret_node_id=$(ynh_app_setting_get $app data_dir)
+secret_node_id=$(ynh_app_setting_get --key=$app --value=data_dir)
 
 if ! system_is_inside_container
 then
