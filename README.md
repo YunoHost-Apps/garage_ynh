@@ -11,7 +11,7 @@ It shall NOT be edited by hand.
 S3 storage
 
 [![🌐 Official app website](https://img.shields.io/badge/Official_app_website-darkgreen?style=for-the-badge)](https://garagehq.deuxfleurs.fr/)
-[![Version: 1.0.1~ynh1](https://img.shields.io/badge/Version-1.0.1~ynh1-rgba(0,150,0,1)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/garage/)
+[![Version: 2.0.0~ynh1](https://img.shields.io/badge/Version-2.0.0~ynh1-rgba(0,150,0,1)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/garage/)
 
 <div align="center">
 <a href="https://apps.yunohost.org/app/garage"><img height="100px" src="https://github.com/YunoHost/yunohost-artwork/raw/refs/heads/main/badges/neopossum-badges/badge_more_info_on_the_appstore.svg"/></a>
