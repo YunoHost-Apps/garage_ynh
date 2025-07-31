@@ -2,8 +2,8 @@ packaging_format = 2
 
 id = "garage"
 name = "Garage"
-description.en = "S3 storage"
-description.fr = "stockage S3"
+description.en = "Distributed S3 storage"
+description.fr = "Stockage S3 distribué"
 
 version = "2.0.0~ynh1"
 
