@@ -4,7 +4,7 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
-GARAGE_VERSION="1.0.1"
+GARAGE_VERSION="2.1.0"
 
 system_is_inside_container() {
     systemd-detect-virt  -c -q
