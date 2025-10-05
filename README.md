@@ -8,7 +8,7 @@ It shall NOT be edited by hand.
   Garage, packaged for YunoHost
 </h1>
 
-S3 storage
+Distributed S3 storage
 
 [![🌐 Official app website](https://img.shields.io/badge/Official_app_website-darkgreen?style=for-the-badge)](https://garagehq.deuxfleurs.fr/)
 [![Version: 2.1.0~ynh1](https://img.shields.io/badge/Version-2.1.0~ynh1-rgb(18,138,11)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/garage/)
