@@ -36,6 +36,25 @@ ram.runtime = "50M"
     type = "group"
     default = "visitors"
 
+    [install.weight]
+    ask.en = "Number of GB to allow for storage"
+    ask.fr = "Nombre de Go à allouer pour le stockage"
+    type = "number"
+    help.en = "You should provide a data partition of this size and a metadata partition of at least 1% of the datasize"
+    help.fr = "Vous devriez fournir une partition de cette taille pour les données et une partition de métadonnées d'au moins 1% de la taille des données"
+
+    [install.data]
+    ask.en = "Path of the XFS Data partition"
+    ask.fr = "Chemin de la partition XFS de données"
+    type = "string"
+    example = "/dev/sda1"
+
+    [install.metadata]
+    ask.en = "Path of the BTRFS (or ZFS) Metadata partition on a SSD"
+    ask.fr = "Chemin de la partition BTRFS (ou ZFS) de métadonnées sur un SSD"
+    type = "string"
+    example = "/dev/sdb1"
+
     [install.rpc_secret]
     ask.en = "UUID of the network (rpc-secret) "
     ask.fr = "UUID de l'ilot (rpc-secret)"
@@ -50,10 +69,6 @@ ram.runtime = "50M"
     example = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@127.0.0.1:3901"
     optional = true
 
-    [install.weight]
-    ask.en = "Number of GB to allow for storage"
-    ask.fr = "Nombre de GB à allouer pour le stockage"
-    type = "string"
 
 [resources]
 

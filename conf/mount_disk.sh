@@ -13,14 +13,21 @@ then
     echo $i > $data_dir/nbd_index
     modprobe nbd max_part=$(( i + 1 ))
     qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
-    if [[ "$format" = "true" ]]
+    if [[ "$format" = "ext4" ]]
     then
         echo "formatting /dev/nbd$i"
         mkfs.ext4 /dev/nbd$i
+        mkdir -p $data_dir/data
+        chown  __APP__:__APP__  $data_dir/data
+        mount /dev/nbd$i $data_dir/data/
+    elif [[ "$format" = "btrfs" ]]
+    then
+        echo "formatting /dev/nbd$i"
+        mkfs.btrfs /dev/nbd$i
+        mkdir -p $data_dir/metadata
+        chown  __APP__:__APP__  $data_dir/metadata
+        mount /dev/nbd$i $data_dir/metadata/
     fi
-    mkdir -p $data_dir/data
-    chown  __APP__:__APP__  $data_dir/data
-    mount /dev/nbd$i $data_dir/data/
 fi
 
 
