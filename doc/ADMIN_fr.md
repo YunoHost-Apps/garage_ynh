@@ -1,13 +1,55 @@
+# Configuration recommandée
+Supposons que vous avez un SSD `/dev/sda` et une partition `/dev/sda1` formatée en `ext4` ou `btrfs` sur laquelle est installé YunoHost. Vous avez en plus un HDD ou SSD vierge `/dev/sdb` pour le stockage Garage.
+
+## Pour les données
+
+* Créer une partition `/dev/sdb1` dédiée aux Data sur un HDD ou SSD, ex. pour une partition de 4 TB (7812500000 secteurs de 512 bytes) sur `/dev/sdb` :
+
+```sudo fdisk /dev/sdb
+Command (m for help): n
+Partition number (1-128, default 1): 
+First sector (34-15628053134, default 2048): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15628053134, default 15628053134): +7812500000
+Created a new partition 1 of type 'Linux filesystem' and of size 3.6 TiB.```
+
+* Formatter en XFS `sudo mkfs.xfs -L data_xfs -m crc=1 /dev/sdb1`
+* Récupérer l'UUID de la partition
+* Editer `/etc/fstab` en ajoutant la ligne :
+
+`UUID=xxxxxxxxxxxxx /mnt/data_xfs xfs defaults 0 0`
+
+* Monter les Data Garage `/home/yunohost.app/garage/data` sur `/mnt/data_xfs/data_garage` ou `/mnt/data_xfs`
+
+## Pour les métadonnées
+
+Si la partition `/dev/sda1` où est monté `/home/yunohost.app/` est partitionnée en `btrfs` ou `zfs`, les métadonnées seront stockées directement dans `/home/yunohost.app/garage/data`. Sinon :
+
+* Créer une partition `/dev/sda2` dédiée aux métadonnées sur un SSD
+* Formatter en BTRFS (ou ZFS) `sudo mkfs.btrfs -L metadata_btrfs -m crc=1 /dev/sda1`
+* Récupérer l'UUID de la partition
+* Editer `/etc/fstab` en ajoutant la ligne:
+
+`UUID=xxxxxxxxxxxxx /mnt/metadata_btrfs btrfs defaults 0 0`
+
+* Monter les métadonnées Garage `/home/yunohost.app/garage/metadata` sur `/mnt/metadata_btrfs/metadata_garage` ou `/mnt/metadata_btrfs`
+
+
+# Autre configuration possible (déconseillé)
+
+* Possible seulement si la virtualisation qemu est disponible
+* L'app garage_ynh va essayer de créer un disque virtuel pour les data et metadata
+* Les performances sont certainement très amoindries
+* Le disque virtuel permet d'éviter que Garage dépasse l'espace disque prévu 
+
 # Limitations
 
  * Cette application n'est pas utilisable si vous ne faites pas partie d'un cluster avec un minimum de 3 autres noeuds.
  * Si vous êtes derrière un nat et que vous utilisez upnp pour configurer votre redirection de port, vous devrez peut-être ajouter des pairs via le panneau de configuration au lieu de le faire pendant l'installation et/ou créer une redirection permanente dans votre routeur/boîtier.
-
+ 
 # Informations à connaître :
 
  * Cette application fournit un noeud que vous pouvez connecter à un cluster de garage. Quelques options sont gérables par le panneau de configuration pour le noeud actuel mais il n'offre pas de moyen plus simple pour gérer les seaux et les clés. Vous devez le faire en ligne de commande ou laisser un autre noeud le gérer.
- * Cette application considère que le poids du noeud est la taille réservée au garage en G (Gigaoctets).
- * Cette application va essayer de créer un disque virtuel pour s'assurer que le garage n'utilise pas plus que ce qui est autorisé. Si la virtualisation n'est pas disponible, il est de votre responsabilité de vérifier l'espace utilisé par le garage.
+ * Il est de votre responsabilité de vérifier l'espace utilisé par garage. Normalement il ne devrait pas dépasser le "nombre de Go à allouer pour le stockage" demandé à l'installation (Poids du noeud Garage).
  * Pour se connecter depuis un autre noeud, vous pouvez avoir besoin du port RPC. Il est défini dans `rpc_bind_addr` dans votre `garage.toml`.
  * Consommation de stockage : en dehors du stockage des données, vous pouvez vous attendre à ce que les métadonnées (base de données) consomment approximativement 1% de la taille des données (1GB pour 100GB de données par exemple), ou une valeur plus importante si vous stockez beaucoup de petits objets.
 

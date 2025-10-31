@@ -71,16 +71,51 @@ chown $app:$app "$install_dir/garage.toml"
 #=================================================
 ynh_script_progression "Creating a data directory..."
 
-# If we're NOT inside a container
-if ! system_is_inside_container
+# If we're NOT inside a container and the user did not provide a Data partition
+if [[! system_is_inside_container] && ["$data"=""]]
 then
     ynh_print_warn "This may take time regarding disk size..."
 
     # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-	$install_dir/mount_disk.sh true
+	$install_dir/mount_disk.sh ext4
 	$install_dir/umount_disk.sh
+else
+    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
+    sudo mkfs.xfs -L data_xfs -m crc=1 "$data"
+    # Récupérer l'UUID de la partition
+    # Editer `/etc/fstab` en ajoutant la ligne :
+    # `UUID=xxxxxxxxxxxxx /mnt/data_xfs xfs defaults 0 0`
+    # OU `UUID=xxxxxxxxxxxxx $data_dir/data xfs defaults 0 0` ??
+    # Monter les Data Garage `$data_dir/data` sur `/mnt/data_xfs/data_garage` ou `/mnt/data_xfs`
+    mount "$data" $data_dir/data/
 fi
+
+metadata_ratio = 2 # % of the data size reserved for metadata
+metadata_size = $((0.01 * $metadata_ratio * $weight))
+# If we're NOT inside a container and the user did not provide a Metadata partition
+if [[! system_is_inside_container] && ["$metadata"=""]]
+then
+    ynh_print_warn --message="This may take time regarding disk size..."
+	
+    # We need a robust filesystem with checksuming for the Metadata, e.g. BTRFS 
+	qemu-img create -f qcow2 $data_dir/garage_metadata.qcow2 "$metadata_size"G
+	$install_dir/mount_disk.sh btrfs
+	$install_dir/umount_disk.sh
+elif [["$metadata"=""]] # If YunoHost is installed on BTRFS, we keep the metadata
+then
+    mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
+else
+    mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
+    sudo mkfs.btrfs -L metadata_btrfs -m crc=1 "$metadata"
+    # Récupérer l'UUID de la partition
+    # Editer `/etc/fstab` en ajoutant la ligne :
+    # `UUID=xxxxxxxxxxxxx /mnt/metadata_btrfs btrfs defaults 0 0`
+    # OU `UUID=xxxxxxxxxxxxx $data_dir/metadata btrfs defaults 0 0` ??
+    # Monter les Metadata Garage `$data_dir/metadata` sur `/mnt/metadata_btrfs/metadata_garage` ou `/mnt/metadata_btrfs`
+    mount "$metadata" $data_dir/metadata/
+fi
+
 
 #=================================================
 # ADD REGEN-CONF HOOK
