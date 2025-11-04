@@ -22,7 +22,7 @@ Created a new partition 1 of type 'Linux filesystem' and of size 3.6 TiB.```
 
 ## Pour les métadonnées
 
-Si la partition `/dev/sda1` où est monté `/home/yunohost.app/` est partitionnée en `btrfs` ou `zfs`, les métadonnées seront stockées directement dans `/home/yunohost.app/garage/data`. Sinon :
+Si la partition `/dev/sda1` où est monté `/home/yunohost.app/` est partitionnée en `btrfs` ou `zfs`, les métadonnées seront stockées directement dans `/home/yunohost.app/garage/metadata`. Sinon :
 
 * Créer une partition `/dev/sda2` dédiée aux métadonnées sur un SSD
 * Formatter en BTRFS (ou ZFS) `sudo mkfs.btrfs -L metadata_btrfs -m crc=1 /dev/sda1`

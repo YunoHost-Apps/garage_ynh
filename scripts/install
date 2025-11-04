@@ -84,9 +84,11 @@ else
     mkdir -p $data_dir/data # /home/yunohost.app/garage/data
     sudo mkfs.xfs -L data_xfs -m crc=1 "$data"
     # Récupérer l'UUID de la partition
+    uuid = $(sudo blkid -s UUID -o value "$data")
     # Editer `/etc/fstab` en ajoutant la ligne :
     # `UUID=xxxxxxxxxxxxx /mnt/data_xfs xfs defaults 0 0`
     # OU `UUID=xxxxxxxxxxxxx $data_dir/data xfs defaults 0 0` ??
+    echo "UUID=$uuid $data_dir/data xfs defaults 0 0" | sudo tee -a /etc/fstab
     # Monter les Data Garage `$data_dir/data` sur `/mnt/data_xfs/data_garage` ou `/mnt/data_xfs`
     mount "$data" $data_dir/data/
 fi
@@ -109,9 +111,11 @@ else
     mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
     sudo mkfs.btrfs -L metadata_btrfs -m crc=1 "$metadata"
     # Récupérer l'UUID de la partition
+    uuid = $(sudo blkid -s UUID -o value "$metadata")
     # Editer `/etc/fstab` en ajoutant la ligne :
     # `UUID=xxxxxxxxxxxxx /mnt/metadata_btrfs btrfs defaults 0 0`
     # OU `UUID=xxxxxxxxxxxxx $data_dir/metadata btrfs defaults 0 0` ??
+    echo "UUID=$uuid $data_dir/metadata btrfs defaults 0 0" | sudo tee -a /etc/fstab
     # Monter les Metadata Garage `$data_dir/metadata` sur `/mnt/metadata_btrfs/metadata_garage` ou `/mnt/metadata_btrfs`
     mount "$metadata" $data_dir/metadata/
 fi
