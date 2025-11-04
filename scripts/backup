@@ -20,6 +20,9 @@ ynh_print_info --message="Declaring files to be backed up..."
 #=================================================
 
 ynh_backup --src_path="$install_dir"
+# 
+garage meta snapshot
+ynh_backup --src_path="$data_dir/snapshots" # TODO Backup only last metadata snapshot
 
 #=================================================
 # BACKUP THE NGINX CONFIGURATION
