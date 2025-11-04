@@ -15,7 +15,8 @@ ynh_backup "$install_dir"
 # BACKUP THE DATA DIR
 #=================================================
 
-ynh_backup "$data_dir"
+garage meta snapshot
+ynh_backup "$data_dir/snapshots"
 
 #=================================================
 # BACKUP THE NGINX CONFIGURATION
