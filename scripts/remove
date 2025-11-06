@@ -37,7 +37,7 @@ fi
 ynh_config_remove_nginx
 
 #add wildcard subdomain
-ynh_replace --replace="server_name $domain" --match="server_name $domain *.$domain" --file="/etc/nginx/conf.d/$domain.conf"
+ynh_replace --match="server_name $domain" --replace="server_name $domain *.$domain" --file="/etc/nginx/conf.d/$domain.conf"
 ynh_store_file_checksum "/etc/nginx/conf.d/$domain.conf"
 
 ynh_safe_rm "/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
