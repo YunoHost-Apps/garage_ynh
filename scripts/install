@@ -94,7 +94,12 @@ else
 fi
 
 metadata_ratio = 2 # % of the data size reserved for metadata
-metadata_size = $((0.01 * $metadata_ratio * $weight))
+metadata_size = $(($metadata_ratio * ($weight+100/2) / 100)) # X / Y rounded to an int by "priming" Y : (X + Y / 2) / Y
+if [[metadata_size < 1]]
+then
+	metadata_size = 1 % we reserve at least 1G for metadata
+fi
+
 # If we're NOT inside a container and the user did not provide a Metadata partition
 if [[! system_is_inside_container] && ["$metadata"=""]]
 then
