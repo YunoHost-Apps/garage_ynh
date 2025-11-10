@@ -81,7 +81,6 @@ mount_disk() {
           #mkdir -p $data_dir/data
           chown  __APP__:__APP__  $data_dir/data
           mount /dev/nbd$i $data_dir/data/
-      fi
       elif [[ "$format" = "btrfs" ]]
       then
           qemu-nbd --connect /dev/nbd$i $data_dir/garage_metadata.qcow2
