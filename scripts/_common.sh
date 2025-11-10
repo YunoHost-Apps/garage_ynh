@@ -4,7 +4,7 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
-GARAGE_VERSION="0.9.4"
+GARAGE_VERSION="2.0.0"
 
 metadata_is_btrfs() {
     df -Th $data_dir/metadata | grep -q "btrfs"
