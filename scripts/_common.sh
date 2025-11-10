@@ -4,6 +4,12 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
+GARAGE_VERSION="0.9.4"
+
+metadata_is_btrfs() {
+    df -Th $data_dir/metadata | grep -q "btrfs"
+}
+
 system_is_inside_container() {
     systemd-detect-virt  -c -q
 }
