@@ -13,5 +13,5 @@ test_format = 1.0
     # -------------------------------
     
         args.weight = "10"
-        args.data = ""
-        args.metadata = ""
+        args.data = "no"
+        args.metadata = "no"

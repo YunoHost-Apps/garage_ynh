@@ -48,14 +48,16 @@ ram.runtime = "50M"
     ask.fr = "Chemin de la partition XFS de données"
     type = "string"
     example = "/dev/sdb1"
+    help.en = "Type `no` to mount data on a virtual drive (if possible)"
+    help.fr = "Tapez `no` pour monter les données sur un disque virtuel (si possible)"
 
     [install.metadata]
     ask.en = "Path of the BTRFS (or ZFS) Metadata partition on a SSD"
     ask.fr = "Chemin de la partition BTRFS (ou ZFS) de métadonnées sur un SSD"
     type = "string"
     example = "/dev/sda2"
-    help.en = "If /home/yunohost.app is already mounted on a BTRFS (or ZFS) partition"
-    help.fr = "Si /home/yunohost.app est déjà monté sur une partition BTRFS (or ZFS)"
+    help.en = "Type `no` if /home/yunohost.app is already mounted on a BTRFS (or ZFS) partition ou pour monter les métadonnées sur un disque virtuel (si possible)"
+    help.fr = "Tapez `no` si /home/yunohost.app est déjà monté sur une partition BTRFS (or ZFS) or to mount metadata on a virtual drive (if possible)"
 
     [install.rpc_secret]
     ask.en = "UUID of the network (rpc-secret) "
