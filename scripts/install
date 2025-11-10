@@ -76,7 +76,7 @@ chown $app:$app "$install_dir/garage.toml"
 ynh_script_progression --message="Mounting data and metadata partitions..." --weight=5
 
 # If we're NOT inside a container and the user did not provide a Data partition
-if ! system_is_inside_container && [[ "$data" == "" ]]
+if ! system_is_inside_container && [[ "$data" == "no" ]]
 then
     ynh_print_warn --message="This may take time regarding disk size..."
 	
@@ -106,11 +106,11 @@ then
 	metadata_size=1 # % we reserve at least 1G for metadata
 fi
 
-if [[ "$metadata" == "" ]] && metadata_is_btrfs   # If YunoHost is installed on BTRFS, we keep the metadata
+if [[ "$metadata" == "no" ]] && metadata_is_btrfs   # If YunoHost is installed on BTRFS, we keep the metadata
 then
     echo "No Metadata partition was provided and Metadata is already on BTRFS partition"
 # If we're NOT inside a container and the user did not provide a Metadata partition
-elif ! system_is_inside_container && [[ "$metadata" == "" ]]
+elif ! system_is_inside_container && [[ "$metadata" == "no" ]]
 then
     ynh_print_warn --message="This may take time regarding disk size..."
 	
