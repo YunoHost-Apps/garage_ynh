@@ -76,7 +76,8 @@ then
 	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
 	mount_disk "xfs"
 	umount_disk
-else
+elif [[! system_is_inside_container]]
+then
 #    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
     mkfs.xfs -L data_xfs -m crc=1 "$data"
     # Get UUID of new partition
@@ -86,6 +87,8 @@ else
     echo "UUID=$data_uuid $data_dir/data xfs defaults 0 0" | tee -a /etc/fstab
     # Mount Garage Data `$data_dir/data` on new partition
     mount -U $data_uuid $data_dir/data/
+# else we are in a container, we keep all partitions as is
+#mkdir -p $data_dir/data # /home/yunohost.app/garage/data
 fi
 
 metadata_ratio = 2 # % of the data size reserved for metadata
@@ -107,7 +110,9 @@ then
 	qemu-img create -f qcow2 $data_dir/garage_metadata.qcow2 "$metadata_size"G
 	mount_disk "btrfs"
 	umount_disk
-else
+# If we're NOT inside a container and the user did provide a Metadata partition
+elif [[! system_is_inside_container]]
+then
     #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
     mkfs.btrfs -L metadata_btrfs -m crc=1 "$metadata"
     # Get UUID of new partition
@@ -117,6 +122,8 @@ else
     echo "UUID=$metadata_uuid $data_dir/metadata btrfs defaults 0 0" | tee -a /etc/fstab
     # Mount Garage Metadata `$data_dir/metadata` on new partition
     mount -U $metadata_uuid $data_dir/metadata/
+# else we are in a container, we keep all partitions as is
+#mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
 fi
 
 
