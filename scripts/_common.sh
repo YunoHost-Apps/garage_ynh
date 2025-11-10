@@ -51,3 +51,56 @@ garage_layout_apply() {
     local layout_version=$($garage layout show 2>/dev/null | grep -Po -- "(?<=--version).*" | head -1 | xargs)
     $garage layout apply --version $layout_version
 }
+
+mount_disk() {
+  # If we're NOT inside a container
+  if ! systemd-detect-virt -c -q
+  then
+      data_dir=__DATA_DIR__
+      format=$1
+      i=0
+      while fdisk -l /dev/nbd$i  1> /dev/null 2> /dev/null
+      do
+          i=$(( i + 1 ))
+      done
+      echo $i > $data_dir/nbd_index
+      modprobe nbd max_part=$(( i + 1 ))
+      if [[ "$format" = "ext4" ]]
+      then
+          qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
+          echo "formatting /dev/nbd$i"
+          mkfs.ext4 /dev/nbd$i
+          #mkdir -p $data_dir/data
+          chown  __APP__:__APP__  $data_dir/data
+          mount /dev/nbd$i $data_dir/data/
+      elif [[ "$format" = "xfs" ]]
+      then
+          qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
+          echo "formatting /dev/nbd$i"
+          mkfs.xfs /dev/nbd$i
+          #mkdir -p $data_dir/data
+          chown  __APP__:__APP__  $data_dir/data
+          mount /dev/nbd$i $data_dir/data/
+      fi
+      elif [[ "$format" = "btrfs" ]]
+      then
+          qemu-nbd --connect /dev/nbd$i $data_dir/garage_metadata.qcow2
+          echo "formatting /dev/nbd$i"
+          mkfs.btrfs /dev/nbd$i
+          #mkdir -p $data_dir/metadata
+          chown  __APP__:__APP__  $data_dir/metadata
+          mount /dev/nbd$i $data_dir/metadata/
+      fi
+  fi
+}
+
+umount_disk() {
+  # If we're NOT inside a container
+  if ! systemd-detect-virt -c -q
+  then
+      data_dir=__DATA_DIR__
+      nbd=$(cat $data_dir/nbd_index)
+      umount  /dev/nbd$nbd
+      qemu-nbd --disconnect  /dev/nbd$nbd
+  fi
+}

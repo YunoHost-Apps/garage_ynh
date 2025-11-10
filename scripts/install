@@ -58,11 +58,7 @@ ynh_config_add_nginx
 #=================================================
 ynh_script_progression "Adding $app's configuration..."
 
-ynh_config_add --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
-ynh_config_add --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
-ynh_config_add --template="garage.toml" --destination="$install_dir/garage.toml"
-chmod +x "$install_dir/mount_disk.sh" "$install_dir/umount_disk.sh"
-
+ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
 chmod 600 "$install_dir/garage.toml"
 chown $app:$app "$install_dir/garage.toml"
 
@@ -78,8 +74,8 @@ then
 
     # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-	$install_dir/mount_disk.sh ext4
-	$install_dir/umount_disk.sh
+	mount_disk "xfs"
+	umount_disk
 else
 #    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
     mkfs.xfs -L data_xfs -m crc=1 "$data"
@@ -109,6 +105,8 @@ then
 	
     # We need a robust filesystem with checksuming for the Metadata, e.g. BTRFS 
 	qemu-img create -f qcow2 $data_dir/garage_metadata.qcow2 "$metadata_size"G
+	mount_disk "btrfs"
+	umount_disk
 else
     #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
     mkfs.btrfs -L metadata_btrfs -m crc=1 "$metadata"
