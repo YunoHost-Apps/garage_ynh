@@ -1,7 +1,7 @@
 metadata_dir = "__DATA_DIR__/metadata"
 data_dir = "__DATA_DIR__/data"
 
-metadata_auto_snapshot_interval = "1hour" # https://docs.rs/parse_duration/latest/parse_duration/#syntax
+db_engine = "lmdb"
 metadata_snapshots_dir = "__DATA_DIR__/metadata_snapshots"
 
 block_size = 1048576
