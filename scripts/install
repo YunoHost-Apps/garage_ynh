@@ -83,10 +83,12 @@ then
     # Get UUID of new partition
     data_uuid=$(blkid -s UUID -o value "$data")
     # Edit `/etc/fstab` to auto-mount Garage Data `$data_dir/data` on new partition
-    echo "# mount SSD/HDD part $data with xfs filesystem for garage" | tee -a /etc/fstab
-    echo "UUID=$data_uuid $data_dir/data xfs defaults 0 0" | tee -a /etc/fstab
+    #echo "# mount SSD/HDD part $data with xfs filesystem for garage" | tee -a /etc/fstab
+    #echo "UUID=$data_uuid $data_dir/data xfs defaults 0 0" | tee -a /etc/fstab
     # Mount Garage Data `$data_dir/data` on new partition
-    mount -U $data_uuid $data_dir/data/
+    ynh_add_systemd_config --mount=data --template=data.mount
+    yunohost service add garage_data_mounted --description="Garage Data Mounted"
+    ynh_systemd_action --service_name=garage_data_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
 # else we are in a container, we keep all partitions as is
 #mkdir -p $data_dir/data # /home/yunohost.app/garage/data
 fi
@@ -121,7 +123,9 @@ then
     echo "# mount SSD part $metadata with btrfs filesystem for garage" | tee -a /etc/fstab
     echo "UUID=$metadata_uuid $data_dir/metadata btrfs defaults 0 0" | tee -a /etc/fstab
     # Mount Garage Metadata `$data_dir/metadata` on new partition
-    mount -U $metadata_uuid $data_dir/metadata/
+    ynh_add_systemd_config --mount=metadata --template=metadata.mount
+    yunohost service add garage_metadata_mounted --description="Garage MetaData Mounted"
+    ynh_systemd_action --service_name=garage_metadata_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
 # else we are in a container, we keep all partitions as is
 #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
 fi
