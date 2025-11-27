@@ -2,8 +2,8 @@
 Description=Garage: data Store
 After=network-online.target
 Wants=network-online.target
-Requires=data.mount
-Requires=metadata.mount
+Requires=__APP___data.mount
+Requires=__APP___metadata.mount
 
 [Service]
 User=__APP__

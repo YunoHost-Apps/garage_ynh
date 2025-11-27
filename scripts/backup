@@ -15,6 +15,7 @@ ynh_backup "$install_dir"
 # BACKUP THE DATA DIR
 #=================================================
 
+# Make a snapshot of metadata using garage built-in feature
 garage meta snapshot
 ynh_backup "$data_dir/snapshots"
 

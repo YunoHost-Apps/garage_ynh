@@ -16,16 +16,13 @@ ynh_restore "$install_dir"
 #=================================================
 ynh_script_progression "Restoring the data directory..."
 
-ynh_restore "$data_dir"
+# ynh_restore "$data_dir"
 
-# If we're NOT inside a container
-if ! system_is_inside_container
-then
-    # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
-	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-	$install_dir/mount_disk.sh true
-	$install_dir/umount_disk.sh
-fi
+# Mount Data partition and add yunohost systemd service
+mount_data
+
+# Mount MetaData partition and add yunohost systemd service
+mount_metadata
 
 chown -R $app:$app "$data_dir"
 
