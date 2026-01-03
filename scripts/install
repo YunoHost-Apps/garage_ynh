@@ -111,12 +111,12 @@ yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.l
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemctl --service=$app --action="start" --log_path="systemd" --wait_until="Started Garage: Data Store."
+ynh_systemctl --service=$app --action="start" --wait_until="Started Garage: Data Store."
 
 #=================================================
 # CONFIGURE GARAGE
 #=================================================
-ynh_script_progression "Configuring garage..."
+ynh_script_progression "Configuring $app..."
 
 i=0
 # sometimes server need some time to start
