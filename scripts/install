@@ -104,7 +104,7 @@ ynh_config_add_systemd
 
 ynh_config_add_logrotate
 
-yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port
+yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports=$port
 
 #=================================================
 # START SYSTEMD SERVICE
