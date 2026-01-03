@@ -34,6 +34,8 @@ fi
 
 # Remove the dedicated systemd config
 ynh_remove_systemd_config
+ynh_remove_systemd_config --mount="$app""_data"
+ynh_remove_systemd_config --mount="$app""_metadata"
 
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
