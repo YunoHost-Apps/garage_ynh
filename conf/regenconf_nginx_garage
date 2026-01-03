@@ -8,6 +8,5 @@ domain=__DOMAIN__
 app=__APP__
 
 [[ "$action" == "pre" ]] || exit 0
-source /usr/share/yunohost/helpers
 
 ynh_replace --match="server_name $domain" --replace="server_name $domain *.$domain" --file="$pending_dir/../nginx/etc/nginx/conf.d/$domain.conf"
