@@ -1,0 +1,11 @@
+[Unit]
+Description=Garage: MetaData Store
+
+[Mount]
+What=/dev/disk/by-uuid/__METADATA_UUID__
+Where=__DATA_DIR__/metadata/
+Type=btrfs
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target
