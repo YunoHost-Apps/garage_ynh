@@ -4,8 +4,8 @@ id = "garage"
 name = "Garage"
 description.en = "Distributed S3 storage"
 description.fr = "Stockage S3 distribué"
-
 version = "2.1.0~ynh1"
+
 
 maintainers = [ "oiseauroch" ]
 
@@ -22,7 +22,6 @@ architectures = "all"
 multi_instance = true
 
 ldap = false
-
 sso = false
 
 disk = "50M"
@@ -74,6 +73,7 @@ ram.runtime = "50M"
     i386.sha256 = "fff24feca11f613e67a777dc373e9fbd6ce7361b1c1578691c1b92047c5de62c"
     armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/armv6l-unknown-linux-musleabihf/garage"
     armhf.sha256 = "4aab47c1d0e6297f6cab61994620dd23cb163a8e21fbb4775e0d029e3c2b85b5"
+
 
     [resources.ports]
     main.default = 4000

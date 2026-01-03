@@ -49,7 +49,7 @@ if [[ "${PACKAGE_CHECK_EXEC:-}" -eq 1 ]]
 then
     cat << EOF > ../conf/nginx.conf
 location / {
-    return 200 'This is a dummy page for garage, only displayed during tests on Yunohost CI';
+    return 200 'This is a dummy page for Garage, only displayed during tests on YunoHost CI';
 }
 EOF
 fi
