@@ -31,7 +31,7 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd"
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading source files..." --weight=1
-	ynh_setup_source --dest_dir="$install_dir"
+	ynh_setup_source --dest_dir="$install_dir" --source_id=binaries
     mv $install_dir/main $install_dir/garage
 fi
 
