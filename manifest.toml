@@ -65,6 +65,7 @@ ram.runtime = "50M"
     [resources.sources.binaries] #Actual app binaries used in this package 
     in_subdir = false
     extract = false
+    rename = "garage" #ynh_setup_source() will rename it "binaries" so this is to give it back its original name
     amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
     amd64.sha256 = "543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
     arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/aarch64-unknown-linux-musl/garage"
