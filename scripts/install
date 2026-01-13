@@ -65,29 +65,21 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-ynh_add_config --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
-ynh_add_config --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
 ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
-chmod +x "$install_dir/mount_disk.sh" "$install_dir/umount_disk.sh"
-
 chmod 600 "$install_dir/garage.toml"
 chown $app:$app "$install_dir/garage.toml"
 
 #=================================================
-# CREATE DATA DIRECTORY
+# MOUNT DATA AND METADATA PARTITIONS
 #=================================================
-ynh_script_progression --message="Creating a data directory..." --weight=5
+ynh_script_progression --message="Mounting data and metadata partitions..." --weight=5
 
-# If we're NOT inside a container
-if ! system_is_inside_container
-then
-    ynh_print_warn --message="This may take time regarding disk size..."
-	
-    # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
-	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-	$install_dir/mount_disk.sh true
-	$install_dir/umount_disk.sh
-fi
+# Mount Data partition and add yunohost systemd service
+mount_data
+
+# Mount MetaData partition and add yunohost systemd service
+mount_metadata
+
 
 #=================================================
 # ADD REGEN-CONF HOOK
