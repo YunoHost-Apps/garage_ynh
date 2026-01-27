@@ -34,8 +34,6 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
-mv $install_dir/main $install_dir/garage
-
 chmod +x $install_dir/garage
 
 #=================================================
