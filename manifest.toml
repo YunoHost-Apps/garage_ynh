@@ -4,7 +4,7 @@ id = "garage"
 name = "Garage"
 description.en = "Distributed S3 storage"
 description.fr = "Stockage S3 distribué"
-version = "2.1.0~ynh1"
+version = "2.2.0~ynh1"
 
 
 maintainers = [ "oiseauroch" ]
@@ -58,8 +58,8 @@ ram.runtime = "50M"
 [resources]
 
     [resources.sources.main] #Dummy source to get notified of new release by the bot
-    url = "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.1.0.tar.gz"
-    sha256 = "63b2a0a513464136728bb50a91b40a5911fc25603f3c3e54fe030c01ea5a6084"
+    url = "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.2.0.tar.gz"
+    sha256 = "e68b05d4358008e8b29a0ac235f73e3a12d97d9c6388c330b87282db774c04dc"
     autoupdate.strategy = "latest_forgejo_release"
 
     [resources.sources.binaries] #Actual app binaries used in this package 
