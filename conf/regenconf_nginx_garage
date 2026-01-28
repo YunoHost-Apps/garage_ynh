@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /usr/share/yunohost/helpers
+YNH_HELPERS_VERSION="2.1" source /usr/share/yunohost/helpers
 
 action=$1
 pending_dir=$4
