@@ -32,9 +32,7 @@ ynh_app_setting_set --key=bootstrap_peers --value=$bootstrap_peers
 #=================================================
 ynh_script_progression "Setting up source files..."
 
-ynh_setup_source --dest_dir="$install_dir"
-
-mv $install_dir/main $install_dir/garage
+ynh_setup_source --dest_dir="$install_dir" --source_id="binaries" # resources.sources.main is a dummy source, see manifest.toml
 
 chmod +x $install_dir/garage
 
@@ -111,7 +109,7 @@ yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.l
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemctl --service=$app --action="start" --wait_until="Started Garage: Data Store."
+ynh_systemctl --service=$app --action="start" --wait_until="Web server listening on"
 
 #=================================================
 # CONFIGURE GARAGE
