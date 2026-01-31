@@ -4,7 +4,7 @@ id = "garage"
 name = "Garage"
 description.en = "Distributed S3 storage"
 description.fr = "Stockage S3 distribué"
-version = "2.1.0~ynh1"
+version = "2.2.0~ynh1"
 
 maintainers = [ "oiseauroch" ]
 
@@ -67,14 +67,14 @@ ram.runtime = "50M"
     extract = false
     rename = "garage"
     prefetch = false
-    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
-    amd64.sha256 = "543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
-    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/aarch64-unknown-linux-musl/garage"
-    arm64.sha256 = "65a1bedc9b6d5a2df788b55e81cb0013129326478fd94cf83a844ab278e8055f"
-    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/i686-unknown-linux-musl/garage"
-    i386.sha256 = "fff24feca11f613e67a777dc373e9fbd6ce7361b1c1578691c1b92047c5de62c"
-    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/armv6l-unknown-linux-musleabihf/garage"
-    armhf.sha256 = "4aab47c1d0e6297f6cab61994620dd23cb163a8e21fbb4775e0d029e3c2b85b5"
+    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/x86_64-unknown-linux-musl/garage"
+    amd64.sha256 = "ec761bb996e8453e86fe68ccc1cf222c73bb1ef05ae0b540bd4827e7d1931aab"
+    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/aarch64-unknown-linux-musl/garage"
+    arm64.sha256 = "3922bd3524e5267587a27fec91e4d8447353113ea3a55e2d1786a53d7529d1da"
+    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/i686-unknown-linux-musl/garage"
+    i386.sha256 = "ee221f20d5685631489711aa2bf5ee4af321d3eab4a5cc6e558136bbea7f773b"
+    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/armv6l-unknown-linux-musleabihf/garage"
+    armhf.sha256 = "12210b773e0dff921c89b8894c0dc66e2cbc6cd6c2574f409f8405de2f7945b5"
 
     [resources.ports]
     main.default = 4000
