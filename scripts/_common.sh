@@ -1,10 +1,8 @@
 #!/bin/bash
 
 #=================================================
-# COMMON VARIABLES
+# COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
-
-GARAGE_VERSION="0.9.4"
 
 system_is_inside_container() {
     systemd-detect-virt  -c -q
@@ -20,10 +18,6 @@ else
     comment_if_system_is_inside_container=""
 fi
 
-#=================================================
-# PERSONAL HELPERS
-#=================================================
-
 garage="$install_dir/garage -c $install_dir/garage.toml"
 
 garage_connect() {
@@ -35,17 +29,16 @@ garage_connect() {
   local i=0
   until $garage layout show 2>/dev/null | grep "${peer:0:15}"; do
     i=$(( i + 1 ))
-    [ $i -le 30 ] || ynh_die --message="Unable to get layout from remote peer"
+    [ $i -le 30 ] || ynh_die "Unable to get layout from remote peer"
     sleep 1
   done
 }
-
 
 garage_layout_apply() {
 	$garage layout show 2>/dev/null
 	if $garage layout show | grep -q 'This new layout cannot yet be applied'
 	then
-        ynh_print_warn --message="Unable to apply layout. No enough nodes"
+        ynh_print_warn "Unable to apply layout. No enough nodes"
 		return 0
     fi
 
