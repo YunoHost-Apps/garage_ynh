@@ -67,8 +67,16 @@ chmod 600 "$install_dir/garage.toml"
 chown $app:$app "$install_dir/garage.toml"
 
 #=================================================
-# CREATE DATA DIRECTORY
+# MOUNT DATA AND METADATA PARTITIONS
 #=================================================
+ynh_script_progression "Mounting data and metadata partitions..."
+
+# Mount Data partition and add yunohost systemd service
+mount_data
+
+# Mount MetaData partition and add yunohost systemd service
+mount_metadata
+
 ynh_script_progression "Creating a data directory..."
 
 # If we're NOT inside a container
