@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -15,41 +9,40 @@ source /usr/share/yunohost/helpers
 
 if [[ -n "$rpc_secret" ]]
 then
-	echo "$rpc_secret" | grep -E ^[0-9a-f]{64}$ || ynh_die --message="rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
+	echo "$rpc_secret" | grep -E ^[0-9a-f]{64}$ || ynh_die "rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
 else
-	rpc_secret=$(ynh_string_random 32| od -A n -t x -w64 | sed 's/ //g')
+	rpc_secret=$(ynh_string_random --length=32| od -A n -t x -w64 | sed 's/ //g')
 fi
-if [ -n "$bootstrap_peers" ] 
+if [ -n "$bootstrap_peers" ]
+
 then
-	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' || ynh_die --message="friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
+	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' || ynh_die "friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
 fi
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..." --weight=1
+ynh_script_progression "Storing installation settings..."
 
-ynh_app_setting_set --app=$app --key=rpc_secret --value=$rpc_secret
-ynh_app_setting_set --app=$app --key=bootstrap_peers --value=$bootstrap_peers
+ynh_app_setting_set --key=rpc_secret --value=$rpc_secret
+ynh_app_setting_set --key=bootstrap_peers --value=$bootstrap_peers
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --weight=1
+ynh_script_progression "Setting up source files..."
 
-ynh_setup_source --dest_dir="$install_dir" --source_id=binaries
+ynh_setup_source --dest_dir="$install_dir" --source_id="binaries" # resources.sources.main is a dummy source, see manifest.toml
 
-chmod 750 $install_dir
 chmod +x $install_dir/garage
-chown -R $app:$app "$install_dir"
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring NGINX web server..." --weight=1
+ynh_script_progression "Configuring NGINX web server..."
 
 # Create a dedicated NGINX config
-if [[ "${PACKAGE_CHECK_EXEC:-}" -eq 1 ]]
+if ynh_in_ci_tests
 then
     cat << EOF > ../conf/nginx.conf
 location / {
@@ -58,16 +51,16 @@ location / {
 EOF
 fi
 
-ynh_add_nginx_config
+ynh_config_add_nginx
 
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding a configuration file..." --weight=1
+ynh_script_progression "Adding $app's configuration..."
 
-ynh_add_config --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
-ynh_add_config --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
-ynh_add_config --template="garage.toml" --destination="$install_dir/garage.toml"
+ynh_config_add --template="mount_disk.sh" --destination="$install_dir/mount_disk.sh"
+ynh_config_add --template="umount_disk.sh" --destination="$install_dir/umount_disk.sh"
+ynh_config_add --template="garage.toml" --destination="$install_dir/garage.toml"
 chmod +x "$install_dir/mount_disk.sh" "$install_dir/umount_disk.sh"
 
 chmod 600 "$install_dir/garage.toml"
@@ -76,13 +69,13 @@ chown $app:$app "$install_dir/garage.toml"
 #=================================================
 # CREATE DATA DIRECTORY
 #=================================================
-ynh_script_progression --message="Creating a data directory..." --weight=5
+ynh_script_progression "Creating a data directory..."
 
 # If we're NOT inside a container
 if ! system_is_inside_container
 then
-    ynh_print_warn --message="This may take time regarding disk size..."
-	
+    ynh_print_warn "This may take time regarding disk size..."
+
     # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
 	qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
 	$install_dir/mount_disk.sh true
@@ -92,69 +85,66 @@ fi
 #=================================================
 # ADD REGEN-CONF HOOK
 #=================================================
-ynh_script_progression --message="Adding regen-conf hook..." --weight=1
+ynh_script_progression "Adding regen-conf hook..."
 
-ynh_add_config --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
+ynh_config_add --template="regenconf_nginx_garage" --destination="/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 yunohost tools regen-conf nginx
 
 #=================================================
 # SETUP SYSTEMD
 #=================================================
-ynh_script_progression --message="Configuring a systemd service..." --weight=1
+ynh_script_progression "Configuring $app's systemd service..."
 
 mkdir -p "/var/log/$app/"
 touch "/var/log/$app/$app.log"
 
-# Create a dedicated systemd config
-ynh_add_systemd_config
+ynh_config_add_systemd
 
-# Use logrotate to manage application logfile(s)
-ynh_use_logrotate
+ynh_config_add_logrotate
 
-yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports $port
+yunohost service add $app --description="s3 storage" --log="/var/log/$app/$app.log" --needs_exposed_ports=$port
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Garage: Data Store."
+ynh_systemctl --service=$app --action="start" --wait_until="Web server listening on"
 
 #=================================================
 # CONFIGURE GARAGE
 #=================================================
-ynh_script_progression --message="Configuring garage..." --weight=1
+ynh_script_progression "Configuring $app..."
 
 i=0
 # sometimes server need some time to start
 while [ -z "$($garage node id -q 2>/dev/null | cut -d '@' -f1)" ]; do
     i=$(( i + 1 ))
-    [ $i -le 30 ] || { $garage node id || true; ynh_die --message="unable to get node id"; }
+    [ $i -le 30 ] || { $garage node id || true; ynh_die "unable to get node id"; }
     sleep 1
 done
 
 secret_node_id=$($garage node id -q 2>/dev/null | cut -d '@' -f1)
-ynh_app_setting_set --app=$app --key=secret_node_id --value=$secret_node_id
-
+ynh_app_setting_set --key=secret_node_id --value=$secret_node_id
 
 # define node
 $garage layout assign $secret_node_id -z $domain -c ${weight}GB -t $domain
 # if there is enough node, apply layout
 garage_layout_apply
 
-if [ -n "$bootstrap_peers" ] 
+if [ -n "$bootstrap_peers" ]
+
 then
 	garage_connect "$bootstrap_peers"
 fi
 
 self_bootstrap_peers="$($garage node id --quiet)"
-ynh_app_setting_set --app=$app --key=self_bootstrap_peers --value=$self_bootstrap_peers
+ynh_app_setting_set --key=self_bootstrap_peers --value=$self_bootstrap_peers
 garage_layout="$($garage layout show)"
-ynh_app_setting_set --app=$app --key=garage_layout --value="$garage_layout"
+ynh_app_setting_set --key=garage_layout --value="$garage_layout"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression "Installation of $app completed"
