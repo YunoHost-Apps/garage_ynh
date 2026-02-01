@@ -1,10 +1,10 @@
 #!/bin/bash
 
+source /usr/share/yunohost/helpers
+
 #=================================================
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
-
-GARAGE_VERSION="2.0.0"
 
 metadata_is_btrfs() {
     df -Th $data_dir/metadata | grep -q "btrfs"
@@ -56,7 +56,7 @@ mount_data() {
     # If we're NOT inside a container and the user did not provide a Data partition
     if ! system_is_inside_container && [[ "$data" == "no" ]]
     then
-        ynh_print_warn --message="This may take time regarding disk size..."
+        ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
         
         # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
@@ -64,6 +64,7 @@ mount_data() {
         umount_disk
     elif ! system_is_inside_container
     then
+        ynh_print_info "Mounting Garage Data with systemd..."
     #    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
         mkfs.xfs -L data_xfs -m crc=1 "$data"
         # Get UUID of new partition
@@ -94,7 +95,7 @@ mount_metadata() {
     # If we're NOT inside a container and the user did not provide a Metadata partition
     elif ! system_is_inside_container && [[ "$metadata" == "no" ]]
     then
-        ynh_print_warn --message="This may take time regarding disk size..."
+        ynh_print_warn "Creating garage_metadata.qcow2 may take time regarding disk size..."
         
         # We need a robust filesystem with checksuming for the Metadata, e.g. BTRFS 
         qemu-img create -f qcow2 $data_dir/garage_metadata.qcow2 "$metadata_size"G
@@ -103,6 +104,7 @@ mount_metadata() {
     # If we're NOT inside a container and the user did provide a Metadata partition
     elif ! system_is_inside_container
     then
+        ynh_print_info "Mounting Garage MetaData with systemd..."
         #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
         mkfs.btrfs -L metadata_btrfs -m crc=1 "$metadata"
         # Get UUID of new partition
@@ -157,6 +159,8 @@ mount_disk() {
           chown  __APP__:__APP__  $data_dir/metadata
           mount /dev/nbd$i $data_dir/metadata/
       fi
+  else
+  ynh_die "Cannot mount_disk qcow as we are in a container"
   fi
 }
 
