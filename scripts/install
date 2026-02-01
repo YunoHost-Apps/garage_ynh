@@ -23,6 +23,7 @@ comment_if_no_data_mount=""
 comment_if_no_metadata_mount=""
 comment_if_system_is_inside_container=""
 if [[ "$data" == "no" ]]
+then
     comment_if_no_data_mount="#"
 fi
 if [[ "$metadata" == "no" ]]
