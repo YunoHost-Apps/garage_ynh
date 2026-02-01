@@ -20,6 +20,8 @@ garage_meta_snapshot() {
 
 garage_meta_snapshot_restore() {
 # find how to restore metdata snapshot
+last_snapshot=$(ls -t $data_dir/snapshots | head -n1)
+cp -r $data_dir/snapshots/last_snapshot $data_dir/metadata/db.lmdb
 }
 
 garage_connect() {
