@@ -14,16 +14,6 @@ system_is_inside_container() {
     systemd-detect-virt  -c -q
 }
 
-if system_is_inside_container
-then
-    # used to comment systemd isolation to allow mount disk
-    system_is_inside_container_bool="true"
-    comment_if_system_is_inside_container="#"
-else
-    system_is_inside_container_bool="false"
-    comment_if_system_is_inside_container=""
-fi
-
 garage="$install_dir/garage -c $install_dir/garage.toml"
 
 garage_connect() {
@@ -123,9 +113,8 @@ mount_metadata() {
 
 mount_disk() {
   # If we're NOT inside a container
-  if ! systemd-detect-virt -c -q
+  if ! system_is_inside_container
   then
-      data_dir=__DATA_DIR__
       format=$1
       i=0
       while fdisk -l /dev/nbd$i  1> /dev/null 2> /dev/null
@@ -140,7 +129,7 @@ mount_disk() {
           echo "formatting /dev/nbd$i"
           mkfs.ext4 /dev/nbd$i
           #mkdir -p $data_dir/data
-          chown  __APP__:__APP__  $data_dir/data
+          chown $app:$app $data_dir/data
           mount /dev/nbd$i $data_dir/data/
       elif [[ "$format" = "xfs" ]]
       then
@@ -148,7 +137,7 @@ mount_disk() {
           echo "formatting /dev/nbd$i"
           mkfs.xfs /dev/nbd$i
           #mkdir -p $data_dir/data
-          chown  __APP__:__APP__  $data_dir/data
+          chown  $app:$app  $data_dir/data
           mount /dev/nbd$i $data_dir/data/
       elif [[ "$format" = "btrfs" ]]
       then
@@ -156,7 +145,7 @@ mount_disk() {
           echo "formatting /dev/nbd$i"
           mkfs.btrfs /dev/nbd$i
           #mkdir -p $data_dir/metadata
-          chown  __APP__:__APP__  $data_dir/metadata
+          chown  $app:$app  $data_dir/metadata
           mount /dev/nbd$i $data_dir/metadata/
       fi
   else
@@ -166,9 +155,8 @@ mount_disk() {
 
 umount_disk() {
   # If we're NOT inside a container
-  if ! systemd-detect-virt -c -q
+  if ! system_is_inside_container
   then
-      data_dir=__DATA_DIR__
       nbd=$(cat $data_dir/nbd_index)
       umount  /dev/nbd$nbd
       qemu-nbd --disconnect  /dev/nbd$nbd
