@@ -14,18 +14,26 @@ system_is_inside_container() {
 
 garage="$install_dir/garage -c $install_dir/garage.toml"
 
+garage_meta_snapshot() {
+    $garage meta snapshot
+}
+
+garage_meta_snapshot_restore() {
+# find how to restore metdata snapshot
+}
+
 garage_connect() {
-  local peer="$1"
-  # connect to cluster
-  $garage node connect "$peer"
-  sleep 2
-  # wait until layout is updated
-  local i=0
-  until $garage layout show 2>/dev/null | grep "${peer:0:15}"; do
-    i=$(( i + 1 ))
-    [ $i -le 30 ] || ynh_die "Unable to get layout from remote peer"
-    sleep 1
-  done
+    local peer="$1"
+    # connect to cluster
+    $garage node connect "$peer"
+    sleep 2
+    # wait until layout is updated
+    local i=0
+    until $garage layout show 2>/dev/null | grep "${peer:0:15}"; do
+        i=$(( i + 1 ))
+        [ $i -le 30 ] || ynh_die "Unable to get layout from remote peer"
+        sleep 1
+    done
 }
 
 garage_layout_apply() {

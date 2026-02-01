@@ -31,11 +31,11 @@ ynh_config_remove_systemd --mount="$app""_metadata"
 
 ynh_config_remove_logrotate
 
-if system_is_inside_container
+if ! $app_install_inside_container && ([[ "$data" == "no" ]] || [[ "$metadata" == "no" ]])
 then
 	ynh_script_progression "Umount virtual disk..."
 	# Remove the app directory securely
-	$install_dir/umount_disk.sh
+	umount_disk
 fi
 
 ynh_config_remove_nginx
