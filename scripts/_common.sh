@@ -42,7 +42,7 @@ garage_layout_apply() {
 
 mount_data() {
     # If we're NOT inside a container and the user did not provide a Data partition
-    if ! system_is_inside_container && [[ "$data" == "no" ]]
+    if ! $app_install_inside_container && [[ "$data" == "no" ]]
     then
         ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
         
@@ -50,7 +50,7 @@ mount_data() {
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
         mount_disk "xfs"
         umount_disk
-    elif ! system_is_inside_container
+    elif ! $app_install_inside_container
     then
         ynh_print_info "Mounting Garage Data with systemd..."
     #    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
@@ -81,7 +81,7 @@ mount_metadata() {
     then
         echo "No Metadata partition was provided and Metadata is already on BTRFS partition"
     # If we're NOT inside a container and the user did not provide a Metadata partition
-    elif ! system_is_inside_container && [[ "$metadata" == "no" ]]
+    elif ! $app_install_inside_container && [[ "$metadata" == "no" ]]
     then
         ynh_print_warn "Creating garage_metadata.qcow2 may take time regarding disk size..."
         
@@ -90,7 +90,7 @@ mount_metadata() {
         mount_disk "btrfs"
         umount_disk
     # If we're NOT inside a container and the user did provide a Metadata partition
-    elif ! system_is_inside_container
+    elif ! $app_install_inside_container
     then
         ynh_print_info "Mounting Garage MetaData with systemd..."
         #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
@@ -111,7 +111,7 @@ mount_metadata() {
 
 mount_disk() {
   # If we're NOT inside a container
-  if ! system_is_inside_container
+  if ! $app_install_inside_container
   then
       format=$1
       i=0
@@ -153,7 +153,7 @@ mount_disk() {
 
 umount_disk() {
   # If we're NOT inside a container
-  if ! system_is_inside_container
+  if ! $app_install_inside_container
   then
       nbd=$(cat $data_dir/nbd_index)
       umount  /dev/nbd$nbd
