@@ -67,12 +67,14 @@ chown $app:$app "$install_dir/garage.toml"
 #=================================================
 ynh_script_progression "Mounting data and metadata partitions..."
 
-# Mount Data partition and add yunohost systemd service
-mount_data
+if ! ynh_in_ci_tests
+then
+    # Mount Data partition and add yunohost systemd service
+    mount_data
 
-# Mount MetaData partition and add yunohost systemd service
-mount_metadata
-
+    # Mount MetaData partition and add yunohost systemd service
+    mount_metadata
+fi
 
 #=================================================
 # ADD REGEN-CONF HOOK
