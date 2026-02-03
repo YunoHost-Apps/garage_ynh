@@ -1,11 +1,13 @@
 [Unit]
-Description=Garage: Data Store
+Description=Garage: Data Mount
 
 [Mount]
 What=/dev/disk/by-uuid/__DATA_UUID__
 Where=__DATA_DIR__/data/
 Type=xfs
 Options=defaults
+StandardOutput=append:/var/log/__APP__/__APP__.log
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target
