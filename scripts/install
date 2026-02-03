@@ -49,8 +49,6 @@ fi
 #=================================================
 ynh_script_progression "Storing installation settings..."
 
-ynh_app_setting_set --key=rpc_secret --value=$rpc_secret
-ynh_app_setting_set --key=bootstrap_peers --value=$bootstrap_peers
 ynh_app_setting_set --key=app_install_inside_container --value=$app_install_inside_container
 
 #=================================================
