@@ -60,6 +60,10 @@ mount_data() {
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
         mount_disk "xfs"
         umount_disk
+        # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
+        ynh_config_add_systemd --mount="$app""_data" --template=data.mount
+        yunohost service add garage_data_mounted --description="Garage Data Mounted" --log="/var/log/$app/$app.log"
+        ynh_systemctl --service=garage_data_mounted --action="start" # --wait_until="Started Garage: Data Mount"
     elif ! $app_install_inside_container
     then
         ynh_print_info "Mounting Garage Data with systemd..."
@@ -72,8 +76,8 @@ mount_data() {
         #echo "UUID=$data_uuid $data_dir/data xfs defaults 0 0" | tee -a /etc/fstab
         # Mount Garage Data `$data_dir/data` on new partition
         ynh_config_add_systemd --mount="$app""_data" --template=data.mount
-        yunohost service add garage_data_mounted --description="Garage Data Mounted"
-        ynh_systemctl --service=garage_data_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
+        yunohost service add garage_data_mounted --description="Garage Data Mounted" --log="/var/log/$app/$app.log"
+        ynh_systemctl --service=garage_data_mounted --action="start" # --wait_until="Started Garage: Data Store"
     # else we are in a container, we keep all partitions as is
     #mkdir -p $data_dir/data # /home/yunohost.app/garage/data
     fi
@@ -87,18 +91,21 @@ mount_metadata() {
         metadata_size=1 # % we reserve at least 1G for metadata
     fi
 
-    if [[ "$metadata" == "no" ]] && metadata_is_btrfs   # If YunoHost is installed on BTRFS, we keep the metadata
+    if [[ "$metadata" == "no" ]] # If YunoHost is installed on BTRFS, we keep the metadata
     then
-        echo "No Metadata partition was provided and Metadata is already on BTRFS partition"
-    # If we're NOT inside a container and the user did not provide a Metadata partition
-    elif ! $app_install_inside_container && [[ "$metadata" == "no" ]]
-    then
-        ynh_print_warn "Creating garage_metadata.qcow2 may take time regarding disk size..."
+        echo "No Metadata partition was provided or we are in a container, we keep all partitions as is"
+    # if [[ "$metadata" == "no" ]] && metadata_is_btrfs   # If YunoHost is installed on BTRFS, we keep the metadata
+    # then
+    #     echo "No Metadata partition was provided and Metadata is already on BTRFS partition"
+    # # If we're NOT inside a container and the user did not provide a Metadata partition
+    # elif ! $app_install_inside_container && [[ "$metadata" == "no" ]]
+    # then
+    #     ynh_print_warn "Creating garage_metadata.qcow2 may take time regarding disk size..."
         
-        # We need a robust filesystem with checksuming for the Metadata, e.g. BTRFS 
-        qemu-img create -f qcow2 $data_dir/garage_metadata.qcow2 "$metadata_size"G
-        mount_disk "btrfs"
-        umount_disk
+    #     # We need a robust filesystem with checksuming for the Metadata, e.g. BTRFS 
+    #     qemu-img create -f qcow2 $data_dir/garage_metadata.qcow2 "$metadata_size"G
+    #     mount_disk "btrfs"
+    #     umount_disk
     # If we're NOT inside a container and the user did provide a Metadata partition
     elif ! $app_install_inside_container
     then
@@ -112,61 +119,62 @@ mount_metadata() {
         echo "UUID=$metadata_uuid $data_dir/metadata btrfs defaults 0 0" | tee -a /etc/fstab
         # Mount Garage Metadata `$data_dir/metadata` on new partition
         ynh_config_add_systemd --mount="$app""_metadata" --template=metadata.mount
-        yunohost service add garage_metadata_mounted --description="Garage MetaData Mounted"
-        ynh_systemctl --service=garage_metadata_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
+        yunohost service add garage_metadata_mounted --description="Garage MetaData Mounted" --log="/var/log/$app/$app.log"
+        ynh_systemctl --service=garage_metadata_mounted --action="start" # --wait_until="Started Garage: MetaData Mount"
     # else we are in a container, we keep all partitions as is
     #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
     fi
 }
 
 mount_disk() {
-  # If we're NOT inside a container
-  if ! $app_install_inside_container
-  then
-      format=$1
-      i=0
-      while fdisk -l /dev/nbd$i  1> /dev/null 2> /dev/null
-      do
-          i=$(( i + 1 ))
-      done
-      echo $i > $data_dir/nbd_index
-      modprobe nbd max_part=$(( i + 1 ))
-      if [[ "$format" = "ext4" ]]
-      then
-          qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
-          echo "formatting /dev/nbd$i"
-          mkfs.ext4 /dev/nbd$i
-          #mkdir -p $data_dir/data
-          chown $app:$app $data_dir/data
-          mount /dev/nbd$i $data_dir/data/
-      elif [[ "$format" = "xfs" ]]
-      then
-          qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
-          echo "formatting /dev/nbd$i"
-          mkfs.xfs /dev/nbd$i
-          #mkdir -p $data_dir/data
-          chown  $app:$app  $data_dir/data
-          mount /dev/nbd$i $data_dir/data/
-      elif [[ "$format" = "btrfs" ]]
-      then
-          qemu-nbd --connect /dev/nbd$i $data_dir/garage_metadata.qcow2
-          echo "formatting /dev/nbd$i"
-          mkfs.btrfs /dev/nbd$i
-          #mkdir -p $data_dir/metadata
-          chown  $app:$app  $data_dir/metadata
-          mount /dev/nbd$i $data_dir/metadata/
-      fi
-  else
-  ynh_die "Cannot mount_disk qcow as we are in a container"
-  fi
+    # If we're NOT inside a container
+    if ! $app_install_inside_container
+    then
+        format=$1
+        i=0
+        while fdisk -l /dev/nbd$i  1> /dev/null 2> /dev/null
+        do
+            i=$(( i + 1 ))
+        done
+        echo $i > $data_dir/nbd_index
+        modprobe nbd max_part=$(( i + 1 ))
+        if [[ "$format" = "ext4" ]]
+        then
+            qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
+            echo "formatting /dev/nbd$i"
+            mkfs.ext4 /dev/nbd$i
+            mount /dev/nbd$i $data_dir/data/
+            data_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
+        elif [[ "$format" = "xfs" ]]
+        then
+            qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
+            echo "formatting /dev/nbd$i"
+            mkfs.xfs /dev/nbd$i
+            mount /dev/nbd$i $data_dir/data/
+            data_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
+        elif [[ "$format" = "btrfs" ]]
+        then
+            qemu-nbd --connect /dev/nbd$i $data_dir/garage_metadata.qcow2
+            echo "formatting /dev/nbd$i"
+            mkfs.btrfs /dev/nbd$i
+            mount /dev/nbd$i $data_dir/metadata/
+            metadata_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
+        else
+            qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
+            mount /dev/nbd$i $data_dir/data/
+            metadata_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
+        fi
+    else
+        ynh_die "Cannot mount_disk qcow as we are in a container"
+    fi
 }
 
 umount_disk() {
-  # If we're NOT inside a container
-  if ! $app_install_inside_container
-  then
-      nbd=$(cat $data_dir/nbd_index)
-      umount  /dev/nbd$nbd
-      qemu-nbd --disconnect  /dev/nbd$nbd
-  fi
+    # If we're NOT inside a container
+    if ! $app_install_inside_container
+    then
+        nbd=$(cat $data_dir/nbd_index)
+        umount  /dev/nbd$nbd
+        qemu-nbd --disconnect  /dev/nbd$nbd
+    fi
 }
