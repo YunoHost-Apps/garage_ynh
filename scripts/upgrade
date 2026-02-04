@@ -22,8 +22,8 @@ then
         # mkdir $data_dir/data
         # chown -R $app:$app $data_dir
         ynh_config_add_systemd --mount="${app}_data" --template="data.mount"
-        yunohost service add garage_data_mounted --description="Garage Data Mounted"
-        ynh_systemctl --service=garage_data_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
+        yunohost service add "${app}_data.mount" --description="Garage Data Mounted" --log="/var/log/$app/$app.log"
+        ynh_systemctl --service="${app}_data.mount" --action="start" # --line_match="Started Garage: Data Store."
     else
         app_install_inside_container=true
         # comment_if_no_data_mount="#"
