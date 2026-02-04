@@ -73,7 +73,7 @@ mount_data() {
         mount_disk "xfs"
         # umount_disk
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
-        ynh_config_add_systemd --mount="$app""_data" --template=data.mount
+        ynh_config_add_systemd --mount="${app}_data" --template="data.mount"
         yunohost service add garage_data_mounted --description="Garage Data Mounted" --log="/var/log/$app/$app.log"
         ynh_systemctl --service=garage_data_mounted --action="start" # --wait_until="Started Garage: Data Mount"
     elif ! $app_install_inside_container
@@ -87,7 +87,7 @@ mount_data() {
         #echo "# mount SSD/HDD part $data with xfs filesystem for garage" | tee -a /etc/fstab
         #echo "UUID=$data_uuid $data_dir/data xfs defaults 0 0" | tee -a /etc/fstab
         # Mount Garage Data `$data_dir/data` on new partition
-        ynh_config_add_systemd --mount="$app""_data" --template=data.mount
+        ynh_config_add_systemd --mount="${app}_data" --template="data.mount"
         yunohost service add garage_data_mounted --description="Garage Data Mounted" --log="/var/log/$app/$app.log"
         ynh_systemctl --service=garage_data_mounted --action="start" # --wait_until="Started Garage: Data Store"
     # else we are in a container, we keep all partitions as is
@@ -130,7 +130,7 @@ mount_metadata() {
         echo "# mount SSD part $metadata with btrfs filesystem for garage" | tee -a /etc/fstab
         echo "UUID=$metadata_uuid $data_dir/metadata btrfs defaults 0 0" | tee -a /etc/fstab
         # Mount Garage Metadata `$data_dir/metadata` on new partition
-        ynh_config_add_systemd --mount="$app""_metadata" --template=metadata.mount
+        ynh_config_add_systemd --mount="${app}_metadata" --template="metadata.mount"
         yunohost service add garage_metadata_mounted --description="Garage MetaData Mounted" --log="/var/log/$app/$app.log"
         ynh_systemctl --service=garage_metadata_mounted --action="start" # --wait_until="Started Garage: MetaData Mount"
     # else we are in a container, we keep all partitions as is

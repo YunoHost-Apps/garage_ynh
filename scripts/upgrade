@@ -20,7 +20,7 @@ then
         mount_disk "no_formatting"
         # mkdir $data_dir/data
         # chown -R $app:$app $data_dir
-        ynh_config_add_systemd --mount="$app""_data" --template=data.mount
+        ynh_config_add_systemd --mount="${app}_data" --template="data.mount"
         yunohost service add garage_data_mounted --description="Garage Data Mounted"
         ynh_systemctl --service=garage_data_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
     else
