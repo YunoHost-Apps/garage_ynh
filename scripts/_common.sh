@@ -67,7 +67,7 @@ mount_data() {
         
         # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-        chown -R $app:$app $data_dir
+        # chown -R $app:$app $data_dir
         mount_disk "xfs"
         # umount_disk
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
