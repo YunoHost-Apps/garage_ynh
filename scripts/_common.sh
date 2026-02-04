@@ -179,12 +179,12 @@ mount_disk() {
     fi
 }
 
-# umount_disk() {
-#     # If we're NOT inside a container
-#     if ! $app_install_inside_container
-#     then
-#         nbd=$(cat $data_dir/nbd_index)
-#         umount  /dev/nbd$nbd
-#         qemu-nbd --disconnect  /dev/nbd$nbd
-#     fi
-# }
+umount_disk() {
+    # If we're NOT inside a container
+    if ! $app_install_inside_container
+    then
+        nbd=$(cat $data_dir/nbd_index)
+        umount  /dev/nbd$nbd
+        qemu-nbd --disconnect  /dev/nbd$nbd
+    fi
+}
