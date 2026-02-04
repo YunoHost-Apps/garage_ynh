@@ -8,9 +8,10 @@ source /usr/share/yunohost/helpers
 # CHECK IF THE APP CAN BE RESTORED WITH THESE ARGS
 #=================================================
 
-if [[ "$app_install_inside_container" != system_is_inside_container ]]
+currently_inside_container=$(system_is_inside_container)
+if ! [[ $app_install_inside_container == currently_inside_container ]]
 then
-ynh_die "Physical config of your server changed since initial Garage Install. Please reinstall"
+    ynh_die "Garage was initially installed in a container: $app_install_inside_container and now you try to restore in a container: $currently_inside_container. Please reinstall"
 fi
 
 #=================================================
