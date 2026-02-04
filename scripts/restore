@@ -2,7 +2,7 @@
 
 # Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
-source /usr/share/yunohost/helpers
+YNH_HELPERS_VERSION="2.1" source /usr/share/yunohost/helpers
 
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED WITH THESE ARGS
