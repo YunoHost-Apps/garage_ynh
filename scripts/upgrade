@@ -8,6 +8,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Ensuring downward compatibility..."
 
+app_install_inside_container=$(ynh_app_setting_get --key=app_install_inside_container)
 if [ -z "$app_install_inside_container" ]
 then
     if [[ -f "$data_dir/garage_data.qcow2" ]]
@@ -29,6 +30,13 @@ then
     yunohost service add garage_data_mounted --description="Garage Data Mounted"
     ynh_systemctl --service=garage_data_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
 fi
+
+#=================================================
+# GET CONFIG PANEL SETTINGS
+#=================================================
+weight=$(ynh_app_setting_get --key=weight)
+bootstrap_peers=$(ynh_app_setting_get --key=bootstrap_peers)
+rpc_secret=$(ynh_app_setting_get --key=rpc_secret)
 
 #=================================================
 # CHECK IF THE APP CAN BE UPGRADED WITH THESE ARGS
