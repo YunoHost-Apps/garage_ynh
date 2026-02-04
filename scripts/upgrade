@@ -17,7 +17,7 @@ then
         # comment_if_no_data_mount=""
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
         ynh_systemctl --service=$app --action="stop"
-        umount_disk
+        # umount_disk
         mount_disk "no_formatting"
         mkdir $data_dir/data
         chown -R $app:$app $data_dir
