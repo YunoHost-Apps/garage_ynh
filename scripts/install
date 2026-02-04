@@ -18,7 +18,7 @@ then
 	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' || ynh_die "friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
 fi
 
-app_install_inside_container=system_is_inside_container
+app_install_inside_container=$(system_is_inside_container)
 comment_if_no_data_mount=""
 comment_if_no_metadata_mount=""
 comment_if_system_is_inside_container=""
