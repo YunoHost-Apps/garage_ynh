@@ -4,7 +4,7 @@ data_dir = "__DATA_DIR__/data"
 db_engine = "lmdb"
 
 #metadata_auto_snapshot_interval = "1hour" # https://docs.rs/parse_duration/latest/parse_duration/#syntax
-metadata_snapshots_dir = "__DATA_DIR__/snapshots"
+metadata_snapshots_dir = "__DATA_DIR__/data/snapshots" # We need up to 4 times the metadatabase size, we know there is plenty of space on /data folder
 
 block_size = 1048576
 block_manager_background_tranquility = 2

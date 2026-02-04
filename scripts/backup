@@ -17,7 +17,7 @@ ynh_backup "$install_dir"
 
 # Make a snapshot of metadata using garage built-in feature
 garage_meta_snapshot
-ynh_backup "$data_dir/snapshots"
+ynh_backup "$data_dir/data/snapshots"
 
 #=================================================
 # BACKUP THE NGINX CONFIGURATION

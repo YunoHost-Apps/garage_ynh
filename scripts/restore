@@ -34,7 +34,7 @@ then
     mount_metadata
 fi
 
-ynh_restore "$data_dir/snapshots"
+ynh_restore "$data_dir/data/snapshots"
 garage_meta_snapshot_restore
 
 #=================================================

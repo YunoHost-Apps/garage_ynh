@@ -16,12 +16,18 @@ garage="$install_dir/garage -c $install_dir/garage.toml"
 
 garage_meta_snapshot() {
     $garage meta snapshot
+    chown -R $app:$app $data_dir/data/snapshots
 }
 
 garage_meta_snapshot_restore() {
-    # find how to restore metdata snapshot
-    last_snapshot=$(ls -t $data_dir/snapshots | head -n1)
-    cp -r $data_dir/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
+    # https://garagehq.deuxfleurs.fr/documentation/operations/recovering/#corrupted_meta
+    last_snapshot=$(ls -t $data_dir/data/snapshots | head -n1)
+    # For LMDB, snapshot and db.lmdb are folders
+    cp -r $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
+    # For SQLite, snapshot and db.lmdb are files
+    # cp $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.sql
+    chown -R $app:$app $data_dir/metadata
+    $garage repair -a --yes tables
 }
 
 garage_connect() {
