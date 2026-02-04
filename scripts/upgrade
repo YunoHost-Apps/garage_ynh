@@ -45,10 +45,10 @@ rpc_secret=$(ynh_app_setting_get --key=rpc_secret)
 #=================================================
 # CHECK IF THE APP CAN BE UPGRADED WITH THESE ARGS
 #=================================================
-
-if [[ "$app_install_inside_container" != system_is_inside_container ]]
+currently_inside_container=system_is_inside_container
+if ! [[ $app_install_inside_container == $currently_inside_container ]]
 then
-    ynh_die "Physical config of your server changed since initial Garage Install. Please reinstall"
+    ynh_die "Garage was installed in a container: $app_install_inside_container and now it is in a container: $currently_inside_container. Please reinstall"
 fi
 comment_if_no_data_mount=""
 comment_if_no_metadata_mount=""

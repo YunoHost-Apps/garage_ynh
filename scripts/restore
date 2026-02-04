@@ -25,14 +25,11 @@ ynh_restore "$install_dir"
 #=================================================
 ynh_script_progression "Restoring the data directory..."
 
-if ! ynh_in_ci_tests
-then
-    # Mount Data partition and add yunohost systemd service
-    mount_data
+# Mount Data partition and add yunohost systemd service
+mount_data
 
-    # Mount MetaData partition and add yunohost systemd service
-    mount_metadata
-fi
+# Mount MetaData partition and add yunohost systemd service
+mount_metadata
 
 ynh_restore "$data_dir/data/snapshots"
 garage_meta_snapshot_restore
