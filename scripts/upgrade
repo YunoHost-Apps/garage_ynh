@@ -16,9 +16,9 @@ then
         app_install_inside_container=false
         # comment_if_no_data_mount=""
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
-        mount_disk "false"
+        mount_disk "no_formatting"
         mkdir $data_dir/data
-        chown $app:$app  $data_dir/data
+        chown -R $app:$app $data_dir
         ynh_config_add_systemd --mount="$app""_data" --template=data.mount
         yunohost service add garage_data_mounted --description="Garage Data Mounted"
         ynh_systemctl --service=garage_data_mounted --action="start" --log_path="systemd"# --line_match="Started Garage: Data Store."
