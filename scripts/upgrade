@@ -18,6 +18,7 @@ then
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
         ynh_systemctl --service=$app --action="stop"
         mount_disk "no_formatting"
+        data_fs="xfs"
         # mkdir $data_dir/data
         # chown -R $app:$app $data_dir
         ynh_config_add_systemd --mount="${app}_data" --template="data.mount"

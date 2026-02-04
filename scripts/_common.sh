@@ -70,7 +70,8 @@ mount_data() {
         # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
         # chown -R $app:$app $data_dir
-        mount_disk "xfs"
+        data_fs="xfs"
+        mount_disk $data_fs
         # umount_disk
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
         ynh_config_add_systemd --mount="${app}_data" --template="data.mount"
@@ -80,6 +81,7 @@ mount_data() {
     then
         ynh_print_info "Mounting Garage Data with systemd..."
     #    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
+        data_fs="xfs"
         mkfs.xfs -L data_xfs -m crc=1 "$data"
         # Get UUID of new partition
         data_uuid=$(blkid -s UUID -o value "$data")
