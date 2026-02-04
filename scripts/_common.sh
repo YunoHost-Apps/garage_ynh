@@ -68,7 +68,7 @@ mount_data() {
         # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
         mount_disk "xfs"
-        umount_disk
+        # umount_disk
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
         ynh_config_add_systemd --mount="$app""_data" --template=data.mount
         yunohost service add garage_data_mounted --description="Garage Data Mounted" --log="/var/log/$app/$app.log"
@@ -152,25 +152,25 @@ mount_disk() {
             qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
             echo "formatting /dev/nbd$i"
             mkfs.ext4 /dev/nbd$i
-            mount /dev/nbd$i $data_dir/data/
+            # mount /dev/nbd$i $data_dir/data/
             data_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
         elif [[ "$format" = "xfs" ]]
         then
             qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
             echo "formatting /dev/nbd$i"
             mkfs.xfs /dev/nbd$i
-            mount /dev/nbd$i $data_dir/data/
+            # mount /dev/nbd$i $data_dir/data/
             data_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
         elif [[ "$format" = "btrfs" ]]
         then
             qemu-nbd --connect /dev/nbd$i $data_dir/garage_metadata.qcow2
             echo "formatting /dev/nbd$i"
             mkfs.btrfs /dev/nbd$i
-            mount /dev/nbd$i $data_dir/metadata/
+            # mount /dev/nbd$i $data_dir/metadata/
             metadata_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
         else
             qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
-            mount /dev/nbd$i $data_dir/data/
+            # mount /dev/nbd$i $data_dir/data/
             metadata_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
         fi
     else
@@ -178,12 +178,12 @@ mount_disk() {
     fi
 }
 
-umount_disk() {
-    # If we're NOT inside a container
-    if ! $app_install_inside_container
-    then
-        nbd=$(cat $data_dir/nbd_index)
-        umount  /dev/nbd$nbd
-        qemu-nbd --disconnect  /dev/nbd$nbd
-    fi
-}
+# umount_disk() {
+#     # If we're NOT inside a container
+#     if ! $app_install_inside_container
+#     then
+#         nbd=$(cat $data_dir/nbd_index)
+#         umount  /dev/nbd$nbd
+#         qemu-nbd --disconnect  /dev/nbd$nbd
+#     fi
+# }
