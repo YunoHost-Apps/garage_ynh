@@ -27,6 +27,9 @@ garage_meta_snapshot_restore() {
     # For SQLite, snapshot and db.lmdb are files
     # cp $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.sql
     chown -R $app:$app $data_dir/metadata
+}
+
+garage_full_table_repair() {
     $garage repair -a --yes tables
 }
 

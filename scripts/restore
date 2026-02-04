@@ -92,6 +92,8 @@ then
 	garage_connect "$bootstrap_peers"
 fi
 
+garage_full_table_repair # required to resync metadata from remote nodes after garage_meta_snapshot_restore
+
 #=================================================
 # RELOAD NGINX AND PHP-FPM
 #=================================================
