@@ -4,6 +4,8 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
+YNH_HELPERS_VERSION="2.1" 
+
 metadata_is_btrfs() {
     df -Th $data_dir/metadata | grep -q "btrfs"
 }
