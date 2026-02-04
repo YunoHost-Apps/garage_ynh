@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source _common.sh
-YNH_HELPERS_VERSION="2.1" source /usr/share/yunohost/helpers
+source /usr/share/yunohost/helpers
 
 #=================================================
 # REMOVE NODE CONFIGURATION
@@ -26,8 +26,11 @@ fi
 
 # Remove the dedicated systemd config
 ynh_config_remove_systemd
-ynh_config_remove_systemd --mount="$app""_data"
-ynh_config_remove_systemd --mount="$app""_metadata"
+ynh_config_remove_systemd --mount="home-yunohost.app-$app-data"
+ynh_config_remove_systemd --mount="home-yunohost.app-$app-metadata"
+
+ynh_safe_rm /var/log/$app/data_mount.log
+ynh_safe_rm /var/log/$app/metadata_mount.log
 
 ynh_config_remove_logrotate
 

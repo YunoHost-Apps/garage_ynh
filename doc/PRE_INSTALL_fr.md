@@ -13,6 +13,8 @@ Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15628053134, default 1562805
 Created a new partition 1 of type 'Linux filesystem' and of size 3.6 TiB.
 ```
 
+* Ne pas formatter la partition, sinon l'installation échouera, ça évite d'écraser une partition par inadvertance
+  * Vous pouvez vérifier le formattage avec `wipefs /dev/sdb1`, puis supprimer le formattage avec `wipefs -a /dev/sdb1`
 * Si la partition où est monté `/home/yunohost.app/` n'est pas sur un SSD
   * Migrer YunoHost vers un SSD
 * Si la partition où est monté `/home/yunohost.app/` n'est pas partitionnée en `btrfs` ou `zfs`, par exemple `/dev/sda1`

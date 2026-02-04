@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source _common.sh
-YNH_HELPERS_VERSION="2.1" source /usr/share/yunohost/helpers
+source /usr/share/yunohost/helpers
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
@@ -21,6 +21,8 @@ then
         data_fs="xfs"
         # mkdir $data_dir/data
         # chown -R $app:$app $data_dir
+        touch "/var/log/$app/data_mount.log"
+        chown $app:$app /var/log/$app/data_mount.log
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted" --log="/var/log/$app/data_mount.log"
         ynh_systemctl --service="home-yunohost.app-$app-data.mount" --action="start" # --line_match="Started Garage: Data Store."

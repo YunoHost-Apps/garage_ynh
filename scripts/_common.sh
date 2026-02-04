@@ -4,8 +4,6 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
-YNH_HELPERS_VERSION="2.1" 
-
 metadata_is_btrfs() {
     df -Th $data_dir/metadata | grep -q "btrfs"
 }
@@ -76,6 +74,7 @@ mount_data() {
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         touch "/var/log/$app/data_mount.log"
+        chown $app:$app /var/log/$app/data_mount.log
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted" --log="/var/log/$app/data_mount.log"
         ynh_systemctl --service="home-yunohost.app-$app-data.mount" --action="start" # --wait_until="Started Garage: Data Mount"
     elif ! $app_install_inside_container
@@ -92,6 +91,7 @@ mount_data() {
         # Mount Garage Data `$data_dir/data` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         touch "/var/log/$app/data_mount.log"
+        chown $app:$app /var/log/$app/data_mount.log
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted" --log="/var/log/$app/data_mount.log"
         ynh_systemctl --service="home-yunohost.app-$app-data.mount" --action="start" # --wait_until="Started Garage: Data Store"
     # else we are in a container, we keep all partitions as is
@@ -136,6 +136,7 @@ mount_metadata() {
         # Mount Garage Metadata `$data_dir/metadata` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-metadata" --template="metadata.mount"
         touch "/var/log/$app/metadata_mount.log"
+        chown $app:$app /var/log/$app/metadata_mount.log
         yunohost service add "home-yunohost.app-$app-metadata.mount" --description="Garage MetaData Mounted" --log="/var/log/$app/metadata_mount.log"
         ynh_systemctl --service="home-yunohost.app-$app-metadata.mount" --action="start" # --wait_until="Started Garage: MetaData Mount"
     # else we are in a container, we keep all partitions as is
