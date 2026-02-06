@@ -1,0 +1,13 @@
+[Unit]
+Description=Garage: Data Mount
+
+[Mount]
+What=/dev/disk/by-uuid/__DATA_UUID__
+Where=__DATA_DIR__/data
+Type=__DATA_FS__
+Options=defaults
+StandardOutput=append:/var/log/__APP__/data_mount.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

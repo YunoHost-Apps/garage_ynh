@@ -25,3 +25,31 @@ The web endpoint (for HTTP public access, for a static website or social media f
 ## How to run commands for Garage
 1. Use `yunohost app shell garage` to use the command line in Garage own environnement (don't forget to `exit` at the end). You will be located in `__INSTALL_DIR__` own directory.
 2. Then for each use of the `garage` command, you need to specify the config file as a parameter `garage -c garage.toml [the actions you wish to run]`.
+
+## Configuration depending on your server setup
+
+We distinguish between 2 major setups:
+* Self-hosting-like
+  * Power outage or cat-unplug likely
+  * Networking can be slower or have poor level of service
+  * Data storage in the GB or TB order
+  * Usage for distributed high-capacity storage, e.g. backups. Not necessarily for performance
+  * Recovery from other nodes within a day
+* Data-center-like
+  * Unclean shutdown unlikely
+  * Fast and high-service networking
+  * Data storage >10TB
+  * Usage for high-performance distributed storage
+  * Local Recovery of node within minutes
+
+Recommended / minimal self-hosting config:
+* Data partition: on HDD (SSD better), XFS/EXT4
+* Metadata partition: on SSD (HDD OK if lots of RAM for kernel caching), BTRFS or ZFS with filesystem snapshot / EXT4 with Garage-snapshot
+* Database: LMDB default, more tested, more performant, recommended if Metadata on HDD. LMDB is architecture dependent and limited to small DB size on 32-bit systems. Use SQLite if you want to be able to migrate metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite which is more robust if Metadata have poor failure recovery, e.g. not on BTRFS/ZFS, poor or no snapshotting.
+* `blocksize = "10M"` if you have FTTH and plan to store mostly large files, leave to default otherwise
+
+Recommended data-center config:
+* Data partition: on SSD (HDD OK if no high-performance storage), XFS
+* Metadata partition: on SSD. BTRFS or ZFS with filesystem snapshot
+* Database: LMDB
+* `blocksize = "10M"` if you plan to store mostly large files, leave to default otherwise
