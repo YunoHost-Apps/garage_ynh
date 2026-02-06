@@ -2,13 +2,13 @@
 Description=Garage: data Store
 After=network-online.target
 Wants=network-online.target
+__COMMENT_IF_NO_DATA_MOUNT__Requires=home-yunohost.app-__APP__-data.mount
+__COMMENT_IF_NO_METADATA_MOUNT__Requires=home-yunohost.app-__APP__-metadata.mount
 
 [Service]
 User=__APP__
 Environment='GARAGE_CONFIG_FILE=__INSTALL_DIR__/garage.toml' 'RUST_LOG=garage=info' 'VIRTUALISATION=__SYSTEM_IS_INSIDE_CONTAINER_BOOL__'   'RUST_BACKTRACE=1'
-ExecStartPre=+__INSTALL_DIR__/mount_disk.sh 
 ExecStart=__INSTALL_DIR__/garage server
-ExecStopPost=+__INSTALL_DIR__/umount_disk.sh 
 WorkingDirectory=__INSTALL_DIR__/
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
