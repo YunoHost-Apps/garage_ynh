@@ -29,8 +29,8 @@ ynh_config_remove_systemd
 ynh_config_remove_systemd --mount="home-yunohost.app-$app-data"
 ynh_config_remove_systemd --mount="home-yunohost.app-$app-metadata"
 
-ynh_safe_rm /var/log/$app/data_mount.log
-ynh_safe_rm /var/log/$app/metadata_mount.log
+# ynh_safe_rm /var/log/$app/data_mount.log
+# ynh_safe_rm /var/log/$app/metadata_mount.log
 
 ynh_config_remove_logrotate
 

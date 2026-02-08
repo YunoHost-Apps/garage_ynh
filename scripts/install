@@ -91,6 +91,8 @@ ynh_script_progression "Adding $app's configuration..."
 ynh_config_add --template="garage.toml" --destination="$install_dir/garage.toml"
 chmod 600 "$install_dir/garage.toml"
 chown $app:$app "$install_dir/garage.toml"
+mkdir -p "/var/log/$app/"
+chown -R $app:$app "/var/log/$app/"
 
 #=================================================
 # MOUNT DATA AND METADATA PARTITIONS
@@ -115,9 +117,6 @@ yunohost tools regen-conf nginx
 # SETUP SYSTEMD
 #=================================================
 ynh_script_progression "Configuring $app's systemd service..."
-
-mkdir -p "/var/log/$app/"
-touch "/var/log/$app/$app.log"
 
 ynh_config_add_systemd
 
