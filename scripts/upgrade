@@ -4,6 +4,91 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
+ynh_script_progression "Ensuring downward compatibility..."
+
+app_install_inside_container=$(ynh_app_setting_get --key=app_install_inside_container)
+if [ -z "$app_install_inside_container" ]
+then
+    if [[ -f "$data_dir/garage_data.qcow2" ]]
+    then 
+        app_install_inside_container=false
+        # comment_if_no_data_mount=""
+        # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
+        ynh_systemctl --service=$app --action="stop"
+        mount_disk "no_formatting"
+        data_fs="xfs"
+        # mkdir $data_dir/data
+        # chown -R $app:$app $data_dir
+        touch "/var/log/$app/data_mount.log"
+        chown $app:$app /var/log/$app/data_mount.log
+        ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
+        yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted" --log="/var/log/$app/data_mount.log"
+        ynh_systemctl --service="home-yunohost.app-$app-data.mount" --action="start" # --line_match="Started Garage: Data Store."
+        chown -R $app:$app "$install_dir"
+    else
+        app_install_inside_container=true
+        # comment_if_no_data_mount="#"
+        # comment_if_system_is_inside_container="#"
+    fi
+    data="no"
+    metadata="no"
+    # comment_if_no_metadata_mount="#"
+    ynh_app_setting_set --key=data --value=$data
+    ynh_app_setting_set --key=metadata --value=$metadata
+    ynh_app_setting_set --key=app_install_inside_container --value=$app_install_inside_container
+    ynh_safe_rm "$install_dir/mount_disk.sh"
+    ynh_safe_rm "$install_dir/umount_disk.sh"
+fi
+
+#=================================================
+# GET CONFIG PANEL SETTINGS
+#=================================================
+weight=$(ynh_app_setting_get --key=weight)
+bootstrap_peers=$(ynh_app_setting_get --key=bootstrap_peers)
+rpc_secret=$(ynh_app_setting_get --key=rpc_secret)
+
+#=================================================
+# CHECK IF THE APP CAN BE UPGRADED WITH THESE ARGS
+#=================================================
+
+if system_is_inside_container
+then
+    currently_inside_container=true
+else
+    currently_inside_container=false
+fi
+if ! [[ $app_install_inside_container == $currently_inside_container ]]
+then
+    ynh_die "Garage was initially installed in a container: $app_install_inside_container and now it is in a container: $currently_inside_container. Please reinstall"
+fi
+comment_if_no_data_mount=""
+comment_if_no_metadata_mount=""
+comment_if_system_is_inside_container=""
+if [[ "$data" == "no" ]]
+then
+    comment_if_no_data_mount="#"
+fi
+if [[ "$metadata" == "no" ]]
+then
+    comment_if_no_metadata_mount="#"
+fi
+
+if ! $app_install_inside_container
+then
+    system_is_inside_container_bool="false"
+else #we are in a container, we keep all partitions as is
+    system_is_inside_container_bool="true"
+fi
+
+if ! $app_install_inside_container && ([[ "$data" == "no" ]] || [[ "$metadata" == "no" ]])
+then
+    # used to comment systemd isolation to allow mount disk
+    comment_if_system_is_inside_container="#"
+fi
+
+#=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Stopping $app's systemd service..."
