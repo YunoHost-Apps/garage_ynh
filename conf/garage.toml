@@ -9,9 +9,8 @@ metadata_snapshots_dir = "__DATA_DIR__/data/snapshots" # We need up to 4 times t
 block_size = 1048576
 block_manager_background_tranquility = 2
 
-replication_factor = 3
+replication_factor = 1
 consistency_mode = "consistent"
-
 
 compression_level = 1
 
