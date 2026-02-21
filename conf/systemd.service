@@ -2,8 +2,12 @@
 Description=Garage: data Store
 After=network-online.target
 Wants=network-online.target
-__COMMENT_IF_NO_DATA_MOUNT__Requires=home-yunohost.app-__APP__-data.mount
-__COMMENT_IF_NO_METADATA_MOUNT__Requires=home-yunohost.app-__APP__-metadata.mount
+#__COMMENT_IF_NO_DATA_MOUNT__After=home-yunohost.app-__APP__-data.mount
+#__COMMENT_IF_NO_METADATA_MOUNT__After=home-yunohost.app-__APP__-metadata.mount
+#__COMMENT_IF_NO_DATA_MOUNT__Requires=home-yunohost.app-__APP__-data.mount
+#__COMMENT_IF_NO_METADATA_MOUNT__Requires=home-yunohost.app-__APP__-metadata.mount
+__COMMENT_IF_NO_DATA_MOUNT__RequiresMountsFor=/home/yunohost.app/__APP__/data
+__COMMENT_IF_NO_METADATA_MOUNT__RequiresMountsFor=/home/yunohost.app/__APP__/metadata
 
 [Service]
 User=__APP__
