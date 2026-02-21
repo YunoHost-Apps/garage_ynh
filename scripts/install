@@ -105,7 +105,7 @@ mount_data
 # Mount MetaData partition and add yunohost systemd service
 mount_metadata
 
-chown -R $app:$app "$install_dir"
+chown -R $app:$app "$data_dir"
 
 #=================================================
 # ADD REGEN-CONF HOOK
