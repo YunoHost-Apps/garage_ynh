@@ -22,6 +22,7 @@ garage_meta_snapshot() {
 garage_meta_snapshot_restore() {
     # https://garagehq.deuxfleurs.fr/documentation/operations/recovering/#corrupted_meta
     last_snapshot=$(ls -t $data_dir/data/snapshots | head -n1)
+    # TODO handle SQLite
     # For LMDB, snapshot and db.lmdb are folders
     cp -r $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
     # For SQLite, snapshot and db.lmdb are files
@@ -65,10 +66,8 @@ mount_data() {
     then
         ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
         
-        # to be sure to not exceed size limit, i use a virtual disk with a fix size to have a max limit size.
+        # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
         qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-        # chown -R $app:$app $data_dir
-        data_fs="xfs"
         mount_disk $data_fs
         # umount_disk
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
@@ -78,14 +77,9 @@ mount_data() {
     elif ! $app_install_inside_container
     then
         ynh_print_info "Mounting Garage Data with systemd..."
-    #    mkdir -p $data_dir/data # /home/yunohost.app/garage/data
-        data_fs="xfs"
         mkfs.xfs -L data_xfs -m crc=1 "$data"
         # Get UUID of new partition
         data_uuid=$(blkid -s UUID -o value "$data")
-        # Edit `/etc/fstab` to auto-mount Garage Data `$data_dir/data` on new partition
-        #echo "# mount SSD/HDD part $data with xfs filesystem for garage" | tee -a /etc/fstab
-        #echo "UUID=$data_uuid $data_dir/data xfs defaults 0 0" | tee -a /etc/fstab
         # Mount Garage Data `$data_dir/data` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
@@ -123,7 +117,7 @@ mount_metadata() {
     then
         ynh_print_info "Mounting Garage MetaData with systemd..."
         #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
-        mkfs.btrfs -L metadata_btrfs -m crc=1 "$metadata"
+        mkfs.btrfs -L metadata_$metadata_fs -m crc=1 "$metadata"
         # Get UUID of new partition
         metadata_uuid=$(blkid -s UUID -o value "$metadata")
         # Edit `/etc/fstab` to auto-mount Garage Metadata `$data_dir/metadata` on new partition
