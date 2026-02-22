@@ -74,7 +74,7 @@ mount_data() {
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
         ynh_systemctl --service="home-yunohost.app-$app-data.mount" --action="start" # --wait_until="Started Garage: Data Mount"
-    elif ! $app_install_inside_container
+    elif ! $app_install_inside_container && [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
         mkfs.xfs -L data_xfs -m crc=1 "$data"
@@ -84,7 +84,7 @@ mount_data() {
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
         ynh_systemctl --service="home-yunohost.app-$app-data.mount" --action="start" # --wait_until="Started Garage: Data Store"
-    # else we are in a container, we keep all partitions as is
+    # else we are in a container or partitions are formatted manually by admin, we keep all partitions as is
     #mkdir -p $data_dir/data # /home/yunohost.app/garage/data
     fi
 }
@@ -97,7 +97,7 @@ mount_metadata() {
         metadata_size=1 # % we reserve at least 1G for metadata
     fi
 
-    if [[ "$metadata" == "no" ]] # If YunoHost is installed on BTRFS, we keep the metadata
+    if [[ "$metadata" == "no" ]] || [[ "$metadata" == "manual" ]] # If YunoHost is installed on BTRFS, we keep the metadata
     then
         echo "No Metadata partition was provided or we are in a container, we keep all partitions as is"
     # if [[ "$metadata" == "no" ]] && metadata_is_btrfs   # If YunoHost is installed on BTRFS, we keep the metadata

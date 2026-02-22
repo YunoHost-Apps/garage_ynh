@@ -35,11 +35,11 @@ data_fs="xfs"
 metadata_fs="btrfs"
 comment_if_no_data_mount=""
 comment_if_no_metadata_mount=""
-if [[ "$data" == "no" ]]
+if [[ "$data" == "no" || "$data" == "manual" ]]
 then
     comment_if_no_data_mount="#"
 fi
-if [[ "$metadata" == "no" ]]
+if [[ "$metadata" == "no" || "$metadata" == "manual" ]]
 then
     comment_if_no_metadata_mount="#"
 fi
