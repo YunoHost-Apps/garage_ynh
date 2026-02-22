@@ -1,68 +1,100 @@
 # Limitations
 
- * This application is not usable if you're not part of a cluster with minimun 3 other nodes
- * If you are behind a nat and use upnp to configure your port redirection, you may need to add peers via config panel instead of during installation and/or create a permanent redirection in your router/box
+* ~~This application is not usable if you're not part of a Cluster with minimun 3 other Nodes~~
+* If you are behind a NAT and use UPnP to configure your port redirection, you may need to
+  * add peers via config panel instead of during installation
+  * and/or create a permanent port redirection in your router/box
 
 # Informations you should be aware of:
 
- * This application provide a node that you can connect to a garage cluster. Few option are manageable by the config panel for the current node but IT DOESN'T offer simpler way to manage bucket and keys. You have to do it by command line or let an other node managing it.
- * This application consider that the weight of the node is the size reserved to garage in G (Gigabytes)
- * This application will try to create a virtual disk to ensure garage doesn't use more than allowed. If virtualisation is not available your responsible to check space used by garage.
- * To connect from another node, you might need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
- * Storage consumption : appart from your data storage, you can expect the metadata (database) to consume approximatly 1% of the data size (1GB for 100GB of data for instance), or a bigger value if you store many small objects.
+* This application provides a Node that you can connect to a Garage Cluster. The Config Panel provides some Node-related settings. Cluster-related settings like Key or Bucket should be managed via Garage CLI or by another Node
+* Garage does not set a hard storage Quota. So disk space usage can become greater than the Node Weight you define. 
+* The App will ask you for a Data partition at install, or create a virtual disk with size the Weight of your Node. With the virtual disk, performance may be poor.
+* If you install on a VM and do not provide a partition, you are responsible for checking sufficient available storage.
+* Expect Metadata (database) to be approximatly 1% of the Data size (1GB for 100GB of Data for instance), or a bigger percentage if you store many small objects.
+* To connect from another Node, you might need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
 
 ## How to use the S3 API from other softwares
 
-Garage team provides documentation on how to connect with various software to the S3 cluster: https://garagehq.deuxfleurs.fr/documentation/connect/
-This will connect via the S3 API. In Yunohost setup, this is proxied through Nginx reverse proxy. As a result, *to use the S3 API, you need to use port 443* instead of the API port (seen in `garage.toml` configuration).
+* Garage team provides documentation on how to connect from various software to the Cluster over the S3 API: https://garagehq.deuxfleurs.fr/documentation/connect/
+* For TLS support, this App sets Nginx reverse proxy for the S3 API
+* As a result, **the S3 API can be reached through port 443** on https://garage.domain.tld:path (instead of the port_api seen in `s3_api` in `garage.toml` configuration.)
+* From local command line (such as awscli https://garagehq.deuxfleurs.fr/documentation/connect/cli/) you can use `localhost:port_api`.
 
-NB: From local command line (such as awscli https://garagehq.deuxfleurs.fr/documentation/connect/cli/) you can use `localhost:S3API_PORT`.
+## How to use the Web Endpoint
 
-## How to use
+* The web endpoint (for HTTP public access, for a static website or social media files) is the port_web defined in `s3_web` in your `garage.toml`
+* To use it you should setup a bucket with website access, and a `redirect_ynh` app pointing to `127.0.0.1:port_web`, using the domain `bucketname.DOMAIN`.
 
-The web endpoint (for HTTP public access, for a static website or social media files) is the one defined in `s3_web` in your `garage.toml`, and if you want to use you should setup website access for the bucket, and a `redirect_ynh` app pointing to `127.0.0.1:WEB_PORT`, using the domain `bucketname.DOMAIN`.
+## How to run CLI commands for Garage
 
-## How to run commands for Garage
-1. Use `yunohost app shell garage` to use the command line in Garage own environnement (don't forget to `exit` at the end). You will be located in `__INSTALL_DIR__` own directory.
-2. Then for each use of the `garage` command, you need to specify the config file as a parameter `garage -c garage.toml [the actions you wish to run]`.
+* Type `yunohost app shell garage` on the server command line to enter Garage environment. You will be located in `__INSTALL_DIR__` Garage directory.
+* To run a command, you need to specify the config file as a parameter `garage -c garage.toml [the actions you wish to run]`.
+* Don't forget to `exit` the environment when you're done.
 
-## Configuration depending on your server setup
+# Configuration depending on your server setup
 
 We distinguish between 2 major setups:
 * Self-hosting-like
-  * Power outage or cat-unplug likely
+  * Power (micro-)outage or cat-unplug likely: Metadata may get corrupt
   * Networking can be slower or have poor level of service
   * Data storage in the GB or TB order
   * Usage for distributed high-capacity storage, e.g. backups. Not necessarily for performance
-  * Recovery from other nodes within a day
+  * Recovery from other Nodes within a day
 * Data-center-like
   * Unclean shutdown unlikely
   * Fast and high-service networking
   * Data storage >10TB
   * Usage for high-performance distributed storage
-  * Local Recovery of node within minutes
+  * Local Recovery of Node within minutes
 
 **Recommended** (minimal) self-hosting config:
 * Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS** (EXT4)
-* Metadata partition: on **SSD** (HDD OK if lots of RAM for kernel caching), **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
-* Database: **LMDB is default, more tested, more performant, recommended if Metadata on HDD. LMDB is architecture dependent and limited to small DB size on 32-bit systems**. (Use SQLite if you want to be able to migrate metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite which is more robust if Metadata have poor failure recovery, e.g. not on BTRFS/ZFS, poor or no snapshotting.)
+* Metadata partition: on **SSD** (HDD OK if lots of RAM for kernel caching), **BTRFS or ZFS with filesystem Snapshot** (EXT4 with Garage-Snapshot).
+* Database: **LMDB is default, more tested, more performant, recommended if Metadata on HDD**. (Use SQLite if you want to be able to migrate Metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite if you plan to store much data on a 32-bit system.)
+* Metadata may get corrupt, e.g. after a power outage. Setup snapshotting or choose SQLite which is more robust.
 * `blocksize = "10M"` if you have FTTH and plan to store mostly large files, leave to default otherwise
 
 **Recommended** (minimal) data-center config:
 * Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS**
-* Metadata partition: on **SSD**. **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
-* Database: **LMDB** (SQLite if on 32-bit system)
+* Metadata partition: on **SSD**. **BTRFS or ZFS with filesystem Snapshot** (EXT4 with Garage-Snapshot)
+* Database: **LMDB** (SQLite if on 32-bit architecture)
 * `blocksize = "10M"` if you plan to store mostly large files, leave to default otherwise
 
-## Manual steps before install to follow recommended config
+## Simple self-hosting Backups use-case
 
-* If the partition where `/home/yunohost.app/` is mounted is not on a SSD
-  * Migrate YunoHost to a SSD
-* If the partition where `/home/yunohost.app/` is mounted is not partitioned with `btrfs` or `zfs`, e.g. `/dev/sda1`
-  * Metadata may get corrupt, e.g. after a power outage, so this is less an issue if your server has power redundancy
-  * Migrate `/dev/sda1` vers `btrfs`
-  * EXT4 is OK if you do regular Metadata snapshots and have enough space to store them. You may e.g. set `metadata_auto_snapshot_interval = "1hour"` 
-* Or create a new partition dedicated to metadata on a SSD and give its path at install, e.g. `/dev/sda2`
+* Yunohost installed on a 60GB SSD (NVME or SATA)
+* `/` is mounted on `ext4` partition `/dev/sda1` and so is `/home/yunohost.app/garage/`
+* An empty 16TB HDD `/dev/sdb` (USB3 or SATA)
+* Create a 16TB partition `/dev/sdb1` for the Data
+* Type `/dev/sdb1` for the Data and `no` for the Metadata at install
+* Garage will take Snapshots of your LMDB database regularly
+* Approximately 1% of the Data stored on your HDD will be used for Metadata. So check that it does not fill your SDD.
+* In case of Failure of your Node, simply Restore the App
+
+Note: If `/dev/sda1` is `btrfs` or `zfs`, you can deactivate Garage Snapshots in `garage.toml` and configure filesystem snapshots instead
+
+## Simple ephemeral service hosting in data-center use-case
+* Yunohost installed on a VPS with 4TB SSD, we are in a virtualized environment
+* `/` is mounted on `ext4` partition `/dev/sda1` and so is `/home/yunohost.app/garage/`
+* Type `no` for the Data and `no` for the Metadata at install
+* All Data and Metadata will remain stored on `/dev/sda1` `ext4` partition, so 
+* You have to check that Garage is not filling up your SSD
+* Garage will take Snapshots of your LMDB database regularly
+* In case of Failure of your Node, simply Restore the App
+* If you want to store more than 10TB or many small objects you should mount your Data folder to an `xfs` volume
+
+## Advanced high-performance storage use-case
+
+* Yunohost installed on a 8TB SSD (USB3, NVME or SATA)
+* `/` is mounted on `ext4` partition `/dev/sda1` and so is `/home/yunohost.app/garage/`
+* Shrink `/dev/sda1` to free 4100GB space on SSD
+* Create a 100GB partition `/dev/sda2` for the Metadata
+* Create a 4TB partition `/dev/sda3` for the Data
+* Type `/dev/sda3` for the Data and `/dev/sda2` for the Metadata at install
+* Setup regular btrfs/zfs Snapshots for `/dev/sda2`
+* Deactivate Garage Snapshots in `garage.toml`
+* In case of Failure of your Node, follow the Garage Doc
 
 ## How to create a partition in CLI
 
