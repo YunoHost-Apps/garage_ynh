@@ -33,8 +33,15 @@ ynh_script_progression "Restoring the data directory..."
 
 data_fs="xfs"
 metadata_fs="btrfs"
-ynh_restore "/etc/systemd/system/home-yunohost.app-$app-data.mount"
-ynh_restore "/etc/systemd/system/home-yunohost.app-$app-metadata.mount"
+
+if [[ "$data" != "no" ]]
+then
+    ynh_restore "/etc/systemd/system/home-yunohost.app-$app-data.mount"
+fi
+if [[ "$metadata" != "no" ]]
+then
+    ynh_restore "/etc/systemd/system/home-yunohost.app-$app-metadata.mount"
+fi
 # Mount Data partition and add yunohost systemd service
 mount_data
 
