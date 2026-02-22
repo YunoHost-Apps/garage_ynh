@@ -67,3 +67,31 @@ Le point de terminaison web (pour l'accès public HTTP, pour un site web statiqu
 ## Comment exécuter les commandes pour Garage
 1. Utilisez `yunohost app shell garage` pour utiliser la ligne de commande dans l'environnement de Garage (n'oubliez pas de `exit` à la fin). Vous serez situé dans le répertoire `__INSTALL_DIR__`.
 2. Ensuite, pour chaque utilisation de la commande `garage`, vous devez spécifier le fichier de configuration en tant que paramètre `garage -c garage.toml [les actions que vous souhaitez exécuter]`.
+
+## Configuration en fonction de votre type de serveur
+
+On distingue 2 types principaux :
+* Type Self-hosting
+  * (Micro-)Coupure de courant ou débranchement par un chat probable
+  * Connexion internet peut être plus lente ou être sujet à des coupures
+  * Stockage de données de l'ordre de quelques TB ou inférieur
+  * Utilisation plutôt pour du stokage redondé distribué de haute capacité, e.g. sauvegardes. Pas nécessairement pour la performance
+  * Récupération en cas de défaillance depuis les autres noeuds en un jour
+* Type Data-center
+  * Coupure prolongée d'un noeud improbable
+  * Connexion internet rapide et de haut niveau de service
+  * Stockage des données >10TB
+  * Utilisation pour du stockage distribué haute-performance
+  * Récupération d'un noeud en cas de défaillance depuis des snapshots locaux en quelques minutes
+
+**Recommended** (minimal) self-hosting config:
+* Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS** (EXT4)
+* Metadata partition: on **SSD** (HDD OK if lots of RAM for kernel caching), **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
+* Database: **LMDB is default, more tested, more performant, recommended if Metadata on HDD. LMDB is architecture dependent and limited to small DB size on 32-bit systems**. (Use SQLite if you want to be able to migrate metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite which is more robust if Metadata have poor failure recovery, e.g. not on BTRFS/ZFS, poor or no snapshotting.)
+* `blocksize = "10M"` if you have FTTH and plan to store mostly large files, leave to default otherwise
+
+**Recommended** (minimal) data-center config:
+* Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS**
+* Metadata partition: on **SSD**. **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
+* Database: **LMDB** (SQLite if on 32-bit system)
+* `blocksize = "10M"` if you plan to store mostly large files, leave to default otherwise

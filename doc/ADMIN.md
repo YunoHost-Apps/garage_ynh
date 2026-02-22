@@ -42,14 +42,14 @@ We distinguish between 2 major setups:
   * Usage for high-performance distributed storage
   * Local Recovery of node within minutes
 
-Recommended / minimal self-hosting config:
-* Data partition: on HDD (SSD better), XFS/EXT4
-* Metadata partition: on SSD (HDD OK if lots of RAM for kernel caching), BTRFS or ZFS with filesystem snapshot / EXT4 with Garage-snapshot
-* Database: LMDB default, more tested, more performant, recommended if Metadata on HDD. LMDB is architecture dependent and limited to small DB size on 32-bit systems. Use SQLite if you want to be able to migrate metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite which is more robust if Metadata have poor failure recovery, e.g. not on BTRFS/ZFS, poor or no snapshotting.
+**Recommended** (minimal) self-hosting config:
+* Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS** (EXT4)
+* Metadata partition: on **SSD** (HDD OK if lots of RAM for kernel caching), **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
+* Database: **LMDB is default, more tested, more performant, recommended if Metadata on HDD. LMDB is architecture dependent and limited to small DB size on 32-bit systems**. (Use SQLite if you want to be able to migrate metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite which is more robust if Metadata have poor failure recovery, e.g. not on BTRFS/ZFS, poor or no snapshotting.)
 * `blocksize = "10M"` if you have FTTH and plan to store mostly large files, leave to default otherwise
 
-Recommended data-center config:
-* Data partition: on SSD (HDD OK if no high-performance storage), XFS
-* Metadata partition: on SSD. BTRFS or ZFS with filesystem snapshot
-* Database: LMDB
+**Recommended** (minimal) data-center config:
+* Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS**
+* Metadata partition: on **SSD**. **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
+* Database: **LMDB** (SQLite if on 32-bit system)
 * `blocksize = "10M"` if you plan to store mostly large files, leave to default otherwise
