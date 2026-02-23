@@ -36,6 +36,14 @@ ram.runtime = "50M"
     type = "group"
     default = "visitors"
 
+    [install.performance_tier]
+    ask.en = "Performance tier of your Garage Cluster"
+    ask.fr = "Niveau de performance de votre Cluster"
+    type = "select"
+    choices = ["high-perf", "data-center", "small-files", "backups", "32-bits"]
+    help.en = "Please read prerequisites carefully before chosing a tier: https://github.com/YunoHost-Apps/garage_ynh/blob/master/doc/ADMIN.md#configuration-depending-on-your-server-setup"
+    help.fr = "Merci de lire attentivement les prérequis avant la sélection d'un niveau : https://github.com/YunoHost-Apps/garage_ynh/blob/master/doc/ADMIN_fr.md#configuration-depending-on-your-server-setup"
+
     [install.weight]
     ask.en = "Number of GB to allow for storage"
     ask.fr = "Nombre de Go à allouer pour le stockage"

@@ -22,11 +22,12 @@ garage_meta_snapshot() {
 garage_meta_snapshot_restore() {
     # https://garagehq.deuxfleurs.fr/documentation/operations/recovering/#corrupted_meta
     last_snapshot=$(ls -t $data_dir/data/snapshots | head -n1)
-    # TODO handle SQLite
-    # For LMDB, snapshot and db.lmdb are folders
-    cp -r $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
-    # For SQLite, snapshot and db.lmdb are files
-    # cp $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.sql
+    if [ $db_engine == "lmdb" ]; then
+        # For LMDB, snapshot and db.lmdb are folders
+        cp -r $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
+    else # db_engine="sqlite"
+        # For SQLite, snapshot and db.sql are files
+        cp $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.sql
     chown -R $app:$app $data_dir/metadata
 }
 

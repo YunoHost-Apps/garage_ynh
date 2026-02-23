@@ -7,17 +7,6 @@ source /usr/share/yunohost/helpers
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
 
-if [[ -n "$rpc_secret" ]]
-then
-	echo "$rpc_secret" | grep -E ^[0-9a-f]{64}$ || ynh_die "rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
-else
-	rpc_secret=$(ynh_string_random --length=32| od -A n -t x -w64 | sed 's/ //g')
-fi
-if [ -n "$bootstrap_peers" ]
-then
-	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' || ynh_die "friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
-fi
-
 if system_is_inside_container
 then
     app_install_inside_container=true
@@ -30,6 +19,54 @@ then
 else #we are in a container, we keep all partitions as is
     system_is_inside_container_bool="true"
 fi
+
+if [[ -n "$rpc_secret" ]]
+then
+	echo "$rpc_secret" | grep -E ^[0-9a-f]{64}$ || ynh_die "rpc_secret have to be a 32-byte hex-encoded random string. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/ for more information"
+else
+	rpc_secret=$(ynh_string_random --length=32| od -A n -t x -w64 | sed 's/ //g')
+fi
+if [ -n "$bootstrap_peers" ]
+then
+	echo "$bootstrap_peers" | grep -E '[0-9a-f]{64}@((\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}|([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}):[0-9]{1,4}' || ynh_die "friend server id must have id with the following form : 1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@192.168.1.1:1234 or  1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@example.tld:1234"
+fi
+
+#=================================================
+# CONFIGURE APP DEPENDING ON PERFORMANCE+SIZE TIERS
+#=================================================
+
+case $performance_tier in
+
+  "high-perf")
+    db_engine="lmdb"
+    blocksize=""
+    ;;
+
+  "data-center")
+    db_engine="lmdb"
+    blocksize="10M"
+    ;;
+
+  "small-files")
+    db_engine="lmdb"
+    blocksize=""
+    ;;
+
+  "backups")
+    db_engine="sqlite"
+    blocksize="10M"
+    ;;
+
+  "32-bits")
+    db_engine="sqlite"
+    blocksize="10M"
+    ;;
+
+  *)
+    db_engine="lmdb"
+    blocksize=""
+    ;;
+esac
 
 data_fs="xfs"
 metadata_fs="btrfs"
