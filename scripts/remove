@@ -26,15 +26,26 @@ fi
 
 # Remove the dedicated systemd config
 ynh_config_remove_systemd
-if [[ "$data" != "no" ]]
+if [[ "$data" != "no" ]] && [[ "$data" != "manual" ]]
 then
-	yunohost service remove "home-yunohost.app-$app-data.mount"
-	ynh_config_remove_systemd --mount="home-yunohost.app-$app-data"
+	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-data.mount" >/dev/null; then
+		yunohost service remove "home-yunohost.app-$app-data.mount"
+	fi
+	# if $purge # empty mounted folder before unmounting
+	# then
+	# 	ynh_safe_rm "$data_dir/data/*"
+	# fi
+	ynh_config_remove_systemd --service="home-yunohost.app-$app-data"
 fi
-if [[ "$metadata" != "no" ]]
+if [[ "$metadata" != "no" ]] && [[ "$data" != "manual" ]]
 then
-	yunohost service remove "home-yunohost.app-$app-metadata.mount"
-	ynh_config_remove_systemd --mount="home-yunohost.app-$app-metadata"
+	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-metadata.mount" >/dev/null; then
+		yunohost service remove "home-yunohost.app-$app-metadata.mount"
+	fi
+	# Remove Metadata even if remove --purge is not selected
+	ynh_safe_rm "$data_dir/metadata/*"
+	ynh_config_remove_systemd --service="home-yunohost.app-$app-metadata"
+	ynh_safe_rm "$data_dir/metadata"
 fi
 
 ynh_config_remove_logrotate
