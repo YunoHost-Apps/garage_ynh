@@ -26,11 +26,10 @@ fi
 
 # Remove the dedicated systemd config
 ynh_config_remove_systemd
-sleep 10
+
 if [[ "$data" != "no" ]] && [[ "$data" != "manual" ]]
 then
 	yunohost service stop "home-yunohost.app-$app-data.mount"
-	sleep 5
 	ynh_print_warn "unmounting Data partition"
 	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-data.mount" >/dev/null; then
 		yunohost service remove "home-yunohost.app-$app-data.mount"
@@ -42,14 +41,12 @@ then
 	if ynh_config_remove_systemd --service="home-yunohost.app-$app-data"; then
 		ynh_print_warn "Data partition unmount successfull"
 	else
-		ynh_print_warn "Data unmount failed, please stop and disable home-yunohost.app-$app-data.mount and `rm -r /home/yunohost.app/garage`"
+		ynh_print_warn "Data unmount failed, please stop and disable home-yunohost.app-$app-data.mount and if you want to purge Data `rm -r /home/yunohost.app/garage`"
 	fi
-	sleep 5
 fi
 if [[ "$metadata" != "no" ]] && [[ "$metadata" != "manual" ]]
 then
 	yunohost service stop "home-yunohost.app-$app-metadata.mount"
-	sleep 5
 	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-metadata.mount" >/dev/null; then
 		yunohost service remove "home-yunohost.app-$app-metadata.mount"
 	fi
@@ -57,8 +54,9 @@ then
 	ynh_safe_rm "$data_dir/metadata/*"
 	if ynh_config_remove_systemd --service="home-yunohost.app-$app-metadata"; then
 		ynh_print_warn "Metadata partition unmount successfull"
+	else
+		ynh_print_warn "Data unmount failed, please stop and disable home-yunohost.app-$app-metadata.mount and `rm -r /home/yunohost.app/garage/metadata`"
 	fi
-	sleep 5
 	ynh_safe_rm "$data_dir/metadata"
 fi
 
