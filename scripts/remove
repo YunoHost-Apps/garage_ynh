@@ -28,10 +28,12 @@ fi
 ynh_config_remove_systemd
 if [[ "$data" != "no" ]]
 then
+	yunohost service remove "home-yunohost.app-$app-data.mount"
 	ynh_config_remove_systemd --mount="home-yunohost.app-$app-data"
 fi
 if [[ "$metadata" != "no" ]]
 then
+	yunohost service remove "home-yunohost.app-$app-metadata.mount"
 	ynh_config_remove_systemd --mount="home-yunohost.app-$app-metadata"
 fi
 

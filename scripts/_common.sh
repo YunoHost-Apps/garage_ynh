@@ -73,7 +73,7 @@ mount_data() {
         # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
-        ynh_systemctl --mount="home-yunohost.app-$app-data.mount" --action="start" # --wait_until="Started Garage: Data Mount"
+        ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
     elif ! $app_install_inside_container && [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
@@ -83,7 +83,7 @@ mount_data() {
         # Mount Garage Data `$data_dir/data` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
-        ynh_systemctl --mount="home-yunohost.app-$app-data.mount" --action="start" # --wait_until="Started Garage: Data Store"
+        ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Store"
     # else we are in a container or partitions are formatted manually by admin, we keep all partitions as is
     #mkdir -p $data_dir/data # /home/yunohost.app/garage/data
     fi
@@ -126,7 +126,7 @@ mount_metadata() {
         # Mount Garage Metadata `$data_dir/metadata` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-metadata" --template="metadata.mount"
         yunohost service add "home-yunohost.app-$app-metadata.mount" --description="Garage MetaData Mounted"
-        ynh_systemctl --mount="home-yunohost.app-$app-metadata.mount" --action="start" # --wait_until="Started Garage: MetaData Mount"
+        ynh_systemctl --mount="home-yunohost.app-$app-metadata" --action="start" # --wait_until="Started Garage: MetaData Mount"
     # else we are in a container, we keep all partitions as is
     #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
     fi
