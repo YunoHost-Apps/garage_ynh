@@ -76,7 +76,7 @@ mount_data() {
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
         yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
         ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
-    elif ! $app_install_inside_container && [[ "$data" != "manual" ]]
+    elif [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
         mkfs.xfs -L data_xfs -m crc=1 "$data"
