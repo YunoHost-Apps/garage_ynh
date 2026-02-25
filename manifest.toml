@@ -4,7 +4,7 @@ id = "garage"
 name = "Garage"
 description.en = "Distributed S3 storage"
 description.fr = "Stockage S3 distribué"
-version = "2.2.0~ynh2"
+version = "2.2.0~ynh3"
 
 maintainers = [ "oiseauroch" ]
 
@@ -43,6 +43,14 @@ ram.runtime = "50M"
     choices = ["high-perf", "data-center", "small-files", "backups", "32-bits"]
     help.en = "Please read prerequisites carefully before chosing a tier: https://github.com/YunoHost-Apps/garage_ynh/blob/master/doc/ADMIN.md#configuration-depending-on-your-server-setup"
     help.fr = "Merci de lire attentivement les prérequis avant la sélection d'un niveau : https://github.com/YunoHost-Apps/garage_ynh/blob/master/doc/ADMIN_fr.md#configuration-depending-on-your-server-setup"
+
+    [install.replication_factor]
+    ask.en = "Replication factor"
+    ask.fr = "Facteur de réplication"
+    type = "number"
+    default = 1
+    help.en = "The replication factor can be any positive integer smaller or equal the node count in your cluster. The chosen replication factor has a big impact on the cluster's failure tolerancy and performance characteristics. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication_factor"
+    help.fr = "Le facteur de réplication peut être n'importe quel nombre entier positif inférieur ou égal au nombre de nœuds dans votre cluster. Le facteur de réplication choisi a un impact important sur la tolérance aux pannes et les performances du cluster. Voir https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication_factor"
 
     [install.weight]
     ask.en = "Number of GB to allow for storage"
