@@ -39,7 +39,7 @@ case $performance_tier in
 
   "high-perf")
     db_engine="lmdb"
-    blocksize=""
+    blocksize="10M"
     ;;
 
   "data-center")
@@ -47,9 +47,9 @@ case $performance_tier in
     blocksize="10M"
     ;;
 
-  "small-files")
+  "slow-network")
     db_engine="lmdb"
-    blocksize=""
+    blocksize="1M"
     ;;
 
   "backups")
@@ -64,7 +64,7 @@ case $performance_tier in
 
   *)
     db_engine="lmdb"
-    blocksize=""
+    blocksize="10M"
     ;;
 esac
 
