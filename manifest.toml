@@ -4,7 +4,7 @@ id = "garage"
 name = "Garage"
 description.en = "Distributed S3 storage"
 description.fr = "Stockage S3 distribué"
-version = "2.2.0~ynh1"
+version = "2.2.0~ynh3"
 
 maintainers = [ "oiseauroch" ]
 
@@ -16,7 +16,7 @@ userdoc = "https://garagehq.deuxfleurs.fr/documentation/quick-start/"
 code = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
 
 [integration]
-yunohost = ">= 12.1.38"
+yunohost = ">= 12.1.40"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
@@ -36,6 +36,47 @@ ram.runtime = "50M"
     type = "group"
     default = "visitors"
 
+    [install.performance_tier]
+    ask.en = "Performance tier of your Garage Cluster"
+    ask.fr = "Niveau de performance de votre Cluster"
+    type = "select"
+    choices = ["high-perf", "data-center", "slow-network", "backups", "32-bits"]
+    help.en = "Please read prerequisites carefully before chosing a tier: https://github.com/YunoHost-Apps/garage_ynh/blob/master/doc/ADMIN.md#configuration-depending-on-your-server-setup"
+    help.fr = "Merci de lire attentivement les prérequis avant la sélection d'un niveau : https://github.com/YunoHost-Apps/garage_ynh/blob/master/doc/ADMIN_fr.md#configuration-depending-on-your-server-setup"
+
+    [install.replication_factor]
+    ask.en = "Replication factor"
+    ask.fr = "Facteur de réplication"
+    type = "number"
+    default = 1
+    help.en = "The replication factor can be any positive integer smaller or equal the node count in your cluster. The chosen replication factor has a big impact on the cluster's failure tolerancy and performance characteristics. See https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication_factor"
+    help.fr = "Le facteur de réplication peut être n'importe quel nombre entier positif inférieur ou égal au nombre de nœuds dans votre cluster. Le facteur de réplication choisi a un impact important sur la tolérance aux pannes et les performances du cluster. Voir https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication_factor"
+
+    [install.weight]
+    ask.en = "Number of GB to allow for storage"
+    ask.fr = "Nombre de Go à allouer pour le stockage"
+    type = "number"
+    help.en = "You should provide a data partition of this size and a metadata partition of at least 1% of the datasize"
+    help.fr = "Vous devriez fournir une partition de cette taille pour les données et une partition de métadonnées d'au moins 1% de la taille des données"
+
+    [install.data]
+    ask.en = "Path of the Data partition to be formatted in XFS"
+    ask.fr = "Chemin de la partition de données qui sera formattée en XFS"
+    type = "string"
+    example = "/dev/sdb1"
+    help.en = "Type `no` to mount data on a virtual drive if possible, or leave it on `/home/yunohost.app` otherwise"
+    help.fr = "Tapez `no` pour monter les données sur un disque virtuel si possible, ou sinon les laisser sur `/home/yunohost.app`"
+    default = "no"
+
+    [install.metadata]
+    ask.en = "Path of the BTRFS (or ZFS) Metadata partition on a SSD"
+    ask.fr = "Chemin de la partition BTRFS (ou ZFS) de métadonnées sur un SSD"
+    type = "string"
+    example = "/dev/sda2"
+    help.en = "Type `no` if `/home/yunohost.app` is already mounted on a BTRFS (or ZFS) partition ou pour monter les métadonnées sur un disque virtuel (si possible)"
+    help.fr = "Tapez `no` si `/home/yunohost.app` est déjà monté sur une partition BTRFS (or ZFS) or to mount metadata on a virtual drive (if possible)"
+    default = "no"
+
     [install.rpc_secret]
     ask.en = "UUID of the network (rpc-secret) "
     ask.fr = "UUID de l'ilot (rpc-secret)"
@@ -50,10 +91,6 @@ ram.runtime = "50M"
     example = "1799bccfd7411eddcf9ebd316bc1f5287ad12a68094e1c6ac6abde7e6feae1ec@127.0.0.1:3901"
     optional = true
 
-    [install.weight]
-    ask.en = "Number of GB to allow for storage"
-    ask.fr = "Nombre de GB à allouer pour le stockage"
-    type = "string"
 
 [resources]
 

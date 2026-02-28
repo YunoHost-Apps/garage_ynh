@@ -15,7 +15,9 @@ ynh_backup "$install_dir"
 # BACKUP THE DATA DIR
 #=================================================
 
-ynh_backup "$data_dir"
+# Make a snapshot of metadata using garage built-in feature
+garage_meta_snapshot
+ynh_backup "$data_dir/data/snapshots"
 
 #=================================================
 # BACKUP THE NGINX CONFIGURATION
@@ -28,6 +30,15 @@ ynh_backup "/etc/logrotate.d/$app"
 ynh_backup "/usr/share/yunohost/hooks/conf_regen/98-nginx_$app"
 
 ynh_backup "/etc/systemd/system/$app.service"
+if [[ "$data" != "no" ]]
+then
+    ynh_backup "/etc/systemd/system/home-yunohost.app-$app-data.mount"
+fi
+if [[ "$metadata" != "no" ]]
+then
+    ynh_backup "/etc/systemd/system/home-yunohost.app-$app-metadata.mount"
+fi
+
 
 #=================================================
 # END OF SCRIPT

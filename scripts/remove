@@ -24,16 +24,41 @@ if ynh_hide_warnings yunohost service status $app >/dev/null; then
 	yunohost service remove $app
 fi
 
+# Remove the dedicated systemd config
 ynh_config_remove_systemd
 
-ynh_config_remove_logrotate
-
-if system_is_inside_container
+if [[ "$data" != "no" ]] && [[ "$data" != "manual" ]]
 then
-	ynh_script_progression "Umount virtual disk..."
-	# Remove the app directory securely
-	$install_dir/umount_disk.sh
+	ynh_print_warn "unmounting Data partition"
+	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-data.mount" >/dev/null; then
+		yunohost service remove "home-yunohost.app-$app-data.mount"
+	fi
+	# if $purge # empty mounted folder before unmounting
+	# then
+	# 	ynh_safe_rm "$data_dir/data/*"
+	# fi
+	if ynh_config_remove_systemd "home-yunohost.app-$app-data"; then
+		ynh_print_warn "Data partition unmount successfull"
+	else
+		ynh_print_warn "Data unmount failed, please stop and disable home-yunohost.app-$app-data.mount and if you want to purge Data `rm -r /home/yunohost.app/garage`"
+	fi
 fi
+if [[ "$metadata" != "no" ]] && [[ "$metadata" != "manual" ]]
+then
+	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-metadata.mount" >/dev/null; then
+		yunohost service remove "home-yunohost.app-$app-metadata.mount"
+	fi
+	# Remove Metadata even if remove --purge is not selected
+	ynh_safe_rm "$data_dir/metadata/*"
+	if ynh_config_remove_systemd "home-yunohost.app-$app-metadata"; then
+		ynh_print_warn "Metadata partition unmount successfull"
+	else
+		ynh_print_warn "Data unmount failed, please stop and disable home-yunohost.app-$app-metadata.mount and `rm -r /home/yunohost.app/garage/metadata`"
+	fi
+	ynh_safe_rm "$data_dir/metadata"
+fi
+
+ynh_config_remove_logrotate
 
 ynh_config_remove_nginx
 
