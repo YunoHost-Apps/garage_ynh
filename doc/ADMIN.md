@@ -12,7 +12,7 @@
 * To prevent this, this App will ask you for a Data partition at install, or create a virtual disk with size the Weight of your Node. Virtual disk is only created if YunoHost is not in a VM, and performance may be poor.
 * If you install on a VM and do not provide a Data partition, you are responsible for checking sufficient available storage.
 * Expect Metadata (database) and its 2-3 snapshots to be approximatly 3% of the Data size (3GB for 100GB of Data for instance), or a bigger percentage if you store many small objects.
-* To connect from another Node, you might need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
+* To connect from another Node, you will need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
 
 ## How to use the S3 API from other softwares
 
@@ -52,8 +52,8 @@ We distinguish between 2 major setups:
 **Recommended** (minimal) self-hosting config:
 * Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS**, BTRFS & ZFS OK too (EXT4 only for storage in the GB order)
 * Metadata partition: on **SSD** (HDD OK if lots of RAM for kernel caching), **BTRFS or ZFS** (EXT4 OK with Garage-Snapshot)
-* Database: **LMDB is default, more tested, more performant. Recommended if Metadata on HDD**. (Prefer SQLite on a 32-bit system if you plan to store much data.)
-* Metadata may get corrupt, e.g. after a power outage: **Setup Garage-Snapshot** (SQLite should be avoided, but can be more robust with frequent unclean shutdown)
+* Database: **LMDB is default, more tested, more performant assuming stable power and reliable storage**. Otherwise use SQLite. Always use SQLite on a 32 bit system.
+* Metadata may get corrupt, e.g. after a power outage: **Setup Garage-Snapshot** (SQLite is more resilient to frequent unclean shutdown)
 * (Use SQLite if you want to be able to migrate Metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64.)
 * `blocksize = "10M"` if you have FTTH and plan to store mostly large files, **leave blocksize to default otherwise**
 
