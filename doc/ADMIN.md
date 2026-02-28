@@ -12,7 +12,7 @@
 * To prevent this, this App will ask you for a Data partition at install, or create a virtual disk with size the Weight of your Node. Virtual disk is only created if YunoHost is not in a VM, and performance may be poor.
 * If you install on a VM and do not provide a Data partition, you are responsible for checking sufficient available storage.
 * Expect Metadata (database) and its 2-3 snapshots to be approximatly 3% of the Data size (3GB for 100GB of Data for instance), or a bigger percentage if you store many small objects.
-* To connect from another Node, you will need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
+* To connect from another Node, you need the RPC port. Is is defined in `rpc_bind_addr` in your `garage.toml`
 
 ## How to use the S3 API from other softwares
 
@@ -37,14 +37,14 @@
 We distinguish between 2 major setups:
 * Self-hosting-like
   * Power (micro-)outage or cat-unplug likely: Metadata are likely to get corrupt
-  * Networking can be slower or have poor level of service
+  * Networking can be slower or have poor quality of service
   * Data storage up to some TB
   * Usage for distributed high-capacity storage, e.g. backups. Not necessarily for performance
   * Usage for non-critical services with ephemeral data
   * Recovery from other Nodes within a day (no Data snapshot)
 * Data-center-like
   * Unclean shutdown unlikely
-  * Fast and high-service networking
+  * Fast and high quality of service networking
   * Data storage greater than some TB
   * Usage for high-performance distributed storage
   * Local Recovery of Node within minutes, e.g. with Data snapshot
@@ -55,13 +55,13 @@ We distinguish between 2 major setups:
 * Database: **LMDB is default, more tested, more performant assuming stable power and reliable storage**. Otherwise use SQLite. Always use SQLite on a 32 bit system.
 * Metadata may get corrupt, e.g. after a power outage: **Setup Garage-Snapshot** (SQLite is more resilient to frequent unclean shutdown)
 * (Use SQLite if you want to be able to migrate Metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64.)
-* `blocksize = "10M"` if you have FTTH and plan to store mostly large files, **leave blocksize to default otherwise**
+* **`blocksize = "10M"`, which is a max block size** (you may lower it if you have bad networking)
 
 **Recommended** (minimal) data-center config:
 * Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS**, BTRFS & ZFS OK too
 * Metadata partition: on **SSD**. **BTRFS or ZFS with Garage-Snapshot** (`ext4` with Garage-Snapshot)
 * (You may replace Garage-Snapshot with filesystem snapshots if you stop garage during the snapshot)
-* Database: **LMDB** (SQLite if on 32-bit architecture)
+* Database: **LMDB**
 * `blocksize = "10M"` if you plan to store mostly large files, **leave blocksize to default otherwise**
 
 ## Simple self-hosting Backups use-case
@@ -70,11 +70,11 @@ We distinguish between 2 major setups:
 * `/` is mounted on `ext4` partition `/dev/sda1` and so is `/home/yunohost.app/garage/`
 * An empty 16TB HDD `/dev/sdb` (USB3 or SATA, USB2 should be avoided)
 * Create a 16TB partition `/dev/sdb1` for the Data
+* Select `backups` or `32-bits`
 * Type `/dev/sdb1` for the Data and `no` for the Metadata at install
 * `/dev/sdb1` will be formatted in `xfs` and mounted on `/home/yunohost.app/garage/data`
-* Garage will take Snapshots of your LMDB database regularly
-* Approximately 3% of the Data stored on your HDD will be used for Metadata. So check that it does not fill your SDD.
-* In case of Failure of your Node, try to Restore the App, if it fails, follow [the Garage Doc](https://garagehq.deuxfleurs.fr/documentation/operations/recovering/)
+* Garage will take Snapshots of your SQLite database regularly
+* Metadata stored on the SSD represents approximately 1% of the Data stored on your HDD. So check that it does not fill your SDD.
 
 ## Simple ephemeral service hosting in data-center use-case
 * Yunohost installed on a VPS with 4TB SSD, we are in a virtualized environment
