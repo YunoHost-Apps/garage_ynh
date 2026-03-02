@@ -30,8 +30,8 @@ ynh_config_remove_systemd
 if [[ "$data" != "no" ]] && [[ "$data" != "manual" ]]
 then
 	ynh_print_warn "unmounting Data partition"
-	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-data.mount" >/dev/null; then
-		yunohost service remove "home-yunohost.app-$app-data.mount"
+	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-data" --unit="mount" >/dev/null; then
+		yunohost service remove "home-yunohost.app-$app-data" --unit="mount"
 	fi
 	# if $purge # empty mounted folder before unmounting
 	# then
@@ -45,8 +45,8 @@ then
 fi
 if [[ "$metadata" != "no" ]] && [[ "$metadata" != "manual" ]]
 then
-	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-metadata.mount" >/dev/null; then
-		yunohost service remove "home-yunohost.app-$app-metadata.mount"
+	if ynh_hide_warnings yunohost service status "home-yunohost.app-$app-metadata" --unit="mount" >/dev/null; then
+		yunohost service remove "home-yunohost.app-$app-metadata" --unit="mount"
 	fi
 	# Remove Metadata even if remove --purge is not selected
 	ynh_safe_rm "$data_dir/metadata/*"

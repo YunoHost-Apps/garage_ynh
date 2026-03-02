@@ -21,7 +21,7 @@ then
         data_fs="xfs"
         # mkdir $data_dir/data
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
-        yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
+        yunohost service add "home-yunohost.app-$app-data" --unit="mount" --description="Garage Data Mounted"
         ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --line_match="Started Garage: Data Store."
         chown -R $app:$app "$data_dir"
     else
