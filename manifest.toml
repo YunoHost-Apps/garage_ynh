@@ -130,6 +130,7 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
+    packages = [ "xfsprogs"] 
     packages_from_raw_bash = """
     systemd-detect-virt -q -c && true || echo "qemu-utils e2fsprogs"
     """
