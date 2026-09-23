@@ -79,7 +79,7 @@ mount_data() {
     elif [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
-        mkfs.xfs -L data_xfs -m crc=1 "$data"
+        /sbin/mkfs.xfs -L data_xfs -m crc=1 "$data"
         # Get UUID of new partition
         data_uuid=$(blkid -s UUID -o value "$data")
         # Mount Garage Data `$data_dir/data` on new partition
@@ -157,7 +157,7 @@ mount_disk() {
         then
             qemu-nbd --connect /dev/nbd$i $data_dir/garage_data.qcow2
             echo "formatting /dev/nbd$i"
-            mkfs.xfs /dev/nbd$i
+            /sbin/mkfs.xfs /dev/nbd$i
             # mount /dev/nbd$i $data_dir/data/
             data_uuid=$(blkid -s UUID -o value "/dev/nbd$i")
         elif [[ "$format" = "btrfs" ]]
