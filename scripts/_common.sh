@@ -64,18 +64,21 @@ garage_layout_apply() {
 
 mount_data() {
     # If we're NOT inside a container and the user did not provide a Data partition
-    if ! $app_install_inside_container && [[ "$data" == "no" ]]
+    if [[ "$data" == "no" ]]
     then
-        ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
-        
-        # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
-        qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-        mount_disk $data_fs
-        # umount_disk
-        # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
-        ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
-        yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
-        ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
+		if ! $app_install_inside_container
+		then
+	        ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
+	        
+	        # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
+	        qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
+	        mount_disk $data_fs
+	        # umount_disk
+	        # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
+	        ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
+	        yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
+	        ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
+		fi
     elif [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
