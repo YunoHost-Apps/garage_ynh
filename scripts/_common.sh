@@ -22,12 +22,14 @@ garage_meta_snapshot() {
 garage_meta_snapshot_restore() {
     # https://garagehq.deuxfleurs.fr/documentation/operations/recovering/#corrupted_meta
     last_snapshot=$(ls -t $data_dir/data/snapshots | head -n1)
-    # TODO handle SQLite
-    # For LMDB, snapshot and db.lmdb are folders
-    cp -r $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
-    # For SQLite, snapshot and db.lmdb are files
-    # cp $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.sql
+    if [ $db_engine == "lmdb" ]; then
+        # For LMDB, snapshot and db.lmdb are folders
+        cp -r $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.lmdb
+    else # db_engine="sqlite"
+        # For SQLite, snapshot and db.sql are files
+        cp $data_dir/data/snapshots/$last_snapshot $data_dir/metadata/db.sql
     chown -R $app:$app $data_dir/metadata
+	fi
 }
 
 garage_full_table_repair() {
@@ -62,19 +64,22 @@ garage_layout_apply() {
 
 mount_data() {
     # If we're NOT inside a container and the user did not provide a Data partition
-    if ! $app_install_inside_container && [[ "$data" == "no" ]]
+    if [[ "$data" == "no" ]]
     then
-        ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
-        
-        # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
-        qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-        mount_disk $data_fs
-        # umount_disk
-        # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
-        ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
-        yunohost service add "home-yunohost.app-$app-data" --unit="mount" --description="Garage Data Mounted"
-        ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
-    elif ! $app_install_inside_container && [[ "$data" != "manual" ]]
+		    if ! $app_install_inside_container
+        then
+              ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
+
+              # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
+              qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
+              mount_disk $data_fs
+              # umount_disk
+              # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
+              ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
+              yunohost service add "home-yunohost.app-$app-data" --unit="mount" --description="Garage Data Mounted"
+              ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
+		    fi
+    elif [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
         mkfs.xfs -L data_xfs -m crc=1 "$data"
