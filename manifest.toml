@@ -97,6 +97,7 @@ ram.runtime = "50M"
     [resources.sources.main] #Dummy source to get notified of new release by the bot
     url = "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.5.0.tar.gz"
     sha256 = "f6ae76cd694b0dd4a625dfd6b167da73a339ababc88b32cd61434fe3af076d51"
+
     autoupdate.strategy = "latest_forgejo_release"
 
     [resources.sources.binaries] #Actual app binaries used in this package 
@@ -132,5 +133,5 @@ ram.runtime = "50M"
     [resources.apt]
     packages = "xfsprogs"
     packages_from_raw_bash = """
-    systemd-detect-virt -q -c && true || echo "qemu-utils e2fsprogs"
+    systemd-detect-virt -q -c && true && echo "qemu-utils e2fsprogs xfsprogs"
     """
