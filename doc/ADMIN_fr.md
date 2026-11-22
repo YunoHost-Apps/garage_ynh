@@ -1,13 +1,55 @@
+# Configuration recommandée
+Supposons que vous avez un SSD `/dev/sda` et une partition `/dev/sda1` formatée en `ext4` ou `btrfs` sur laquelle est installé YunoHost. Vous avez en plus un HDD ou SSD vierge `/dev/sdb` pour le stockage Garage.
+
+## Pour les données
+
+* Créer une partition `/dev/sdb1` dédiée aux Data sur un HDD ou SSD, ex. pour une partition de 4 TB (7812500000 secteurs de 512 bytes) sur `/dev/sdb` :
+
+```sudo fdisk /dev/sdb
+Command (m for help): n
+Partition number (1-128, default 1): 
+First sector (34-15628053134, default 2048): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15628053134, default 15628053134): +7812500000
+Created a new partition 1 of type 'Linux filesystem' and of size 3.6 TiB.```
+
+* Formatter en XFS `sudo mkfs.xfs -L data_xfs -m crc=1 /dev/sdb1`
+* Récupérer l'UUID de la partition
+* Editer `/etc/fstab` en ajoutant la ligne :
+
+`UUID=xxxxxxxxxxxxx /mnt/data_xfs xfs defaults 0 0`
+
+* Monter les Data Garage `/home/yunohost.app/garage/data` sur `/mnt/data_xfs/data_garage` ou `/mnt/data_xfs`
+
+## Pour les métadonnées
+
+Si la partition `/dev/sda1` où est monté `/home/yunohost.app/` est partitionnée en `btrfs` ou `zfs`, les métadonnées seront stockées directement dans `/home/yunohost.app/garage/metadata`. Sinon :
+
+* Créer une partition `/dev/sda2` dédiée aux métadonnées sur un SSD
+* Formatter en BTRFS (ou ZFS) `sudo mkfs.btrfs -L metadata_btrfs -m crc=1 /dev/sda1`
+* Récupérer l'UUID de la partition
+* Editer `/etc/fstab` en ajoutant la ligne:
+
+`UUID=xxxxxxxxxxxxx /mnt/metadata_btrfs btrfs defaults 0 0`
+
+* Monter les métadonnées Garage `/home/yunohost.app/garage/metadata` sur `/mnt/metadata_btrfs/metadata_garage` ou `/mnt/metadata_btrfs`
+
+
+# Autre configuration possible (déconseillé)
+
+* Possible seulement si la virtualisation qemu est disponible
+* L'app garage_ynh va essayer de créer un disque virtuel pour les data et metadata
+* Les performances sont certainement très amoindries
+* Le disque virtuel permet d'éviter que Garage dépasse l'espace disque prévu 
+
 # Limitations
 
  * Cette application n'est pas utilisable si vous ne faites pas partie d'un cluster avec un minimum de 3 autres noeuds.
  * Si vous êtes derrière un nat et que vous utilisez upnp pour configurer votre redirection de port, vous devrez peut-être ajouter des pairs via le panneau de configuration au lieu de le faire pendant l'installation et/ou créer une redirection permanente dans votre routeur/boîtier.
-
+ 
 # Informations à connaître :
 
  * Cette application fournit un noeud que vous pouvez connecter à un cluster de garage. Quelques options sont gérables par le panneau de configuration pour le noeud actuel mais il n'offre pas de moyen plus simple pour gérer les seaux et les clés. Vous devez le faire en ligne de commande ou laisser un autre noeud le gérer.
- * Cette application considère que le poids du noeud est la taille réservée au garage en G (Gigaoctets).
- * Cette application va essayer de créer un disque virtuel pour s'assurer que le garage n'utilise pas plus que ce qui est autorisé. Si la virtualisation n'est pas disponible, il est de votre responsabilité de vérifier l'espace utilisé par le garage.
+ * Il est de votre responsabilité de vérifier l'espace utilisé par garage. Normalement il ne devrait pas dépasser le "nombre de Go à allouer pour le stockage" demandé à l'installation (Poids du noeud Garage).
  * Pour se connecter depuis un autre noeud, vous pouvez avoir besoin du port RPC. Il est défini dans `rpc_bind_addr` dans votre `garage.toml`.
  * Consommation de stockage : en dehors du stockage des données, vous pouvez vous attendre à ce que les métadonnées (base de données) consomment approximativement 1% de la taille des données (1GB pour 100GB de données par exemple), ou une valeur plus importante si vous stockez beaucoup de petits objets.
 
@@ -25,3 +67,56 @@ Le point de terminaison web (pour l'accès public HTTP, pour un site web statiqu
 ## Comment exécuter les commandes pour Garage
 1. Utilisez `yunohost app shell garage` pour utiliser la ligne de commande dans l'environnement de Garage (n'oubliez pas de `exit` à la fin). Vous serez situé dans le répertoire `__INSTALL_DIR__`.
 2. Ensuite, pour chaque utilisation de la commande `garage`, vous devez spécifier le fichier de configuration en tant que paramètre `garage -c garage.toml [les actions que vous souhaitez exécuter]`.
+
+## Configuration en fonction de votre type de serveur
+
+On distingue 2 types principaux :
+* Type Self-hosting
+  * (Micro-)Coupure de courant ou débranchement par un chat probable
+  * Connexion internet peut être plus lente ou être sujet à des coupures
+  * Stockage de données de l'ordre de quelques TB ou inférieur
+  * Utilisation plutôt pour du stokage redondé distribué de haute capacité, e.g. sauvegardes. Pas nécessairement pour la performance
+  * Récupération en cas de défaillance depuis les autres noeuds en un jour
+* Type Data-center
+  * Coupure prolongée d'un noeud improbable
+  * Connexion internet rapide et de haut niveau de service
+  * Stockage des données >10TB
+  * Utilisation pour du stockage distribué haute-performance
+  * Récupération d'un noeud en cas de défaillance depuis des snapshots locaux en quelques minutes
+
+**Recommended** (minimal) self-hosting config:
+* Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS** (EXT4)
+* Metadata partition: on **SSD** (HDD OK if lots of RAM for kernel caching), **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
+* Database: **LMDB is default, more tested, more performant, recommended if Metadata on HDD. LMDB is architecture dependent and limited to small DB size on 32-bit systems**. (Use SQLite if you want to be able to migrate metadata to a different architecture without resyncing, e.g. from AMD64 to ARM64. Prefer SQLite which is more robust if Metadata have poor failure recovery, e.g. not on BTRFS/ZFS, poor or no snapshotting.)
+* `blocksize = "10M"` if you have FTTH and plan to store mostly large files, leave to default otherwise
+
+**Recommended** (minimal) data-center config:
+* Data partition: on **SSD** (HDD OK if no high-performance storage), **XFS**
+* Metadata partition: on **SSD**. **BTRFS or ZFS with filesystem snapshot** (EXT4 with Garage-snapshot)
+* Database: **LMDB** (SQLite if on 32-bit system)
+* `blocksize = "10M"` if you plan to store mostly large files, leave to default otherwise
+
+## Etapes manuelles avant installation pour suivre la config recommandée
+
+* Si la partition où est monté `/home/yunohost.app/` n'est pas sur un SSD
+  * Migrer YunoHost vers un SSD
+* Si la partition où est monté `/home/yunohost.app/` n'est pas partitionnée en `btrfs` ou `zfs`, par exemple `/dev/sda1`
+  * Choisir de migrer `/dev/sda1` vers `btrfs`
+* Ou créer une nouvelle partition dédiée aux métadonnées sur un SSD et renseigner son chemin lors de l'installation, ex. `/dev/sda2`
+
+## Comment créer une partition en CLI
+
+* Il est recommandé de stocker les Data sur un HDD ou SSD, sur une partition différente de celle du système YunoHost
+* Y créer une partition dédiée aux Data et renseigner son chemin lors de l'installation, ex. pour une partition `/dev/sdb1` de 4 TB (4000000000000 = 7812500000 secteurs de 512 bytes) sur un disque `/dev/sdb` vierge :
+
+```
+sudo fdisk /dev/sdb
+Command (m for help): n
+Partition number (1-128, default 1): 
+First sector (34-15628053134, default 2048): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15628053134, default 15628053134): +7812500000
+Created a new partition 1 of type 'Linux filesystem' and of size 3.6 TiB.
+```
+
+* Ne pas formatter la partition, sinon l'installation échouera. C'est une sécurité pour éviter d'écraser une partition par inadvertance
+  * Vous pouvez vérifier le formattage avec `wipefs /dev/sdb1`, puis effectivement supprimer le formattage avec `wipefs -a /dev/sdb1`
