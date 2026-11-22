@@ -66,19 +66,19 @@ mount_data() {
     # If we're NOT inside a container and the user did not provide a Data partition
     if [[ "$data" == "no" ]]
     then
-		if ! $app_install_inside_container
-		then
-	        ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
-	        
-	        # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
-	        qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
-	        mount_disk $data_fs
-	        # umount_disk
-	        # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
-	        ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
-	        yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
-	        ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
-		fi
+		    if ! $app_install_inside_container
+        then
+              ynh_print_warn "Creating garage_data.qcow2 may take time regarding disk size..."
+
+              # Garage does not set a hard storage Quota. So we set a Quota by using a virtual disk with a fixed size.
+              qemu-img create -f qcow2 $data_dir/garage_data.qcow2 "$weight"G
+              mount_disk $data_fs
+              # umount_disk
+              # https://mattgadient.com/how-to-using-systemd-to-mount-nbd-devices-on-boot-ubuntu/
+              ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
+              yunohost service add "home-yunohost.app-$app-data" --unit="mount" --description="Garage Data Mounted"
+              ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Mount"
+		    fi
     elif [[ "$data" != "manual" ]]
     then
         ynh_print_info "Mounting Garage Data with systemd..."
@@ -87,7 +87,7 @@ mount_data() {
         data_uuid=$(blkid -s UUID -o value "$data")
         # Mount Garage Data `$data_dir/data` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-data" --template="data.mount"
-        yunohost service add "home-yunohost.app-$app-data.mount" --description="Garage Data Mounted"
+        yunohost service add "home-yunohost.app-$app-data" --unit="mount" --description="Garage Data Mounted"
         ynh_systemctl --mount="home-yunohost.app-$app-data" --action="start" # --wait_until="Started Garage: Data Store"
     # else we are in a container or partitions are formatted manually by admin, we keep all partitions as is
     #mkdir -p $data_dir/data # /home/yunohost.app/garage/data
@@ -130,7 +130,7 @@ mount_metadata() {
         echo "UUID=$metadata_uuid $data_dir/metadata btrfs defaults 0 0" | tee -a /etc/fstab
         # Mount Garage Metadata `$data_dir/metadata` on new partition
         ynh_config_add_systemd --mount="home-yunohost.app-$app-metadata" --template="metadata.mount"
-        yunohost service add "home-yunohost.app-$app-metadata.mount" --description="Garage MetaData Mounted"
+        yunohost service add "home-yunohost.app-$app-metadata" --unit="mount" --description="Garage MetaData Mounted"
         ynh_systemctl --mount="home-yunohost.app-$app-metadata" --action="start" # --wait_until="Started Garage: MetaData Mount"
     # else we are in a container, we keep all partitions as is
     #mkdir -p $data_dir/metadata # /home/yunohost.app/garage/metadata
