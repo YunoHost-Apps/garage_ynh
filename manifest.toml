@@ -4,7 +4,7 @@ id = "garage"
 name = "Garage"
 description.en = "Distributed S3 storage"
 description.fr = "Stockage S3 distribué"
-version = "2.4.1~ynh1"
+version = "2.5.0~ynh1"
 
 maintainers = [ "oiseauroch" ]
 
@@ -95,8 +95,9 @@ ram.runtime = "50M"
 [resources]
 
     [resources.sources.main] #Dummy source to get notified of new release by the bot
-    url = "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.4.1.tar.gz"
-    sha256 = "9149931f0e567a66cd96c33b6349e8f1900279ec6ae57c60bfd29d450104c553"
+    url = "https://git.deuxfleurs.fr/Deuxfleurs/garage/archive/v2.5.0.tar.gz"
+    sha256 = "f6ae76cd694b0dd4a625dfd6b167da73a339ababc88b32cd61434fe3af076d51"
+
     autoupdate.strategy = "latest_forgejo_release"
 
     [resources.sources.binaries] #Actual app binaries used in this package 
@@ -130,6 +131,7 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
+    packages = "xfsprogs"
     packages_from_raw_bash = """
     systemd-detect-virt -q -c && true && echo "qemu-utils e2fsprogs xfsprogs"
     """
