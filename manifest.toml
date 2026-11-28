@@ -105,14 +105,14 @@ ram.runtime = "50M"
     extract = false
     rename = "garage"
     prefetch = false
-    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/x86_64-unknown-linux-musl/garage"
-    amd64.sha256 = "ec761bb996e8453e86fe68ccc1cf222c73bb1ef05ae0b540bd4827e7d1931aab"
-    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/aarch64-unknown-linux-musl/garage"
-    arm64.sha256 = "3922bd3524e5267587a27fec91e4d8447353113ea3a55e2d1786a53d7529d1da"
-    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/i686-unknown-linux-musl/garage"
-    i386.sha256 = "ee221f20d5685631489711aa2bf5ee4af321d3eab4a5cc6e558136bbea7f773b"
-    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v2.2.0/armv6l-unknown-linux-musleabihf/garage"
-    armhf.sha256 = "12210b773e0dff921c89b8894c0dc66e2cbc6cd6c2574f409f8405de2f7945b5"
+    amd64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.6.0/x86_64-unknown-linux-musl/garage"
+    amd64.sha256 = "c270bd65431ca32f0b0d5df23bab71e3b64a08517fdf9037968f146ed17c51c7"
+    arm64.url = "https://garagehq.deuxfleurs.fr/_releases/v2.6.0/aarch64-unknown-linux-musl/garage"
+    arm64.sha256 = "529903efab83da4a0284e66891edcec6491af26e2dacca148f860245d39e7ff4"
+    i386.url = "https://garagehq.deuxfleurs.fr/_releases/v2.6.0/i686-unknown-linux-musl/garage"
+    i386.sha256 = "1b7d0d372eeeb8f9927d62ad46a0f99453f65002a975536b0037139c3b20f185"
+    armhf.url = "https://garagehq.deuxfleurs.fr/_releases/v2.6.0/armv6l-unknown-linux-musleabihf/garage"
+    armhf.sha256 = "7c09d019ae1c6a30a4ebeeddeab538d68f136176d5bfe5b2f71acd9cc76855b2"
 
     [resources.ports]
     main.default = 4000
